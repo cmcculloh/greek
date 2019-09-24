@@ -1,69 +1,10 @@
-<style>
-	body{
-		margin: 0px;
-		padding: 0px;
-	}
-
-	.row {
-		display: block;
-	}
-
-	#steve {
-		position: absolute;
-		background-image: url('steve.png');
-		height: 30px;
-		width: 30px;
-		background-size: 12px 26px;
-		background-repeat: no-repeat;
-		background-position: 8px;
-	}
-
-	.block {
-		display: inline-block;
-		height: 30px;
-		width: 30px;
-		background-image: url('blocks.png');
-		background-size: 1024px;
-	}
-
-	.block.unsolved {
-		opacity:0.05;
-	}
-
-	.grass {
-		background-image: url('grass.png');
-		background-size: 30px;
-		background-color: #8A8;
-
-	}
-
-	.stone {
-		background-position: -641px -289px;
-	}
-
-	.tree {
-		background-color: #63B03B;
-		background-position: -642px -2px;
-	}
-
-	.water {
-		background-position: -65px -1px;
-	}
-
-	.farm {
-		background-position: -450px -130px;
-	}
-
-	.dirt {
-		background-position: -257px -194px;
-	}
-</style>
+<link href="styles.css" rel="stylesheet" type="text/css">
+<p style="margin: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</p>
+<p style="margin: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</p>
 
 <div id="page">
 
 </div>
-<p style="margin: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</p>
-<p><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</p>
 
 <div id="steve"></div>
 
@@ -245,7 +186,7 @@ const generateBoard = (BOARD, width, height) => {
 
 let BOARD = []
 
-BOARD = generateBoard(BOARD, 20, 20);
+BOARD = generateBoard(BOARD, 30, 200);
 
 const blockTry = (target, BLOCKS) => {
 	const targetType = target.getAttribute('data-type');
@@ -269,7 +210,7 @@ const placePlayer = (position, movePositionBy) => {
 	position[1] = position[1] + movePositionBy[1];
 	position[0] = position[0] + movePositionBy[0];
 
-	player.style.top = `${position[1] * 30}px`;
+	player.style.top = `${(position[1] * 30) + 106}px`;
 	player.style.left = `${position[0] * 30}px`;
 
 	blockReveal(document.querySelector(`#row${position[1]}cell${position[0]}`))

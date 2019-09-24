@@ -1,0 +1,58 @@
+	body{
+		margin: 0px;
+		padding: 0px;
+	}
+
+	.row {
+		display: block;
+	}
+
+	#steve {
+		position: absolute;
+		background-image: url('steve.png');
+		height: 30px;
+		width: 30px;
+		background-size: 12px 26px;
+		background-repeat: no-repeat;
+		background-position: 8px;
+	}
+
+	.block {
+		display: inline-block;
+		height: 30px;
+		width: 30px;
+		background-image: url('blocks.png');
+		background-size: 1024px;
+	}
+
+	.block.unsolved {
+		opacity:0.2;
+	}
+
+	.grass {
+		background-image: url('grass.png');
+		background-size: 30px;
+		background-color: #8A8;
+
+	}
+
+	.stone {
+		background-position: -641px -289px;
+	}
+
+	.tree {
+		background-color: #63B03B;
+		background-position: -642px -2px;
+	}
+
+	.water {
+		background-position: -65px -1px;
+	}
+
+	.farm {
+		background-position: -450px -130px;
+	}
+
+	.dirt {
+		background-position: -257px -194px;
+	}
