@@ -17,6 +17,13 @@
 		background-position: 8px;
 	}
 
+	#scoreBoard {
+		background-color: white;
+		position: absolute;
+		top: 150px;
+		right: 50px;
+	}
+
 	.block {
 		display: inline-block;
 		height: 30px;

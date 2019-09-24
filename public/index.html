@@ -8,6 +8,8 @@
 
 <div id="steve"></div>
 
+<div id="scoreBoard"></div>
+
 <script>
 
 // const additionQuestion = (number) => {
@@ -49,30 +51,30 @@
 const config = {
 	written: false,
 	questions: [
-		{ question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0, reward: '' },
-		{ question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0, reward: ''}
+		{ question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0 },
+		{ question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0 },
+		{ question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0 },
+		{ question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0 },
+		{ question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0 },
+		{ question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0 },
+		{ question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0 },
+		{ question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0 },
+		{ question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0 },
+		{ question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0 },
+		{ question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0 },
+		{ question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0 },
+		{ question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0 },
+		{ question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0 },
+		{ question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0 },
+		{ question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0 },
+		{ question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0 },
+		{ question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0 },
+		{ question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0 },
+		{ question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0 },
+		{ question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0 },
+		{ question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0 },
+		{ question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0 },
+		{ question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0}
 	]
 }
 
@@ -128,13 +130,30 @@ const anyQuestion = (config) => {
 	return askQuestion(config, question);
 }
 
+const reward = (who, amount, item) => {
+	who.points += amount;
+	who.items = who.items || {};
+	who.items[item] = who.items[item] || 0;
+	who.items[item]++;
+
+	let html = `<ul>
+			<li>Points: ${who.points}</li>`;
+
+	for (const item in who.items) { html += `<li>${item}: ${who.items[item]}</li>`; }
+
+	html += `</ul>`;
+
+	document.querySelector('#scoreBoard').innerHTML = html;
+}
+
+
 const BLOCKS = {
-	D: { block: 'dirt', test: () => easyQuestion(config) },
-	T: { block: 'tree', test: () => hardQuestion(config) },
-	S: { block: 'stone', test: () => hardQuestion(config) },
-	W: { block: 'water', test: () => hardQuestion(config) },
-	F: { block: 'farm', test: () => hardQuestion(config) },
-	G: { block: 'grass', test: () => anyQuestion(config) }
+	D: { block: 'dirt', test: () => easyQuestion(config), reward: (player) => reward(player, 100, 'dirt') },
+	T: { block: 'tree', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'wood') },
+	S: { block: 'stone', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'stone') },
+	W: { block: 'water', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'water') },
+	F: { block: 'farm', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'carrots') },
+	G: { block: 'grass', test: () => anyQuestion(config), reward: (player) => reward(player, 200,'grass seed' ) }
 }
 
 
@@ -188,15 +207,13 @@ let BOARD = []
 
 BOARD = generateBoard(BOARD, 30, 200);
 
-const blockTry = (target, BLOCKS) => {
-	const targetType = target.getAttribute('data-type');
+const blockTry = (blockTarget, entity, BLOCKS) => {
+	const targetType = blockTarget.getAttribute('data-type');
 	const block = BLOCKS[Object.keys(BLOCKS).find((candidate) => BLOCKS[candidate].block === targetType)]
 
 	const success = block.test();
 
-	if (!success) {
-
-	}
+	if (success) block.reward(entity);
 
 	return success;
 }
@@ -205,15 +222,17 @@ const blockReveal = (target) => {
 	target.classList.remove('unsolved');
 }
 
-const player = document.querySelector('#steve');
-const placePlayer = (position, movePositionBy) => {
+const placeEntity = (entity, position, movePositionBy) => {
 	position[1] = position[1] + movePositionBy[1];
 	position[0] = position[0] + movePositionBy[0];
 
-	player.style.top = `${(position[1] * 30) + 146}px`;
-	player.style.left = `${position[0] * 30}px`;
+	entity.DOM.style.top = `${(position[1] * 30) + 146}px`;
+	entity.DOM.style.left = `${position[0] * 30}px`;
 
-	blockReveal(document.querySelector(`#row${position[1]}cell${position[0]}`))
+	if (entity.revealsBlocks) {
+		blockReveal(document.querySelector(`#row${position[1]}cell${position[0]}`))
+	}
+
 
 	return position;
 }
@@ -240,9 +259,15 @@ BOARD.forEach((row, ri) => {
 const page = document.querySelector('#page');
 page.appendChild(board);
 
-let position = [1, 1];
+let player = {
+	DOM: document.querySelector('#steve'),
+	revealsBlocks: true,
+	points: 0,
+	items: {}
+}
 
-placePlayer(position, [0,0]);
+let position = [1, 1];
+placeEntity(player, position, [0,0]);
 
 document.addEventListener('keypress', (e) => {
 	let movePositionBy = [ 0, 0 ]
@@ -270,11 +295,12 @@ document.addEventListener('keypress', (e) => {
 	const attemptBlock = document.querySelector(`#row${position[1] + movePositionBy[1]}cell${position[0] + movePositionBy[0]}`);
 
 	if (attemptBlock.classList.contains('unsolved')){
-		if(blockTry(attemptBlock, BLOCKS)){
-			position = placePlayer(position, movePositionBy);
+		const success = blockTry(attemptBlock, player, BLOCKS);
+		if(success){
+			position = placeEntity(player, position, movePositionBy);
 		}
 	} else {
-		position = placePlayer(position, movePositionBy);
+		position = placeEntity(player, position, movePositionBy);
 	}
 });
 
