@@ -2,7 +2,7 @@
   "name": "greek",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "dependencies": {
     "node-static": "^0.7.11"
   },
