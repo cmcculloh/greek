@@ -4,12 +4,12 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "node-static": "^0.7.11"
+    "express": "^4.17.1"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "static"
+    "start": "node app.js"
   },
   "repository": {
     "type": "git",
