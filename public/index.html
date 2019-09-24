@@ -1,6 +1,6 @@
 <link href="styles.css" rel="stylesheet" type="text/css">
-<p style="margin: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</p>
-<p style="margin: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</p>
+<p style="padding: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</p>
+<p style="padding: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</p>
 
 <div id="page">
 
@@ -49,30 +49,30 @@
 const config = {
 	written: false,
 	questions: [
-		{ question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0 },
-		{ question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0 },
-		{ question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0 },
-		{ question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0 },
-		{ question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0 },
-		{ question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0 },
-		{ question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0 },
-		{ question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0 },
-		{ question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0 },
-		{ question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0 },
-		{ question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0 },
-		{ question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0 },
-		{ question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0 },
-		{ question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0 },
-		{ question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0 },
-		{ question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0 },
-		{ question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0 },
-		{ question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0 },
-		{ question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0 },
-		{ question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0 },
-		{ question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0 },
-		{ question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0 },
-		{ question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0 },
-		{ question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0 }
+		{ question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0, reward: '' },
+		{ question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0, reward: ''}
 	]
 }
 
@@ -210,7 +210,7 @@ const placePlayer = (position, movePositionBy) => {
 	position[1] = position[1] + movePositionBy[1];
 	position[0] = position[0] + movePositionBy[0];
 
-	player.style.top = `${(position[1] * 30) + 106}px`;
+	player.style.top = `${(position[1] * 30) + 146}px`;
 	player.style.left = `${position[0] * 30}px`;
 
 	blockReveal(document.querySelector(`#row${position[1]}cell${position[0]}`))

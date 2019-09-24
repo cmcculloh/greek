@@ -23,10 +23,11 @@
 		width: 30px;
 		background-image: url('blocks.png');
 		background-size: 1024px;
+		opacity:0.8;
 	}
 
 	.block.unsolved {
-		opacity:0.2;
+		opacity:0.1;
 	}
 
 	.grass {
