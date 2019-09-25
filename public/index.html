@@ -87,11 +87,11 @@ const askQuestion = (config, question) => {
 
 		correct = question.answer.includes(theirAnswer.toLowerCase());
 
-		alert(`${correct ? 'Correct!' : 'Incorrect.'} The letter "${question.question[variation]}" is "${question.answer}".`);
+		alert(`${correct ? 'Correct!' : 'Incorrect.'} The letter "${question.question[variation]}" is "${question.answer[0]}".`);
 	} else {
 		alert(`what letter is "${question.question[variation]}"?`)
 
-		correct = confirm(`The letter "${question.question[variation]}" is "${question.answer}".`);
+		correct = confirm(`The letter "${question.question[variation]}" is "${question.answer[0]}".`);
 	}
 
 	question.asked += 1;
