@@ -17,6 +17,16 @@
 		background-position: 8px;
 	}
 
+	.sheep {
+		position: absolute;
+		background-image: url('sheep.jpeg');
+		height: 30px;
+		width: 30px;
+		background-size: 26px 26px;
+		background-repeat: no-repeat;
+		background-position: 2px;
+	}
+
 	#scoreBoard {
 		background-color: white;
 		position: absolute;
