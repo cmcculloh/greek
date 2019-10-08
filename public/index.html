@@ -288,14 +288,11 @@ let mobTypes = {
 }
 
 for (let i = 0; i < 10; i++) {
-	mobs.push(JSON.parse(JSON.stringify(mobTypes.sheep)))
+	mobs.push(JSON.parse(JSON.stringify(mobTypes.sheep)));
 }
 
-const parseHTML = (html) => {
-	var t = document.createElement('template');
-	t.innerHTML = html;
-	return t.content.cloneNode(true);
-}
+placeEntity(player, [0,0]);
+mobs = initMobs(mobs);
 
 const initMobs = (mobs) => {
 	mobs.forEach(mob => {
@@ -330,9 +327,6 @@ const moveMobs = (mobs, player, moveHostileOnly) => {
 
 	return mobs;
 }
-
-placeEntity(player, [0,0]);
-mobs = initMobs(mobs);
 
 document.addEventListener('keypress', (e) => {
 	let movePositionBy = [ 0, 0 ]
