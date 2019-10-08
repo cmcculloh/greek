@@ -55,30 +55,35 @@
 const config = {
 	written: false,
 	questions: [
-		{ question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0 },
-		{ question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0 },
-		{ question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0 },
-		{ question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0 },
-		{ question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0 },
-		{ question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0 },
-		{ question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0 },
-		{ question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0 },
-		{ question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0 },
-		{ question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0 },
-		{ question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0 },
-		{ question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0 },
-		{ question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0 },
-		{ question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0 },
-		{ question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0 },
-		{ question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0 },
-		{ question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0 },
-		{ question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0 },
-		{ question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0 },
-		{ question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0 },
-		{ question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0 },
-		{ question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0 },
-		{ question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0 },
-		{ question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0}
+		{ level: 0, question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0 },
+		{ level: 0, question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0},
+		{ level: 1, question: ['ακούω'], answer: ['I hear'], asked: 0, correct: 0},
+		{ level: 1, question: ['βλέπω'], answer: ['I see'], asked: 0, correct: 0},
+		{ level: 1, question: ['έχω'], answer: ['I have or hold'], asked: 0, correct: 0},
+		{ level: 1, question: ['λύω'], answer: ['I loose or destroy'], asked: 0, correct: 0},
+		{ level: 1, question: ['πιστεύω'], answer: ['I believe'], asked: 0, correct: 0}
 	]
 }
 
@@ -87,15 +92,15 @@ const askQuestion = (config, question) => {
 	let correct = false;
 
 	if (config.written) {
-		const theirAnswer = prompt(`what letter is "${question.question[variation]}"`);
+		const theirAnswer = prompt(`what is "${question.question[variation]}"`);
 
 		correct = question.answer.includes(theirAnswer.toLowerCase());
 
-		alert(`${correct ? 'Correct!' : 'Incorrect.'} The letter "${question.question[variation]}" is "${question.answer[0]}".`);
+		alert(`${correct ? 'Correct!' : 'Incorrect.'} "${question.question[variation]}" is "${question.answer[0]}".`);
 	} else {
-		alert(`what letter is "${question.question[variation]}"?`)
+		alert(`what is "${question.question[variation]}"?`)
 
-		correct = confirm(`The letter "${question.question[variation]}" is "${question.answer[0]}".`);
+		correct = confirm(`"${question.question[variation]}" is "${question.answer[0]}".`);
 	}
 
 	question.asked += 1;
