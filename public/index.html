@@ -291,9 +291,6 @@ for (let i = 0; i < 10; i++) {
 	mobs.push(JSON.parse(JSON.stringify(mobTypes.sheep)));
 }
 
-placeEntity(player, [0,0]);
-mobs = initMobs(mobs);
-
 const initMobs = (mobs) => {
 	mobs.forEach(mob => {
 		const randX = Math.floor(Math.random() * BOARD_WIDTH);
@@ -312,6 +309,9 @@ const initMobs = (mobs) => {
 
 	return mobs;
 }
+
+placeEntity(player, [0,0]);
+mobs = initMobs(mobs);
 
 const moveMobs = (mobs, player, moveHostileOnly) => {
 	mobs.forEach(mob => {
