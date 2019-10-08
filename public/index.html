@@ -7,10 +7,7 @@
 </div>
 
 <div id="steve"></div>
-<div id="zombie" class="sheep" style="position: absolute;"></div>
-<div id="zombie1" class="sheep" style="position: absolute;"></div>
-<div id="zombie2" class="sheep" style="position: absolute;"></div>
-<div id="zombie3" class="sheep" style="position: absolute;"></div>
+<div id="mobs"></div>
 
 <div id="scoreBoard"></div>
 
@@ -277,40 +274,28 @@ let player = {
 	position: [1, 1]
 }
 
-let mobs = [
-	{
-		DOM: document.querySelector('#zombie'),
+let mobs = [];
+let mobTypes = {
+	'sheep': {
+		classList: ['sheep'],
 		revealsBlocks: false,
 		points: 0,
 		items: {
-			"sword": 1
-		}
-	},
-	{
-		DOM: document.querySelector('#zombie1'),
-		revealsBlocks: false,
-		points: 0,
-		items: {
-			"sword": 1
-		}
-	},
-	{
-		DOM: document.querySelector('#zombie2'),
-		revealsBlocks: false,
-		points: 0,
-		items: {
-			"sword": 1
-		}
-	},
-	{
-		DOM: document.querySelector('#zombie3'),
-		revealsBlocks: false,
-		points: 0,
-		items: {
-			"sword": 1
-		}
+			"wool": 1
+		},
+		hostile: false
 	}
-]
+}
+
+for (let i = 0; i < 10; i++) {
+	mobs.push(JSON.parse(JSON.stringify(mobTypes.sheep)))
+}
+
+const parseHTML = (html) => {
+	var t = document.createElement('template');
+	t.innerHTML = html;
+	return t.content.cloneNode(true);
+}
 
 const initMobs = (mobs) => {
 	mobs.forEach(mob => {
@@ -319,22 +304,28 @@ const initMobs = (mobs) => {
 
 		mob.position = [ randX, randY ];
 
+		const mobDOM = document.createElement('div');
+		mobDOM.classList.add(mob.classList);
+
+		mob.DOM = document.querySelector('#mobs').appendChild(mobDOM);
+
+
 		placeEntity(mob, [0,0]);
 	});
 
 	return mobs;
 }
 
-const moveMobs = (mobs, player) => {
+const moveMobs = (mobs, player, moveHostileOnly) => {
 	mobs.forEach(mob => {
-		let newPosition = [ 0, 0 ]
+		if (moveHostileOnly && !mob.hostile) return;
+
+		let newPosition = [ 0, 0 ];
 		mob.position[0] !== player.position[0] ? mob.position[0] > player.position[0] ? newPosition[0]-- : newPosition[0]++ : mob.position[0];
 
 		mob.position[1] !== player.position[1] ? mob.position[1] > player.position[1] ? newPosition[1]-- : newPosition[1]++ : mob.position[1];
 
-		placeEntity(mob, newPosition)
-
-		console.log('new mob position', mob.position)
+		placeEntity(mob, newPosition);
 	});
 
 	return mobs;
@@ -368,16 +359,20 @@ document.addEventListener('keypress', (e) => {
 
 	const attemptBlock = document.querySelector(`#row${player.position[1] + movePositionBy[1]}cell${player.position[0] + movePositionBy[0]}`);
 
-	mobs = moveMobs(mobs, player);
+	let moveHostileOnly = true;
 
 	if (attemptBlock.classList.contains('unsolved')){
 		const success = blockTry(attemptBlock, player, BLOCKS);
 		if(success){
 			player = placeEntity(player, movePositionBy);
+			moveHostileOnly = false;
 		}
 	} else {
 		player = placeEntity(player, movePositionBy);
+		moveHostileOnly = false;
 	}
+
+	mobs = moveMobs(mobs, player, moveHostileOnly);
 });
 
 document.querySelector('#hardmode').addEventListener('change', (e) => {
