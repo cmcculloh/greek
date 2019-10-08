@@ -154,12 +154,12 @@ const reward = (who, amount, item) => {
 
 
 const BLOCKS = {
-	D: { block: 'dirt', test: () => easyQuestion(config), reward: (player) => reward(player, 100, 'dirt') },
-	T: { block: 'tree', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'wood') },
-	S: { block: 'stone', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'stone') },
-	W: { block: 'water', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'water') },
-	F: { block: 'farm', test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'carrots') },
-	G: { block: 'grass', test: () => anyQuestion(config), reward: (player) => reward(player, 200,'grass seed' ) }
+	D: { block: 'dirt', groupingMultiplier: 2, test: () => easyQuestion(config), reward: (player) => reward(player, 100, 'dirt') },
+	T: { block: 'tree', groupingMultiplier: 8, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'wood') },
+	S: { block: 'stone', groupingMultiplier: 3, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'stone') },
+	W: { block: 'water', groupingMultiplier: 10, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'water') },
+	F: { block: 'farm', groupingMultiplier: 5, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'carrots') },
+	G: { block: 'grass', groupingMultiplier: 11, test: () => anyQuestion(config), reward: (player) => reward(player, 200,'grass seed' ) }
 }
 
 
@@ -168,31 +168,34 @@ DEFAULT = BLOCKS.G;
 
 const POSSIBILITIES = Object.values(BLOCKS);
 
-
 const generateBoard = (BOARD, width, height) => {
 	for (let ri = 0; ri < height; ri++) {
 		BOARD[ri] = BOARD[ri] || [];
 
 		for (let ci = 0; ci < width; ci++) {
+			const wildcardBlock = POSSIBILITIES[Math.floor(Math.random() * POSSIBILITIES.length)];
 			let possibleBlocks = [
 				{
-					chance: Math.random() * 10,
+					chance: Math.random() * 50,
 					type: DEFAULT
 				},
 				{
-					chance: Math.random() * 11,
+					chance: Math.random() * (BOARD[ri][ci - 1] && BOARD[ri][ci - 1].groupingMultiplier || DEFAULT.groupingMultiplier) * 25,
 					type: BOARD[ri][ci - 1] || DEFAULT
 				},
 				{
-					chance: Math.random() * 11,
+					chance: Math.random() * (BOARD[ri-1] && BOARD[ri-1][ci] && BOARD[ri-1][ci].groupingMultiplier || DEFAULT.groupingMultiplier) * 25,
 					type: BOARD[ri-1] && BOARD[ri-1][ci] || DEFAULT
 				},
 				{
-					chance: Math.random() * 9,
-					type: POSSIBILITIES[Math.floor(Math.random() * POSSIBILITIES.length)] || DEFAULT
+					chance: Math.random() * 100,
+					type: wildcardBlock || DEFAULT
 				}
-			]
+			];
 
+			// console.log(possibleBlocks[0], possibleBlocks[1], possibleBlocks[2], possibleBlocks[3])
+
+			// Sort it greatest to least, so we can choose the one with the highest number
 			let sorted = possibleBlocks.sort((a, b) => {
 				if (a.chance < b.chance) { return 1 }
 				else if (a.chance > b.chance) { return -1 }
@@ -203,13 +206,11 @@ const generateBoard = (BOARD, width, height) => {
 		}
 	}
 
-	console.log(BOARD);
-
 	return BOARD;
 }
 
 
-let BOARD = []
+let BOARD = [];
 const BOARD_WIDTH = 30;
 const BOARD_HEIGHT = 200;
 
