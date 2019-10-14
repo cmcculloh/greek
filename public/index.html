@@ -1,15 +1,17 @@
 <link href="styles.css" rel="stylesheet" type="text/css">
-<p style="padding: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</p>
-<p style="padding: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</p>
 
 <div id="page">
-
 </div>
 
-<div id="steve"></div>
 <div id="mobs"></div>
+<div id="steve"></div>
+
 
 <div id="scoreBoard"></div>
+<div id="instructions">
+	<div style="padding: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</div>
+	<div style="padding: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</div>
+</div>
 
 <script>
 
@@ -48,40 +50,58 @@
 // 	G: { block: 'grass', test: () => multiplicationQuestion(10) }
 // }
 
+const DEFAULT_PLAYER = {
+	DOMSelector: '#steve',
+	revealsBlocks: true,
+	points: 0,
+	items: {},
+	position: [1, 1],
+	level: 1
+};
 
 const config = {
 	written: false,
 	questions: [
-		{ level: 0, question: ['Α', 'α'], answer: ['alpha'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Δ', 'δ'], answer: ['delta'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ε', 'ε'], answer: ['epsilon'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Η', 'η'], answer: ['eta', 'eeta'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Θ', 'θ'], answer: ['theeta', 'theta'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ι', 'ι'], answer: ['iota'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Κ', 'κ'], answer: ['kappa'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Μ', 'μ'], answer: ['mi', 'mu'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ν', 'ν'], answer: ['ni', 'nu'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ο', 'ο'], answer: ['omicron'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Π', 'π'], answer: ['pi', 'pee'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ρ', 'ρ'], answer: ['ro', 'rho'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Σ', 'σ', 'ς'], answer: ['sigma'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Τ', 'τ'], answer: ['taf', 'taff'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Χ', 'χ'], answer: ['chi'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ψ', 'ψ'], answer: ['psi'], asked: 0, correct: 0 },
-		{ level: 0, question: ['Ω', 'ω'], answer: ['omega'], asked: 0, correct: 0},
-		{ level: 1, question: ['ακούω'], answer: ['I hear'], asked: 0, correct: 0},
-		{ level: 1, question: ['βλέπω'], answer: ['I see'], asked: 0, correct: 0},
-		{ level: 1, question: ['έχω'], answer: ['I have or hold'], asked: 0, correct: 0},
-		{ level: 1, question: ['λύω'], answer: ['I loose or destroy'], asked: 0, correct: 0},
-		{ level: 1, question: ['πιστεύω'], answer: ['I believe'], asked: 0, correct: 0}
+		{ level: 0, question: ['Α', 'α'], answer: ['alpha'] },
+		{ level: 0, question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'] },
+		{ level: 0, question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'] },
+		{ level: 0, question: ['Δ', 'δ'], answer: ['delta'] },
+		{ level: 0, question: ['Ε', 'ε'], answer: ['epsilon'] },
+		{ level: 0, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'] },
+		{ level: 0, question: ['Η', 'η'], answer: ['eta', 'eeta'] },
+		{ level: 0, question: ['Θ', 'θ'], answer: ['theeta', 'theta'] },
+		{ level: 0, question: ['Ι', 'ι'], answer: ['iota'] },
+		{ level: 0, question: ['Κ', 'κ'], answer: ['kappa'] },
+		{ level: 0, question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'] },
+		{ level: 0, question: ['Μ', 'μ'], answer: ['mi', 'mu'] },
+		{ level: 0, question: ['Ν', 'ν'], answer: ['ni', 'nu'] },
+		{ level: 0, question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'] },
+		{ level: 0, question: ['Ο', 'ο'], answer: ['omicron'] },
+		{ level: 0, question: ['Π', 'π'], answer: ['pi', 'pee'] },
+		{ level: 0, question: ['Ρ', 'ρ'], answer: ['ro', 'rho'] },
+		{ level: 0, question: ['Σ', 'σ', 'ς'], answer: ['sigma'] },
+		{ level: 0, question: ['Τ', 'τ'], answer: ['taf', 'taff'] },
+		{ level: 0, question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'] },
+		{ level: 0, question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'] },
+		{ level: 0, question: ['Χ', 'χ'], answer: ['chi'] },
+		{ level: 0, question: ['Ψ', 'ψ'], answer: ['psi'] },
+		{ level: 0, question: ['Ω', 'ω'], answer: ['omega']},
+		{ level: 1, question: ['ακούω'], answer: ['I hear']},
+		{ level: 1, question: ['βλέπω'], answer: ['I see']},
+		{ level: 1, question: ['έχω'], answer: ['I have or hold']},
+		{ level: 1, question: ['λύω'], answer: ['I loose or destroy']},
+		{ level: 1, question: ['πιστεύω'], answer: ['I believe']}
 	]
+}
+
+const saveScore = (question, correct) => {
+	question.asked += 1;
+
+	if (correct) { question.correct += 1; }
+}
+
+const getLevel = (player) => {
+	return player.level || 1;
 }
 
 const askQuestion = (config, question) => {
@@ -100,52 +120,63 @@ const askQuestion = (config, question) => {
 		correct = confirm(`"${question.question[variation]}" is "${question.answer[0]}".`);
 	}
 
-	question.asked += 1;
-
-	if (correct) { question.correct += 1; }
+	saveScore(question, correct);
 
 	return correct;
 }
 
 
-const easyQuestion = (config) => {
-	const easyQuestions = config.questions.filter(question => question.asked === question.correct);
+const easyQuestion = (config, player) => {
+	const easyQuestions = config.questions.filter(question => question.level < getLevel(player));
 
-	const question = easyQuestions[Math.floor(Math.random() * config.questions.length)];
+	const question = easyQuestions[Math.floor(Math.random() * easyQuestions.length)];
 
 	return askQuestion(config, question);
 }
 
-const hardQuestion = (config) => {
+const hardQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const hardQuestions = config.questions.filter(question => question.asked !== question.correct);
+	const hardQuestions = config.questions.filter(question => question.level === getLevel(player));
 
 	if (hardQuestions.length > 0) {
 		question = hardQuestions[Math.floor(Math.random() * hardQuestions.length)];
-
-		console.log(hardQuestions.length, hardQuestions.reduce((qs, q) => `${qs}, ${q.question[0]}`, ''), question.question[0])
+	} else {
+		return anyQuestion(config);
 	}
 
 	return askQuestion(config, question);
 }
 
-const anyQuestion = (config) => {
-	const question = config.questions[Math.floor(Math.random() * config.questions.length)];
+const anyQuestion = (config, player) => {
+	const questions = config.questions.filter(question => question.level <= getLevel(player));
+
+	const question = questions[Math.floor(Math.random() * questions.length)];
 
 	return askQuestion(config, question);
 }
 
 const reward = (who, amount, item) => {
-	who.points += amount;
-	who.items = who.items || {};
-	who.items[item] = who.items[item] || 0;
-	who.items[item]++;
+	who.points += amount || 0;
+
+	if (item) {
+		who.items = who.items || {};
+		who.items[item] = who.items[item] || 0;
+		who.items[item]++;
+	}
+
+	return who;
+}
+
+const rewardPlayer = (player, amount, item) => {
+	player = reward(player, amount, item);
+
+	localStorage.setItem( 'player', JSON.stringify(player) );
 
 	let html = `<ul>
-			<li>Points: ${who.points}</li>`;
+			<li>Points: ${player.points}</li>`;
 
-	for (const item in who.items) { html += `<li>${item}: ${who.items[item]}</li>`; }
+	for (const item in player.items) { html += `<li>${item}: ${player.items[item]}</li>`; }
 
 	html += `</ul>`;
 
@@ -154,12 +185,12 @@ const reward = (who, amount, item) => {
 
 
 const BLOCKS = {
-	D: { block: 'dirt', groupingMultiplier: 2, test: () => easyQuestion(config), reward: (player) => reward(player, 100, 'dirt') },
-	T: { block: 'tree', groupingMultiplier: 8, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'wood') },
-	S: { block: 'stone', groupingMultiplier: 3, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'stone') },
-	W: { block: 'water', groupingMultiplier: 10, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'water') },
-	F: { block: 'farm', groupingMultiplier: 5, test: () => hardQuestion(config), reward: (player) => reward(player, 300, 'carrots') },
-	G: { block: 'grass', groupingMultiplier: 11, test: () => anyQuestion(config), reward: (player) => reward(player, 200,'grass seed' ) }
+	D: { block: 'dirt', groupingMultiplier: 2, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 100, 'dirt') },
+	T: { block: 'tree', groupingMultiplier: 8, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'wood') },
+	S: { block: 'stone', groupingMultiplier: 3, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'stone') },
+	W: { block: 'water', groupingMultiplier: 10, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'water') },
+	F: { block: 'farm', groupingMultiplier: 5, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'carrots') },
+	G: { block: 'grass', groupingMultiplier: 11, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 200, 'grass seed' ) }
 }
 
 
@@ -211,8 +242,8 @@ const generateBoard = (BOARD, width, height) => {
 
 
 let BOARD = [];
-const BOARD_WIDTH = 30;
-const BOARD_HEIGHT = 200;
+const BOARD_WIDTH = 500;
+const BOARD_HEIGHT = 500;
 
 BOARD = generateBoard(BOARD, BOARD_WIDTH, BOARD_HEIGHT);
 
@@ -220,7 +251,7 @@ const blockTry = (blockTarget, entity, BLOCKS) => {
 	const targetType = blockTarget.getAttribute('data-type');
 	const block = BLOCKS[Object.keys(BLOCKS).find((candidate) => BLOCKS[candidate].block === targetType)]
 
-	const success = block.test();
+	const success = block.test(config, entity);
 
 	if (success) block.reward(entity);
 
@@ -231,15 +262,27 @@ const blockReveal = (target) => {
 	target.classList.remove('unsolved');
 }
 
+const isFocus = (entity) => {
+	if (entity.DOMSelector && entity.DOMSelector === '#steve') {
+		return true;
+	}
+
+	return false;
+}
+
 const placeEntity = (entity, movePositionBy) => {
 	entity.position[1] = entity.position[1] + movePositionBy[1];
 	entity.position[0] = entity.position[0] + movePositionBy[0];
 
-	entity.DOM.style.top = `${(entity.position[1] * 30) + 146}px`;
+	entity.DOM.style.top = `${(entity.position[1] * 30)}px`;
 	entity.DOM.style.left = `${entity.position[0] * 30}px`;
 
 	if (entity.revealsBlocks) {
 		blockReveal(document.querySelector(`#row${entity.position[1]}cell${entity.position[0]}`))
+	}
+
+	if (isFocus(entity)) {
+		entity.DOM.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
 	}
 
 	return entity;
@@ -267,13 +310,6 @@ BOARD.forEach((row, ri) => {
 const page = document.querySelector('#page');
 page.appendChild(board);
 
-let player = {
-	DOM: document.querySelector('#steve'),
-	revealsBlocks: true,
-	points: 0,
-	items: {},
-	position: [1, 1]
-}
 
 let mobs = [];
 let mobTypes = {
@@ -311,6 +347,15 @@ const initMobs = (mobs) => {
 	return mobs;
 }
 
+const hydratePlayer = () => {
+	let player = JSON.parse( localStorage.getItem('player') ) || DEFAULT_PLAYER;
+
+	player.DOM = document.querySelector(player.DOMSelector || '#steve');
+
+	return player;
+}
+
+let player = hydratePlayer();
 placeEntity(player, [0,0]);
 mobs = initMobs(mobs);
 
