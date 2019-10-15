@@ -271,7 +271,7 @@ const generateBoard = (BOARD, width, height) => {
 		}
 	}
 
-	console.log(BOARD);
+	// console.log(BOARD);
 
 	return BOARD;
 }
@@ -329,7 +329,7 @@ const placeEntity = (entity, movePositionBy) => {
 	}
 
 	if (isFocus(entity)) {
-		entity.DOM.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
+		entity.DOM.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' });
 	}
 
 	return entity;
@@ -401,9 +401,6 @@ const hydratePlayer = () => {
 
 	return player;
 }
-
-let player = hydratePlayer();
-placeEntity(player, [0,0]);
 mobs = initMobs(mobs);
 
 const moveMobs = (mobs, player, moveHostileOnly) => {
@@ -496,6 +493,11 @@ setFog(config.fogofwar);
 
 document.querySelector('#fogofwar').addEventListener('change', (e) => setFog(e.target.checked));
 
+let player = hydratePlayer();
+
+window.setTimeout(() => {
+	placeEntity(player, [0,0]);
+}, 500)
 
 
 </script>
