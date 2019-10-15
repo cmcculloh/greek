@@ -74,6 +74,10 @@
 		opacity:0.5;
 	}
 
+	#page.fogofwar .block.unsolved {
+		opacity: 0.05;
+	}
+
 	.grass {
 		background-image: url('grass.png');
 		background-size: 30px;
