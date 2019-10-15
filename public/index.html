@@ -60,6 +60,9 @@ const DEFAULT_PLAYER = {
 };
 
 const STARTING_LEVEL = 1;
+const BOARD_WIDTH = 200;
+const BOARD_HEIGHT = 200;
+
 
 const config = {
 	written: false,
@@ -191,10 +194,16 @@ const reward = (who, amount, item) => {
 	return who;
 }
 
+const savePlayer = (player) => {
+	localStorage.setItem( 'player', JSON.stringify(player) );
+
+	return player;
+}
+
 const rewardPlayer = (player, amount, item) => {
 	player = reward(player, amount, item);
 
-	localStorage.setItem( 'player', JSON.stringify(player) );
+	player = savePlayer(player);
 
 	let html = `<ul>
 			<li>Level: ${getLevel(player.points)}</li>
@@ -257,19 +266,25 @@ const generateBoard = (BOARD, width, height) => {
 				else { return 0 }
 			});
 
-			BOARD[ri][ci] = sorted[0].type;
+			BOARD[ri][ci] = JSON.parse(JSON.stringify(sorted[0].type));
 		}
 	}
+
+	console.log(BOARD);
 
 	return BOARD;
 }
 
+const hydrateBoard = () => {
+	return JSON.parse( localStorage.getItem('board') ) || generateBoard([], BOARD_WIDTH, BOARD_HEIGHT);
+}
 
-let BOARD = [];
-const BOARD_WIDTH = 200;
-const BOARD_HEIGHT = 200;
+const saveBoard = () => {
+	localStorage.setItem( 'board', JSON.stringify(BOARD) );
+}
 
-BOARD = generateBoard(BOARD, BOARD_WIDTH, BOARD_HEIGHT);
+let BOARD = hydrateBoard();
+
 
 const blockTry = (blockTarget, entity, BLOCKS) => {
 	const targetType = blockTarget.getAttribute('data-type');
@@ -282,8 +297,15 @@ const blockTry = (blockTarget, entity, BLOCKS) => {
 	return success;
 }
 
-const blockReveal = (target) => {
+const blockReveal = (BOARD, row, col) => {
+	const target = document.querySelector(`#row${row}cell${col}`)
+
+	BOARD[row][col].solved = true;
+
 	target.classList.remove('unsolved');
+	target.classList.add('solved');
+
+	saveBoard();
 }
 
 const isFocus = (entity) => {
@@ -302,7 +324,7 @@ const placeEntity = (entity, movePositionBy) => {
 	entity.DOM.style.left = `${entity.position[0] * 30}px`;
 
 	if (entity.revealsBlocks) {
-		blockReveal(document.querySelector(`#row${entity.position[1]}cell${entity.position[0]}`))
+		blockReveal(BOARD, entity.position[1], entity.position[0])
 	}
 
 	if (isFocus(entity)) {
@@ -323,7 +345,7 @@ BOARD.forEach((row, ri) => {
 		cellDOM.id = `row${ri}cell${ci}`;
 		cellDOM.setAttribute('data-answer', cell.answer);
 		cellDOM.setAttribute('data-type', cell.block);
-		cellDOM.classList.add('block', 'unsolved', cell.block);
+		cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block);
 
 		rowDOM.appendChild(cellDOM);
 	});
@@ -439,6 +461,8 @@ document.addEventListener('keypress', (e) => {
 	}
 
 	mobs = moveMobs(mobs, player, moveHostileOnly);
+
+	savePlayer(player);
 });
 
 document.querySelector('#hardmode').addEventListener('change', (e) => {
