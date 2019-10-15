@@ -56,9 +56,10 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [1, 1],
-	level: 1,
-	gameVersion: 1.0
+	gameVersion: 1.1
 };
+
+const STARTING_LEVEL = 1;
 
 const config = {
 	written: false,
@@ -67,31 +68,31 @@ const config = {
 		{ level: 0, question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'] },
 		{ level: 0, question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'] },
 		{ level: 0, question: ['Δ', 'δ'], answer: ['delta'] },
-		{ level: 0, question: ['Ε', 'ε'], answer: ['epsilon'] },
-		{ level: 0, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'] },
-		{ level: 0, question: ['Η', 'η'], answer: ['eta', 'eeta'] },
-		{ level: 0, question: ['Θ', 'θ'], answer: ['theeta', 'theta'] },
-		{ level: 0, question: ['Ι', 'ι'], answer: ['iota'] },
-		{ level: 0, question: ['Κ', 'κ'], answer: ['kappa'] },
-		{ level: 0, question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'] },
-		{ level: 0, question: ['Μ', 'μ'], answer: ['mi', 'mu'] },
-		{ level: 0, question: ['Ν', 'ν'], answer: ['ni', 'nu'] },
-		{ level: 0, question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'] },
-		{ level: 0, question: ['Ο', 'ο'], answer: ['omicron'] },
-		{ level: 0, question: ['Π', 'π'], answer: ['pi', 'pee'] },
-		{ level: 0, question: ['Ρ', 'ρ'], answer: ['ro', 'rho'] },
-		{ level: 0, question: ['Σ', 'σ', 'ς'], answer: ['sigma'] },
-		{ level: 0, question: ['Τ', 'τ'], answer: ['taf', 'taff'] },
-		{ level: 0, question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'] },
-		{ level: 0, question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'] },
-		{ level: 0, question: ['Χ', 'χ'], answer: ['chi'] },
-		{ level: 0, question: ['Ψ', 'ψ'], answer: ['psi'] },
-		{ level: 0, question: ['Ω', 'ω'], answer: ['omega']},
-		{ level: 1, question: ['ακούω'], answer: ['I hear']},
-		{ level: 1, question: ['βλέπω'], answer: ['I see']},
-		{ level: 1, question: ['έχω'], answer: ['I have or hold']},
-		{ level: 1, question: ['λύω'], answer: ['I loose or destroy']},
-		{ level: 1, question: ['πιστεύω'], answer: ['I believe']}
+		{ level: 1, question: ['Ε', 'ε'], answer: ['epsilon'] },
+		{ level: 1, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'] },
+		{ level: 1, question: ['Η', 'η'], answer: ['eta', 'eeta'] },
+		{ level: 1, question: ['Θ', 'θ'], answer: ['theeta', 'theta'] },
+		{ level: 2, question: ['Ι', 'ι'], answer: ['iota'] },
+		{ level: 2, question: ['Κ', 'κ'], answer: ['kappa'] },
+		{ level: 2, question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'] },
+		{ level: 2, question: ['Μ', 'μ'], answer: ['mi', 'mu'] },
+		{ level: 3, question: ['Ν', 'ν'], answer: ['ni', 'nu'] },
+		{ level: 3, question: ['Ξ', 'ξ'], answer: ['ksi', 'xi'] },
+		{ level: 3, question: ['Ο', 'ο'], answer: ['omicron'] },
+		{ level: 3, question: ['Π', 'π'], answer: ['pi', 'pee'] },
+		{ level: 4, question: ['Ρ', 'ρ'], answer: ['ro', 'rho'] },
+		{ level: 4, question: ['Σ', 'σ', 'ς'], answer: ['sigma'] },
+		{ level: 4, question: ['Τ', 'τ'], answer: ['taf', 'taff'] },
+		{ level: 4, question: ['Υ', 'υ'], answer: ['ypsilon', 'upsilon'] },
+		{ level: 5, question: ['Φ', 'φ'], answer: ['phi', 'fee', 'fi'] },
+		{ level: 5, question: ['Χ', 'χ'], answer: ['chi'] },
+		{ level: 5, question: ['Ψ', 'ψ'], answer: ['psi'] },
+		{ level: 5, question: ['Ω', 'ω'], answer: ['omega']},
+		{ level: 6, question: ['ακούω'], answer: ['I hear']},
+		{ level: 6, question: ['βλέπω'], answer: ['I see']},
+		{ level: 6, question: ['έχω'], answer: ['I have or hold']},
+		{ level: 6, question: ['λύω'], answer: ['I loose or destroy']},
+		{ level: 6, question: ['πιστεύω'], answer: ['I believe']}
 	]
 }
 
@@ -101,9 +102,16 @@ const saveScore = (question, correct) => {
 	if (correct) { question.correct += 1; }
 }
 
-const getLevel = (player) => {
-	return player.level || 1;
-}
+// levels are a Fibonacci sequence (100, 200, 300, 500, 800, 1300, 2100, ...)
+const getLevel = (xp = 0, prevPrevThreshold = 0, prevThreshold = 1000, level = STARTING_LEVEL) => {
+	const threshold = prevPrevThreshold + prevThreshold;
+
+	if (xp < threshold) {
+		return level;
+	}
+
+	return getLevel(xp, prevThreshold, threshold, level + 1);
+};
 
 const askQuestion = (config, question) => {
 	const variation = Math.floor(Math.random() * question.question.length);
@@ -128,9 +136,23 @@ const askQuestion = (config, question) => {
 
 
 const easyQuestion = (config, player) => {
-	const easyQuestions = config.questions.filter(question => question.level < getLevel(player));
+	const easyQuestions = config.questions.filter(question => question.level < getLevel(player.points));
 
 	const question = easyQuestions[Math.floor(Math.random() * easyQuestions.length)];
+
+	return askQuestion(config, question);
+}
+
+const mediumQuestion = (config, player) => {
+	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
+
+	const mediumQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 3);
+
+	if (mediumQuestions.length > 0) {
+		question = mediumQuestions[Math.floor(Math.random() * mediumQuestions.length)];
+	} else {
+		return easyQuestion(config, player);
+	}
 
 	return askQuestion(config, question);
 }
@@ -138,19 +160,19 @@ const easyQuestion = (config, player) => {
 const hardQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const hardQuestions = config.questions.filter(question => question.level === getLevel(player));
+	const hardQuestions = config.questions.filter(question => question.level === getLevel(player.points));
 
 	if (hardQuestions.length > 0) {
 		question = hardQuestions[Math.floor(Math.random() * hardQuestions.length)];
 	} else {
-		return anyQuestion(config);
+		return mediumQuestion(config, player);
 	}
 
 	return askQuestion(config, question);
 }
 
 const anyQuestion = (config, player) => {
-	const questions = config.questions.filter(question => question.level <= getLevel(player));
+	const questions = config.questions.filter(question => question.level <= getLevel(player.points));
 
 	const question = questions[Math.floor(Math.random() * questions.length)];
 
@@ -175,6 +197,7 @@ const rewardPlayer = (player, amount, item) => {
 	localStorage.setItem( 'player', JSON.stringify(player) );
 
 	let html = `<ul>
+			<li>Level: ${getLevel(player.points)}</li>
 			<li>Points: ${player.points}</li>`;
 
 	for (const item in player.items) { html += `<li>${item}: ${player.items[item]}</li>`; }
@@ -189,9 +212,9 @@ const BLOCKS = {
 	D: { block: 'dirt', groupingMultiplier: 2, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 100, 'dirt') },
 	T: { block: 'tree', groupingMultiplier: 8, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'wood') },
 	S: { block: 'stone', groupingMultiplier: 3, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'stone') },
-	W: { block: 'water', groupingMultiplier: 10, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'water') },
+	W: { block: 'water', groupingMultiplier: 10, test: (config, player) => mediumQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'water') },
 	F: { block: 'farm', groupingMultiplier: 5, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'carrots') },
-	G: { block: 'grass', groupingMultiplier: 11, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 200, 'grass seed' ) }
+	G: { block: 'grass', groupingMultiplier: 11, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 200, 'grass seed') }
 }
 
 
@@ -243,8 +266,8 @@ const generateBoard = (BOARD, width, height) => {
 
 
 let BOARD = [];
-const BOARD_WIDTH = 500;
-const BOARD_HEIGHT = 500;
+const BOARD_WIDTH = 200;
+const BOARD_HEIGHT = 200;
 
 BOARD = generateBoard(BOARD, BOARD_WIDTH, BOARD_HEIGHT);
 
@@ -395,7 +418,9 @@ document.addEventListener('keypress', (e) => {
 			// console.log('down')
 			break;
 		default:
-			console.log(e.charCode)
+			console.log(e.charCode);
+			// unhandled. Don't move anything, otherwise players can just hit enter to gather up mobs :)
+			return;
 	}
 
 	const attemptBlock = document.querySelector(`#row${player.position[1] + movePositionBy[1]}cell${player.position[0] + movePositionBy[0]}`);
