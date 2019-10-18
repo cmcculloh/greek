@@ -57,7 +57,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 1.3
+	gameVersion: 1.4
 };
 
 const STARTING_LEVEL = 1;
@@ -222,7 +222,7 @@ const askQuestion = (config, question) => {
 
 
 const easyQuestion = (config, player) => {
-	const easyQuestions = config.questions.filter(question => question.level < getLevel(player.points));
+	const easyQuestions = config.questions.filter(question => question.level === getLevel(player.points));
 
 	const question = easyQuestions[Math.floor(Math.random() * easyQuestions.length)];
 
@@ -232,7 +232,7 @@ const easyQuestion = (config, player) => {
 const mediumQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const mediumQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 10);
+	const mediumQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
 
 	if (mediumQuestions.length > 0) {
 		question = mediumQuestions[Math.floor(Math.random() * mediumQuestions.length)];
@@ -246,7 +246,7 @@ const mediumQuestion = (config, player) => {
 const hardQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const hardQuestions = config.questions.filter(question => question.level === getLevel(player.points));
+	const hardQuestions = config.questions.filter(question => question.level <= getLevel(player.points));
 
 	if (hardQuestions.length > 0) {
 		question = hardQuestions[Math.floor(Math.random() * hardQuestions.length)];
