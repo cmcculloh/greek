@@ -57,7 +57,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 1.4
+	gameVersion: 2
 };
 
 const STARTING_LEVEL = 1;
@@ -69,13 +69,13 @@ const config = {
 	written: false,
 	questions: [
 		{ level: 0, question: ['Α', 'α'], answer: ['alpha'] },
-		{ level: 0, question: ['Β', 'β'], answer: ['veeta', 'beeta', 'beta'] },
+		{ level: 0, question: ['Β', 'β'], answer: ['veeta', 'beeta'] },
 		{ level: 0, question: ['Γ', 'γ'], answer: ['gamma', 'ghamma'] },
 		{ level: 0, question: ['Δ', 'δ'], answer: ['delta'] },
 		{ level: 1, question: ['Ε', 'ε'], answer: ['epsilon'] },
-		{ level: 1, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta', 'zeta', 'dzeta'] },
+		{ level: 1, question: ['Ζ', 'ζ'], answer: ['dzeeta', 'zeeta'] },
 		{ level: 1, question: ['Η', 'η'], answer: ['eta', 'eeta'] },
-		{ level: 1, question: ['Θ', 'θ'], answer: ['theeta', 'theta'] },
+		{ level: 1, question: ['Θ', 'θ'], answer: ['theeta'] },
 		{ level: 2, question: ['Ι', 'ι'], answer: ['iota'] },
 		{ level: 2, question: ['Κ', 'κ'], answer: ['kappa'] },
 		{ level: 2, question: ['Λ', 'λ'], answer: ['lambda', 'lamtha'] },
@@ -183,20 +183,21 @@ const presentTenseConjugations = [
 ]
 
 const saveScore = (question, correct) => {
-	question.asked += 1;
+	question.asked = (question.asked || 0) + 1;
 
-	if (correct) { question.correct += 1; }
+	if (correct) { question.correct = (question.correct || 0) + 1; }
 }
 
 // levels are a Fibonacci sequence (100, 200, 300, 500, 800, 1300, 2100, ...)
 const getLevel = (xp = 0, prevPrevThreshold = 0, prevThreshold = 1000, level = STARTING_LEVEL) => {
-	const threshold = prevPrevThreshold + prevThreshold;
+	// const threshold = prevPrevThreshold + prevThreshold;
 
-	if (xp < threshold) {
-		return level;
-	}
+	// if (xp < threshold) {
+	// 	return level;
+	// }
 
-	return getLevel(xp, prevThreshold, threshold, level + 1);
+	// return getLevel(xp, prevThreshold, threshold, level + 1);
+	return Math.ceil(xp/1000);
 };
 
 const askQuestion = (config, question) => {
@@ -212,7 +213,7 @@ const askQuestion = (config, question) => {
 	} else {
 		alert(`what is "${question.question[variation]}"?`)
 
-		correct = confirm(`"${question.question[variation]}" is "${question.answer[0]}".`);
+		correct = confirm(`"${question.question[variation]}" is "${question.answer.join(', or ')}".`);
 	}
 
 	saveScore(question, correct);
@@ -222,14 +223,15 @@ const askQuestion = (config, question) => {
 
 
 const easyQuestion = (config, player) => {
+	console.log(`easy question. Question level ${getLevel(player.points)}`);
 	const easyQuestions = config.questions.filter(question => question.level === getLevel(player.points));
-
 	const question = easyQuestions[Math.floor(Math.random() * easyQuestions.length)];
 
 	return askQuestion(config, question);
 }
 
 const mediumQuestion = (config, player) => {
+	console.log(`medium question. Question level <= ${getLevel(player.points)}, but >= ${getLevel(player.points) - 5} `);
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
 	const mediumQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
@@ -246,18 +248,21 @@ const mediumQuestion = (config, player) => {
 const hardQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const hardQuestions = config.questions.filter(question => question.level <= getLevel(player.points));
+	const hardQuestions = config.questions.filter(question => question.correct < question.asked);
+
+	console.log(`hard question. Any question asked more times than answered correctly (there are ${hardQuestions.length || 0} of these)`);
 
 	if (hardQuestions.length > 0) {
 		question = hardQuestions[Math.floor(Math.random() * hardQuestions.length)];
 	} else {
-		return mediumQuestion(config, player);
+		return anyQuestion(config, player);
 	}
 
 	return askQuestion(config, question);
 }
 
 const anyQuestion = (config, player) => {
+	console.log(`any question up to level ${getLevel(player.points)}`);
 	const questions = config.questions.filter(question => question.level <= getLevel(player.points));
 
 	const question = questions[Math.floor(Math.random() * questions.length)];
@@ -301,12 +306,12 @@ const rewardPlayer = (player, amount, item) => {
 
 
 const BLOCKS = {
-	D: { block: 'dirt', groupingMultiplier: 2, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 100, 'dirt') },
-	T: { block: 'tree', groupingMultiplier: 8, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'wood') },
-	S: { block: 'stone', groupingMultiplier: 3, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'stone') },
-	W: { block: 'water', groupingMultiplier: 10, test: (config, player) => mediumQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'water') },
-	F: { block: 'farm', groupingMultiplier: 5, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 300, 'carrots') },
-	G: { block: 'grass', groupingMultiplier: 11, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 200, 'grass seed') }
+	D: { block: 'dirt', groupingMultiplier: 2, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 100, 'dirt') },
+	T: { block: 'tree', groupingMultiplier: 8, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 110, 'wood') },
+	S: { block: 'stone', groupingMultiplier: 3, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 110, 'stone') },
+	W: { block: 'water', groupingMultiplier: 10, test: (config, player) => mediumQuestion(config, player), reward: (player) => rewardPlayer(player, 105, 'water') },
+	F: { block: 'farm', groupingMultiplier: 5, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 110, 'carrots') },
+	G: { block: 'grass', groupingMultiplier: 11, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'grass seed') }
 }
 
 
