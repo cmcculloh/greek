@@ -197,7 +197,7 @@ const getLevel = (xp = 0, prevPrevThreshold = 0, prevThreshold = 1000, level = S
 	// }
 
 	// return getLevel(xp, prevThreshold, threshold, level + 1);
-	return Math.ceil(xp/1000);
+	return Math.ceil(xp/10000);
 };
 
 const askQuestion = (config, question) => {
@@ -223,9 +223,16 @@ const askQuestion = (config, question) => {
 
 
 const easyQuestion = (config, player) => {
-	console.log(`easy question. Question level ${getLevel(player.points)}`);
-	const easyQuestions = config.questions.filter(question => question.level === getLevel(player.points));
-	const question = easyQuestions[Math.floor(Math.random() * easyQuestions.length)];
+	console.log(`easy question. Question level === ${getLevel(player.points)}`);
+	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
+
+	const easyQuestion = config.questions.filter(question => question.level === getLevel(player.points));
+
+	if (easyQuestion.length > 0) {
+		question = easyQuestion[Math.floor(Math.random() * easyQuestion.length)];
+	} else {
+		return anyQuestion(config, player);
+	}
 
 	return askQuestion(config, question);
 }
@@ -404,7 +411,27 @@ const isFocus = (entity) => {
 	return false;
 }
 
-const placeEntity = (entity, movePositionBy) => {
+const placeEntity = (entity, movePositionBy, mobs, player) => {
+
+	mobs.forEach(function(mob) {
+		if (!mob.position) return;
+
+		if (entity.position[0] + movePositionBy[0] === mob.position[0] && entity.position[1] + movePositionBy[1] === mob.position[1]) {
+			movePositionBy[0] = 0;
+			movePositionBy[1] = 0;
+		}
+	})
+
+	let collision = false;
+
+	if (entity !== player && entity.position[0] + movePositionBy[0] === player.position[0] && entity.position[1] + movePositionBy[1] === player.position[1]) {
+		movePositionBy[0] = 0;
+		movePositionBy[1] = 0;
+		collision = true;
+	}
+
+	if (collision) { collide(entity, player); }
+
 	entity.position[1] = entity.position[1] + movePositionBy[1];
 	entity.position[0] = entity.position[0] + movePositionBy[0];
 
@@ -462,7 +489,7 @@ for (let i = 0; i < 10; i++) {
 	mobs.push(JSON.parse(JSON.stringify(mobTypes.sheep)));
 }
 
-const initMobs = (mobs) => {
+const initMobs = (mobs, player) => {
 	mobs.forEach(mob => {
 		const randX = Math.floor(Math.random() * BOARD_WIDTH);
 		const randY = Math.floor(Math.random() * BOARD_HEIGHT);
@@ -474,8 +501,7 @@ const initMobs = (mobs) => {
 
 		mob.DOM = document.querySelector('#mobs').appendChild(mobDOM);
 
-
-		placeEntity(mob, [0,0]);
+		placeEntity(mob, [0,0], mobs, player);
 	});
 
 	return mobs;
@@ -488,18 +514,33 @@ const hydratePlayer = () => {
 
 	return player;
 }
-mobs = initMobs(mobs);
+
+const collide = (collider, collidee) => {
+	console.log(`collider ${collider} collidee ${collidee}`)
+}
 
 const moveMobs = (mobs, player, moveHostileOnly) => {
 	mobs.forEach(mob => {
 		if (moveHostileOnly && !mob.hostile) return;
 
 		let newPosition = [ 0, 0 ];
-		mob.position[0] !== player.position[0] ? mob.position[0] > player.position[0] ? newPosition[0]-- : newPosition[0]++ : mob.position[0];
+		if (mob.position[0] !== player.position[0]) {
+			if (mob.position[0] > player.position[0]) {
+				newPosition[0]--;
+			} else {
+				newPosition[0]++;
+			}
+		}
 
-		mob.position[1] !== player.position[1] ? mob.position[1] > player.position[1] ? newPosition[1]-- : newPosition[1]++ : mob.position[1];
+		if (mob.position[1] !== player.position[1]) {
+			if (mob.position[1] > player.position[1]) {
+				newPosition[1]--;
+			} else {
+				newPosition[1]++;
+			}
+		}
 
-		placeEntity(mob, newPosition);
+		placeEntity(mob, newPosition, mobs, player);
 	});
 
 	return mobs;
@@ -537,11 +578,11 @@ document.addEventListener('keypress', (e) => {
 	if (attemptBlock.classList.contains('unsolved')){
 		const success = blockTry(attemptBlock, player, BLOCKS);
 		if(success){
-			player = placeEntity(player, movePositionBy);
+			player = placeEntity(player, movePositionBy, mobs, player);
 			moveHostileOnly = false;
 		}
 	} else {
-		player = placeEntity(player, movePositionBy);
+		player = placeEntity(player, movePositionBy, mobs, player);
 		moveHostileOnly = false;
 	}
 
@@ -581,9 +622,10 @@ setFog(config.fogofwar);
 document.querySelector('#fogofwar').addEventListener('change', (e) => setFog(e.target.checked));
 
 let player = hydratePlayer();
+mobs = initMobs(mobs, player);
 
 window.setTimeout(() => {
-	placeEntity(player, [0,0]);
+	placeEntity(player, [0,0], mobs, player);
 }, 500)
 
 
