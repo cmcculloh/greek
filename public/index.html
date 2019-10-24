@@ -197,23 +197,28 @@ const getLevel = (xp = 0, prevPrevThreshold = 0, prevThreshold = 1000, level = S
 	// }
 
 	// return getLevel(xp, prevThreshold, threshold, level + 1);
-	return Math.ceil(xp/10000);
+	return Math.ceil(xp/8000);
 };
 
 const askQuestion = (config, question) => {
-	const variation = Math.floor(Math.random() * question.question.length);
+	const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
+
+	const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
+	const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
+
+	const variation = Math.floor(Math.random() * questions.length);
 	let correct = false;
 
 	if (config.written) {
-		const theirAnswer = prompt(`what is "${question.question[variation]}"`);
+		const theirAnswer = prompt(`what is "${questions[variation]}"`);
 
-		correct = question.answer.includes(theirAnswer.toLowerCase());
+		correct = answers.includes(theirAnswer.toLowerCase());
 
-		alert(`${correct ? 'Correct!' : 'Incorrect.'} "${question.question[variation]}" is "${question.answer[0]}".`);
+		alert(`${correct ? 'Correct!' : 'Incorrect.'} "${questions[variation]}" is "${answers.join(', or ')}".`);
 	} else {
-		alert(`what is "${question.question[variation]}"?`)
+		alert(`what is "${questions[variation]}"?`)
 
-		correct = confirm(`"${question.question[variation]}" is "${question.answer.join(', or ')}".`);
+		correct = confirm(`"${questions[variation]}" is "${answers.join(', or ')}".`);
 	}
 
 	saveScore(question, correct);
