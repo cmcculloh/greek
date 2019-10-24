@@ -57,7 +57,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 2
+	gameVersion: 2.1
 };
 
 const STARTING_LEVEL = 1;
@@ -633,5 +633,6 @@ window.setTimeout(() => {
 	placeEntity(player, [0,0], mobs, player);
 }, 500)
 
+console.log(`game version ${DEFAULT_PLAYER.gameVersion}, player version ${player.gameVersion}`);
 
 </script>
