@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: greek-letters.herokuapp.com
+Token: 356827ed122fec878fdff867c9582b044ead935b366a9e16c4f089c34ec23e11
