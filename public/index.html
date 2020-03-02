@@ -72,7 +72,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 3
+	gameVersion: 3.1
 };
 
 const STARTING_LEVEL = 1;
@@ -749,20 +749,25 @@ const moveMobs = (mobs, player, moveHostileOnly) => {
 		if (moveHostileOnly && !mob.hostile) return;
 
 		let newPosition = [ 0, 0 ];
-		if (mob.position[0] !== player.position[0]) {
-			if (mob.position[0] > player.position[0]) {
-				newPosition[0]--;
-			} else {
-				newPosition[0]++;
-			}
-		}
 
-		if (mob.position[1] !== player.position[1]) {
-			if (mob.position[1] > player.position[1]) {
-				newPosition[1]--;
-			} else {
-				newPosition[1]++;
+		if (mob.hostile) {
+			if (mob.position[0] !== player.position[0]) {
+				if (mob.position[0] > player.position[0]) {
+					newPosition[0]--;
+				} else {
+					newPosition[0]++;
+				}
 			}
+
+			if (mob.position[1] !== player.position[1]) {
+				if (mob.position[1] > player.position[1]) {
+					newPosition[1]--;
+				} else {
+					newPosition[1]++;
+				}
+			}
+		} else {
+			newPosition[Math.floor(Math.random() * 2)] += -1 + Math.floor(Math.random() * 3)
 		}
 
 		placeEntity(mob, newPosition, mobs, player);
