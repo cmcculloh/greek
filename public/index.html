@@ -7,12 +7,16 @@
 <div id="steve"></div>
 
 
+
+
 <div id="scoreBoard"></div>
 <div id="instructions">
 	<div style="padding: 15px;">Use W,A,S,D keys to move around the board. Each time you try and move into a new space an alert will appear. Say the letter that you see out loud and then click "ok". A prompt will appear telling you the answer. If you got the answer right, click "ok", otherwise click "cancel".</div>
 	<div style="padding: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</div>
 	<div style="padding: 15px;"><input type="checkbox" id="fogofwar"/> Fog of War.</div>
 </div>
+
+<div id="battle"></div>
 
 <script>
 
@@ -51,13 +55,24 @@
 // 	G: { block: 'grass', test: () => multiplicationQuestion(10) }
 // }
 
+const uuidv4 = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+
 const DEFAULT_PLAYER = {
+	type: 'pc',
+	name: 'Steve',
 	DOMSelector: '#steve',
 	revealsBlocks: true,
+	HP: 10,
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 2.1
+	gameVersion: 3
 };
 
 const STARTING_LEVEL = 1;
@@ -346,6 +361,7 @@ const rewardPlayer = (player, amount, item) => {
 			<li>Points: ${player.points}</li>`;
 
 	for (const item in player.items) { html += `<li>${item}: ${player.items[item]}</li>`; }
+	for (const mob in player.mobs) { html += `<li>${mob}: ${player.mobs[mob]}</li>`; }
 
 	html += `</ul>`;
 
@@ -452,6 +468,10 @@ const isFocus = (entity) => {
 	return false;
 }
 
+const removeEntity = (entity) => {
+	entity.DOM.remove();
+}
+
 const placeEntity = (entity, movePositionBy, mobs, player) => {
 
 	mobs.forEach(function(mob) {
@@ -471,7 +491,7 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 		collision = true;
 	}
 
-	if (collision) { collide(entity, player); }
+	if (collision) { collide(entity, player, mobs); }
 
 	entity.position[1] = entity.position[1] + movePositionBy[1];
 	entity.position[0] = entity.position[0] + movePositionBy[0];
@@ -512,38 +532,86 @@ BOARD.forEach((row, ri) => {
 const page = document.querySelector('#page');
 page.appendChild(board);
 
+const getDrops = (mob) => {
+	const luck = Math.random() * 100;
+
+	let loot = [];
+
+	Object.keys(mob.drops).forEach((name) => {
+		const drop = mob.drops[name];
+		if (luck < drop.probability) {
+			const possibilities = drop.quantity.filter(q => luck < q.probability);
+
+			if (possibilities) {
+				const quantity = possibilities[Math.floor(Math.random() * possibilities.length)].amount;
+
+				loot.push({ name, quantity });
+			}
+		}
+	});
+
+	return loot;
+}
 
 let mobs = [];
-let mobTypes = {
+let mobKinds = {
 	'sheep': {
+		type: 'npc',
+		kind: 'sheep',
+		name: 'Sheep',
 		classList: ['sheep'],
 		revealsBlocks: false,
-		points: 0,
-		items: {
-			"wool": 1
+		points: 10,
+		HP: 5,
+		baseLevel: 1,
+		ac: 14,
+		drops: {
+			"wool": { probability: 100, quantity: [{ probability: 100, amount: 1 }, { probability: 50, amount: 2 }, { probability: 25, amount: 3 }]},
+			"mutton": { probability: 10, quantity: [{ probability: 100, amount: 1 }, { probability: 10, amount: 2 }]}
 		},
+		vulnerableTo: [
+
+		],
+		captureWith: [
+			"grass seed"
+		],
 		hostile: false
 	}
 }
 
+const createMob = (type) => {
+	console.log(type);
+	console.log(mobKinds[type].kind);
+	const mob = JSON.parse(JSON.stringify(mobKinds[type]));
+
+	mob.level = mob.baseLevel + Math.floor(Math.random() * 4);
+	mob.id = uuidv4();
+
+	return mob;
+}
+
 for (let i = 0; i < 10; i++) {
-	mobs.push(JSON.parse(JSON.stringify(mobTypes.sheep)));
+	mobs.push(createMob('sheep'));
+}
+
+const initMob = (mob, player) => {
+	const randX = Math.floor(Math.random() * BOARD_WIDTH);
+	const randY = Math.floor(Math.random() * BOARD_HEIGHT);
+
+	mob.position = [ randX, randY ];
+
+	const mobDOM = document.createElement('div');
+	mobDOM.classList.add(mob.classList);
+
+	mob.DOM = document.querySelector('#mobs').appendChild(mobDOM);
+
+	placeEntity(mob, [0,0], mobs, player);
+
+	return mob;
 }
 
 const initMobs = (mobs, player) => {
-	mobs.forEach(mob => {
-		const randX = Math.floor(Math.random() * BOARD_WIDTH);
-		const randY = Math.floor(Math.random() * BOARD_HEIGHT);
-
-		mob.position = [ randX, randY ];
-
-		const mobDOM = document.createElement('div');
-		mobDOM.classList.add(mob.classList);
-
-		mob.DOM = document.querySelector('#mobs').appendChild(mobDOM);
-
-		placeEntity(mob, [0,0], mobs, player);
-	});
+	mobs = mobs.map(mob => initMob(mob, player));
 
 	return mobs;
 }
@@ -552,12 +620,128 @@ const hydratePlayer = () => {
 	let player = JSON.parse( localStorage.getItem('player') ) || DEFAULT_PLAYER;
 
 	player.DOM = document.querySelector(player.DOMSelector || '#steve');
+	player.name = player.name || 'Steve';
+	player.HP = player.HP || 10;
+	player.type = player.type || 'pc';
 
 	return player;
 }
 
-const collide = (collider, collidee) => {
-	console.log(`collider ${collider} collidee ${collidee}`)
+const collide = (collider, collidee, mobs) => {
+	let player = collider.type === 'pc' ? collider : collidee;
+	let mob = collider.type === 'npc' ? collider : collidee;
+
+	const initiativeModifier = collider.type === 'pc' ? 2 : -2;
+
+	const battleBoard = document.querySelector('#battle');
+	battleBoard.classList.add('visible')
+
+	const killWith = Object.keys(player.items).filter(item => mob.vulnerableTo.includes(item.type));
+	const killButtons = [`<input class="killButton" type="button" value="fist"></input>`].concat(killWith.map(item => `<input class="killButton" type="button" value="${item}"></input>`));
+
+	const captureWith = Object.keys(player.items).filter(item => mob.captureWith.includes(item));
+	const captureButtons = captureWith.map(item => player.items[item] > 0 ? `<input type="button" class="captureButton" data-type="${item}" value="1 ${item} (of ${player.items[item]})"></input>` : '');
+
+	const contents = `
+		<h1>${player.name} vs ${mob.name}</h1>
+		<div id="actions">
+			<div>
+				<h3>Try to capture with:</h3>
+				<ul id="captureButtons">${captureButtons.reduce((buttons, button) => buttons + `<li>${button}</li>`, '')}</ul>
+			</div>
+			<div>
+				<h3>Try to fight with:</h3>
+				<ul id="killButtons">${killButtons.reduce((buttons, button) => buttons + `<li>${button}</li>`, '')}</ul>
+			</div>
+		</div>
+		<div id="battleScene">
+			<div class="mobImage ${mob.classList.reduce((classes, cls) => classes + ` ${cls}`, '')}"></div>
+		</div>
+	`;
+
+	battleBoard.innerHTML = contents;
+
+	const captureButtonsDOM = battleBoard.querySelectorAll('#captureButtons input');
+	captureButtonsDOM.forEach(button => button.addEventListener('click', e => {
+		const itemType = e.target.dataset.type;
+
+		player.items[itemType] = player.items[itemType] - 1;
+		savePlayer(player);
+
+		const levelDifference = player.level - mob.level;
+		let modifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
+
+		const playerRoll = Math.ceil(Math.random() * 20) + initiativeModifier;
+		if (playerRoll > mob.ac + modifier) {
+			console.log('captured!');
+
+			;({ player, mobs } = captureMob(player, mob, mobs));
+
+			battleBoard.classList.remove('visible');
+			rewardPlayer(player, mob.points);
+		} else {
+			console.log('miss!');
+
+			collide(collider, collidee, mobs);
+		}
+	}));
+
+	const killButtonsDOM = battleBoard.querySelectorAll('#killButtons input');
+	killButtonsDOM.forEach(button => button.addEventListener('click', e => {
+		const itemType = e.target.dataset.type;
+
+		const item = player.items[itemType];
+
+		const levelDifference = player.level - mob.level;
+		let modifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
+
+		const playerRoll = Math.ceil(Math.random() * 20) + initiativeModifier;
+		if (playerRoll > mob.ac + modifier) {
+			console.log('killed!');
+
+			;({ player, mobs } = killMob(player, mob, mobs));
+
+			battleBoard.classList.remove('visible');
+			rewardPlayer(player, mob.points);
+		} else {
+			console.log('miss!');
+
+			collide(collider, collidee, mobs);
+		}
+	}));
+}
+
+const captureMob = (player, mob, mobs) => {
+	player.mobs = player.mobs || {};
+
+	player.mobs[mob.kind] = (player.mobs[mob.kind] || 0) + 1;
+	savePlayer(player);
+
+	const mobI = mobs.findIndex(m => m.id === mob.id);
+	mobs.splice(mobI, 1);
+
+	removeEntity(mob);
+	mobs.push(initMob(createMob(mob.kind), player));
+
+	return { player, mobs };
+}
+
+const killMob = (player, mob, mobs) => {
+	const loot = getDrops(mob);
+
+	console.log('loot')
+	console.dir(loot)
+	console.dir(player.items);
+	loot && loot.forEach(item => player.items[item.name] = (player.items[item.name] || 0) + item.quantity)
+	savePlayer(player);
+
+	const mobI = mobs.findIndex(m => m.id === mob.id);
+	mobs.splice(mobI, 1);
+
+	removeEntity(mob);
+	mobs.push(initMob(createMob(mob.kind), player));
+
+	return { player, mobs };
 }
 
 const moveMobs = (mobs, player, moveHostileOnly) => {
