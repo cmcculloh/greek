@@ -73,6 +73,37 @@
 		padding: 15px 40px;
 	}
 
+	#result {
+		position: fixed;
+		top: 250px;
+		width: 100%;
+		font-size: 20rem;
+		text-align: center;
+		opacity: 1;
+	}
+
+	#result.animating {
+		opacity: 0;
+		transition: opacity 2s ease-in;
+	}
+
+	#damage {
+		position: fixed;
+		top: 400px;
+		width: 100%;
+		right: 40%;
+		font-size: 10rem;
+		text-align: right;
+		opacity: 1;
+		color: red;
+	}
+
+	#damage.animating {
+		opacity: 0;
+		transition: opacity 2s ease-in;
+	}
+
+
 	#battle h1 {
 		width: 100%;
 		height: 10%;

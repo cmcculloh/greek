@@ -17,6 +17,8 @@
 </div>
 
 <div id="battle"></div>
+<div id="damage"></div>
+<div id="result"></div>
 
 <script>
 
@@ -72,7 +74,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 3.1
+	gameVersion: 3.2
 };
 
 const STARTING_LEVEL = 1;
@@ -474,14 +476,14 @@ const removeEntity = (entity) => {
 
 const placeEntity = (entity, movePositionBy, mobs, player) => {
 
-	mobs.forEach(function(mob) {
-		if (!mob.position) return;
+	// mobs.forEach(function(mob) {
+	// 	if (!mob.position) return;
 
-		if (entity.position[0] + movePositionBy[0] === mob.position[0] && entity.position[1] + movePositionBy[1] === mob.position[1]) {
-			movePositionBy[0] = 0;
-			movePositionBy[1] = 0;
-		}
-	})
+	// 	if (entity.position[0] + movePositionBy[0] === mob.position[0] && entity.position[1] + movePositionBy[1] === mob.position[1]) {
+	// 		movePositionBy[0] = 0;
+	// 		movePositionBy[1] = 0;
+	// 	}
+	// })
 
 	let collision = false;
 
@@ -627,6 +629,30 @@ const hydratePlayer = () => {
 	return player;
 }
 
+const displayResult = (text) => {
+	const result = document.querySelector('#result');
+
+	result.innerHTML = text;
+	result.classList.add('animating');
+
+	window.setTimeout(() => {
+		result.classList.remove('animating');
+		result.innerHTML = '';
+	}, 2000);
+}
+
+const showDamage = (damage) => {
+	const DOM = document.querySelector('#damage');
+
+	DOM.innerHTML = damage;
+	DOM.classList.add('animating');
+
+	window.setTimeout(() => {
+		DOM.classList.remove('animating');
+		DOM.innerHTML = '';
+	}, 2000);
+}
+
 const collide = (collider, collidee, mobs) => {
 	let player = collider.type === 'pc' ? collider : collidee;
 	let mob = collider.type === 'npc' ? collider : collidee;
@@ -663,6 +689,9 @@ const collide = (collider, collidee, mobs) => {
 
 	const captureButtonsDOM = battleBoard.querySelectorAll('#captureButtons input');
 	captureButtonsDOM.forEach(button => button.addEventListener('click', e => {
+		const buttons = document.querySelectorAll('#actions input');
+		buttons.forEach(elm => elm.setAttribute('disabled', true));
+
 		const itemType = e.target.dataset.type;
 
 		player.items[itemType] = player.items[itemType] - 1;
@@ -672,22 +701,33 @@ const collide = (collider, collidee, mobs) => {
 		let modifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
 
 		const playerRoll = Math.ceil(Math.random() * 20) + initiativeModifier;
-		if (playerRoll > mob.ac + modifier) {
-			console.log('captured!');
+		showDamage(`${playerRoll}`);
 
-			;({ player, mobs } = captureMob(player, mob, mobs));
+		window.setTimeout(() => {
+			if (playerRoll > mob.ac + modifier) {
+				displayResult('captured!');
 
-			battleBoard.classList.remove('visible');
-			rewardPlayer(player, mob.points);
-		} else {
-			console.log('miss!');
+				;({ player, mobs } = captureMob(player, mob, mobs));
 
-			collide(collider, collidee, mobs);
-		}
+				window.setTimeout(() => {
+					battleBoard.classList.remove('visible');
+					rewardPlayer(player, mob.points);
+				}, 2000);
+			} else {
+				displayResult('miss!');
+
+				window.setTimeout(() => {
+					collide(collider, collidee, mobs);
+				}, 1500);
+			}
+		}, 500);
 	}));
 
 	const killButtonsDOM = battleBoard.querySelectorAll('#killButtons input');
 	killButtonsDOM.forEach(button => button.addEventListener('click', e => {
+		const buttons = document.querySelectorAll('#actions input');
+		buttons.forEach(elm => elm.setAttribute('disabled', true));
+
 		const itemType = e.target.dataset.type;
 
 		const item = player.items[itemType];
@@ -696,18 +736,26 @@ const collide = (collider, collidee, mobs) => {
 		let modifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
 
 		const playerRoll = Math.ceil(Math.random() * 20) + initiativeModifier;
-		if (playerRoll > mob.ac + modifier) {
-			console.log('killed!');
+		showDamage(`${playerRoll}`);
 
-			;({ player, mobs } = killMob(player, mob, mobs));
+		window.setTimeout(() => {
+			if (playerRoll > mob.ac + modifier) {
+				displayResult('slayed!');
 
-			battleBoard.classList.remove('visible');
-			rewardPlayer(player, mob.points);
-		} else {
-			console.log('miss!');
+				;({ player, mobs } = killMob(player, mob, mobs));
 
-			collide(collider, collidee, mobs);
-		}
+				window.setTimeout(() => {
+					battleBoard.classList.remove('visible');
+					rewardPlayer(player, mob.points);
+				}, 2000);
+			} else {
+				displayResult('miss!');
+
+				window.setTimeout(() => {
+					collide(collider, collidee, mobs);
+				}, 1500);
+			}
+		}, 500);
 	}));
 }
 
