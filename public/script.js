@@ -359,10 +359,12 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 
 const hideOverworld = () => {
 	document.querySelector('#overworld').classList.remove('visible');
+	document.querySelector('#overlay').classList.add('visible');
 }
 
 const showOverworld = () => {
 	document.querySelector('#overworld').classList.add('visible');
+	document.querySelector('#overlay').classList.remove('visible');
 }
 
 const buildBoardDOM = (BOARD) => {
