@@ -51,7 +51,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 4.1
+	gameVersion: 4.2
 };
 
 const STARTING_LEVEL = 1;
@@ -182,6 +182,12 @@ const rewardPlayer = (player, amount, item) => {
 
 	player = savePlayer(player);
 
+	refreshHUD(player);
+
+	return player;
+}
+
+const refreshHUD = (player) => {
 	let html = `<ul>
 			<li>Level: ${getLevel(player.points)}</li>
 			<li>Points: ${player.points}</li>`;
@@ -483,6 +489,8 @@ const hydratePlayer = () => {
 	player.name = player.name || 'Steve';
 	player.HP = player.HP || 10;
 	player.type = player.type || 'pc';
+
+	refreshHUD(player);
 
 	return player;
 }
