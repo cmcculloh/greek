@@ -74,7 +74,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 3.2
+	gameVersion: 4
 };
 
 const STARTING_LEVEL = 1;
@@ -824,30 +824,9 @@ const moveMobs = (mobs, player, moveHostileOnly) => {
 	return mobs;
 }
 
-document.addEventListener('keypress', (e) => {
-	let movePositionBy = [ 0, 0 ]
-	switch(e.charCode) {
-		case 97:
-			// console.log('left')
-			movePositionBy[0]--;
-			break;
-		case 119:
-			// console.log('up')
-			movePositionBy[1]--;
-			break;
-		case 100:
-			movePositionBy[0]++;
-			// console.log('right')
-			break;
-		case 115:
-			movePositionBy[1]++;
-			// console.log('down')
-			break;
-		default:
-			console.log(e.charCode);
-			// unhandled. Don't move anything, otherwise players can just hit enter to gather up mobs :)
-			return;
-	}
+document.addEventListener('movePlayer', e => {
+	const movePositionBy = e.detail.movePositionBy;
+	const keypress = e.detail.originalEvent;
 
 	const attemptBlock = document.querySelector(`#row${player.position[1] + movePositionBy[1]}cell${player.position[0] + movePositionBy[0]}`);
 
@@ -867,6 +846,42 @@ document.addEventListener('keypress', (e) => {
 	mobs = moveMobs(mobs, player, moveHostileOnly);
 
 	savePlayer(player);
+})
+
+document.addEventListener('keypress', (e) => {
+	let movePositionBy = [ 0, 0 ];
+	let doMovePlayer = false;
+	switch(e.charCode) {
+		case 97:
+			// console.log('left')
+			movePositionBy[0]--;
+			doMovePlayer = true;
+			break;
+		case 119:
+			// console.log('up')
+			movePositionBy[1]--;
+			doMovePlayer = true;
+			break;
+		case 100:
+			movePositionBy[0]++;
+			doMovePlayer = true;
+			// console.log('right')
+			break;
+		case 115:
+			movePositionBy[1]++;
+			doMovePlayer = true;
+			// console.log('down')
+			break;
+		default:
+			console.log(e.charCode);
+			// unhandled. Don't move anything, otherwise players can just hit enter to gather up mobs :)
+			return;
+	}
+
+	if ( doMovePlayer ) {
+		var event = new CustomEvent('movePlayer', { detail: { originalEvent: e, movePositionBy }});
+		document.dispatchEvent(event);
+	}
 });
 
 document.querySelector('#hardmode').addEventListener('change', (e) => {
