@@ -1,7 +1,6 @@
 <link href="styles.css" rel="stylesheet" type="text/css">
 
-<div id="page">
-</div>
+<div id="overworld"></div>
 
 <div id="mobs"></div>
 <div id="steve"></div>
@@ -437,9 +436,6 @@ const saveBoard = () => {
 	localStorage.setItem( 'board', JSON.stringify(BOARD) );
 }
 
-let BOARD = hydrateBoard();
-
-
 const blockTry = (blockTarget, entity, BLOCKS) => {
 	const targetType = blockTarget.getAttribute('data-type');
 	const block = BLOCKS[Object.keys(BLOCKS).find((candidate) => BLOCKS[candidate].block === targetType)]
@@ -512,27 +508,41 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 	return entity;
 }
 
-const board = document.createElement('div');
-BOARD.forEach((row, ri) => {
-	const rowDOM = document.createElement('div');
-	rowDOM.classList.add('row');
+const hideOverworld = () => {
+	document.querySelector('#overworld').classList.remove('visible');
+}
 
-	row.forEach((cell, ci) => {
-		const cellDOM = document.createElement('div');
+const showOverworld = () => {
+	document.querySelector('#overworld').classList.add('visible');
+}
 
-		cellDOM.id = `row${ri}cell${ci}`;
-		cellDOM.setAttribute('data-answer', cell.answer);
-		cellDOM.setAttribute('data-type', cell.block);
-		cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block);
+const fillOverworld = (BOARD) => {
+	const board = document.createElement('div');
+	BOARD.forEach((row, ri) => {
+		const rowDOM = document.createElement('div');
+		rowDOM.classList.add('row');
 
-		rowDOM.appendChild(cellDOM);
+		row.forEach((cell, ci) => {
+			const cellDOM = document.createElement('div');
+
+			cellDOM.id = `row${ri}cell${ci}`;
+			cellDOM.setAttribute('data-answer', cell.answer);
+			cellDOM.setAttribute('data-type', cell.block);
+			cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block);
+
+			rowDOM.appendChild(cellDOM);
+		});
+
+		board.appendChild(rowDOM);
 	});
 
-	board.appendChild(rowDOM);
-});
+	const overworld = document.querySelector('#overworld');
+	overworld.appendChild(board);
+}
 
-const page = document.querySelector('#page');
-page.appendChild(board);
+let BOARD = hydrateBoard();
+fillOverworld(BOARD);
+showOverworld();
 
 const getDrops = (mob) => {
 	const luck = Math.random() * 100;
@@ -592,7 +602,7 @@ const createMob = (type) => {
 	return mob;
 }
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 100; i++) {
 	mobs.push(createMob('sheep'));
 }
 
@@ -629,28 +639,39 @@ const hydratePlayer = () => {
 	return player;
 }
 
+let displayTimeout = null;
 const displayResult = (text) => {
 	const result = document.querySelector('#result');
-
-	result.innerHTML = text;
-	result.classList.add('animating');
+	result.classList.remove('animating');
+	window.clearTimeout(displayTimeout);
 
 	window.setTimeout(() => {
-		result.classList.remove('animating');
-		result.innerHTML = '';
-	}, 2000);
+		result.innerHTML = text;
+		result.classList.add('animating');
+
+		displayTimeout = window.setTimeout(() => {
+			result.classList.remove('animating');
+			result.innerHTML = '';
+		}, 2000);
+	}, 100);
 }
 
+let damageTimeout = null;
 const showDamage = (damage) => {
 	const DOM = document.querySelector('#damage');
-
-	DOM.innerHTML = damage;
-	DOM.classList.add('animating');
+	DOM.classList.remove('animating');
+	window.clearTimeout(damageTimeout);
 
 	window.setTimeout(() => {
-		DOM.classList.remove('animating');
-		DOM.innerHTML = '';
-	}, 2000);
+		DOM.innerHTML = damage;
+		DOM.classList.add('animating');
+
+		damageTimeout = window.setTimeout(() => {
+			DOM.classList.remove('animating');
+			DOM.innerHTML = '';
+		}, 2000);
+	}, 100);
+
 }
 
 const collide = (collider, collidee, mobs) => {
@@ -659,8 +680,9 @@ const collide = (collider, collidee, mobs) => {
 
 	const initiativeModifier = collider.type === 'pc' ? 2 : -2;
 
+	hideOverworld();
 	const battleBoard = document.querySelector('#battle');
-	battleBoard.classList.add('visible')
+	battleBoard.classList.add('visible');
 
 	const killWith = Object.keys(player.items).filter(item => mob.vulnerableTo.includes(item.type));
 	const killButtons = [`<input class="killButton" type="button" value="fist"></input>`].concat(killWith.map(item => `<input class="killButton" type="button" value="${item}"></input>`));
@@ -711,14 +733,15 @@ const collide = (collider, collidee, mobs) => {
 
 				window.setTimeout(() => {
 					battleBoard.classList.remove('visible');
+					showOverworld();
 					rewardPlayer(player, mob.points);
-				}, 2000);
+				}, 500);
 			} else {
 				displayResult('miss!');
 
 				window.setTimeout(() => {
 					collide(collider, collidee, mobs);
-				}, 1500);
+				}, 500);
 			}
 		}, 500);
 	}));
@@ -745,15 +768,16 @@ const collide = (collider, collidee, mobs) => {
 				;({ player, mobs } = killMob(player, mob, mobs));
 
 				window.setTimeout(() => {
+					showOverworld();
 					battleBoard.classList.remove('visible');
 					rewardPlayer(player, mob.points);
-				}, 2000);
+				}, 500);
 			} else {
 				displayResult('miss!');
 
 				window.setTimeout(() => {
 					collide(collider, collidee, mobs);
-				}, 1500);
+				}, 500);
 			}
 		}, 500);
 	}));
@@ -824,29 +848,9 @@ const moveMobs = (mobs, player, moveHostileOnly) => {
 	return mobs;
 }
 
-document.addEventListener('movePlayer', e => {
-	const movePositionBy = e.detail.movePositionBy;
-	const keypress = e.detail.originalEvent;
-
-	const attemptBlock = document.querySelector(`#row${player.position[1] + movePositionBy[1]}cell${player.position[0] + movePositionBy[0]}`);
-
-	let moveHostileOnly = true;
-
-	if (attemptBlock.classList.contains('unsolved')){
-		const success = blockTry(attemptBlock, player, BLOCKS);
-		if(success){
-			player = placeEntity(player, movePositionBy, mobs, player);
-			moveHostileOnly = false;
-		}
-	} else {
-		player = placeEntity(player, movePositionBy, mobs, player);
-		moveHostileOnly = false;
-	}
-
-	mobs = moveMobs(mobs, player, moveHostileOnly);
-
-	savePlayer(player);
-})
+const isOverworld = () => {
+	return document.querySelector('#overworld').classList.contains('visible');
+}
 
 document.addEventListener('keypress', (e) => {
 	let movePositionBy = [ 0, 0 ];
@@ -874,13 +878,27 @@ document.addEventListener('keypress', (e) => {
 			break;
 		default:
 			console.log(e.charCode);
-			// unhandled. Don't move anything, otherwise players can just hit enter to gather up mobs :)
-			return;
 	}
 
-	if ( doMovePlayer ) {
-		var event = new CustomEvent('movePlayer', { detail: { originalEvent: e, movePositionBy }});
-		document.dispatchEvent(event);
+	if ( isOverworld() && doMovePlayer ) {
+		const attemptBlock = document.querySelector(`#row${player.position[1] + movePositionBy[1]}cell${player.position[0] + movePositionBy[0]}`);
+
+		let moveHostileOnly = true;
+
+		if (attemptBlock.classList.contains('unsolved')){
+			const success = blockTry(attemptBlock, player, BLOCKS);
+			if(success){
+				player = placeEntity(player, movePositionBy, mobs, player);
+				moveHostileOnly = false;
+			}
+		} else {
+			player = placeEntity(player, movePositionBy, mobs, player);
+			moveHostileOnly = false;
+		}
+
+		mobs = moveMobs(mobs, player, moveHostileOnly);
+
+		savePlayer(player);
 	}
 });
 
@@ -895,9 +913,9 @@ const setFog = (fogOn) => {
 	config.fogofwar = fogOn || false;
 
 	if (config.fogofwar) {
-		document.querySelector('#page').classList.add('fogofwar');
+		document.querySelector('#overworld').classList.add('fogofwar');
 	} else {
-		document.querySelector('#page').classList.remove('fogofwar');
+		document.querySelector('#overworld').classList.remove('fogofwar');
 	}
 
 	localStorage.setItem('fogofwar', config.fogofwar)
