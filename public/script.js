@@ -151,26 +151,34 @@ const doDungeon = (config, question) => {
 	dungeon.appendChild(boardDOM);
 }
 
-const askQuestion = (config, question) => {
-	const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
+const showQuestion = (config, question) => {
+	return new Promise(resolve => {
+		const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
 
-	const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
-	const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
+		const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
+		const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
 
-	const variation = Math.floor(Math.random() * questions.length);
-	let correct = false;
+		const variation = Math.floor(Math.random() * questions.length);
+		let correct = false;
 
-	if (config.written) {
-		const theirAnswer = prompt(`what is "${questions[variation]}"`);
+		if (config.written) {
+			const theirAnswer = prompt(`what is "${questions[variation]}"`);
 
-		correct = answers.includes(theirAnswer.toLowerCase());
+			correct = answers.includes(theirAnswer.toLowerCase());
 
-		alert(`${correct ? 'Correct!' : 'Incorrect.'} "${questions[variation]}" is "${answers.join(', or ')}".`);
-	} else {
-		alert(`what is "${questions[variation]}"?`)
+			alert(`${correct ? 'Correct!' : 'Incorrect.'} "${questions[variation]}" is "${answers.join(', or ')}".`);
+		} else {
+			alert(`what is "${questions[variation]}"?`)
 
-		correct = confirm(`"${questions[variation]}" is "${answers.join(', or ')}".`);
-	}
+			correct = confirm(`"${questions[variation]}" is "${answers.join(', or ')}".`);
+		}
+
+		resolve(correct);
+	})
+}
+
+const askQuestion = async (config, question) => {
+	const correct = await showQuestion(config, question);
 
 	player = saveQuestionScore(player, question, correct);
 
@@ -832,7 +840,7 @@ const isOverworld = () => {
 	return document.querySelector('#overworld').classList.contains('visible');
 }
 
-document.addEventListener('keypress', (e) => {
+document.addEventListener('keypress', async (e) => {
 	let movePositionBy = [ 0, 0 ];
 	let doMovePlayer = false;
 	switch(e.charCode) {
@@ -870,7 +878,7 @@ document.addEventListener('keypress', (e) => {
 		let moveHostileOnly = true;
 
 		if (attemptBlock.classList.contains('unsolved')){
-			const success = blockTry(attemptBlock, player, BLOCKS);
+			const success = await blockTry(attemptBlock, player, BLOCKS);
 			if(success){
 				player = placeEntity(player, movePositionBy, mobs, player);
 				moveHostileOnly = false;
