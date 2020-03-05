@@ -129,8 +129,8 @@ const doDungeon = (config, question) => {
 	}
 
 	const BLOCKS = [
-		{selector, block: {type: 'air'} },
-		{selector, block: {type: 'stone'} }
+		{selector, block: {type: 'water'}, solved: true },
+		{selector, block: {type: 'grass'}, solved: true }
 	]
 
 	const BOARD = [];
@@ -148,12 +148,7 @@ const doDungeon = (config, question) => {
 
 	const boardDOM = buildBoardDOM(BOARD);
 
-	const contents = `
-		<p>put some instructions or something here.</p>
-		<div id="dungeonBoard">${boardDOM}</div>
-	`;
-
-	dungeon.innerHTML = contents;
+	dungeon.appendChild(boardDOM);
 }
 
 const askQuestion = (config, question) => {

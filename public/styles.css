@@ -164,7 +164,6 @@
 		width: 30px;
 		background-image: url('blocks.png');
 		background-size: 1024px;
-		opacity:0.8;
 	}
 
 	.block.unsolved {
