@@ -51,6 +51,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
+	questions: [],
 	gameVersion: 4.3
 };
 
@@ -59,10 +60,29 @@ const BOARD_WIDTH = 200;
 const BOARD_HEIGHT = 200;
 
 
-const saveScore = (question, correct) => {
-	question.asked = (question.asked || 0) + 1;
+const saveQuestionScore = (player, question, correct) => {
+	player.questions = player.questions || [];
 
-	if (correct) { question.correct = (question.correct || 0) + 1; }
+	let pqi = player.questions.findIndex(q => {
+		return q.question.includes(question.question[0]);
+	});
+
+	// Make sure if the question doesn't exist in the player's questions you add it to the end
+	pqi = pqi < 0 ? player.questions.length : pqi;
+	player.questions[pqi] = player.questions[pqi] || JSON.parse(JSON.stringify(question));
+
+	question.asked = (question.asked || 0) + 1;
+	// If they've been asked this question before, use their previous score. Otherwise give them their first point
+	player.questions[pqi].asked = player.questions[pqi].asked ? player.questions[pqi].asked + 1 : 1;
+
+	if (correct) {
+		question.correct = (question.correct || 0) + 1;
+		player.questions[pqi].correct = player.questions[pqi].correct ? player.questions[pqi].correct + 1 : 1;
+	}
+
+	player = savePlayer(player);
+
+	return player;
 }
 
 // levels are a Fibonacci sequence (100, 200, 300, 500, 800, 1300, 2100, ...)
@@ -157,7 +177,7 @@ const askQuestion = (config, question) => {
 		correct = confirm(`"${questions[variation]}" is "${answers.join(', or ')}".`);
 	}
 
-	saveScore(question, correct);
+	player = saveQuestionScore(player, question, correct);
 
 	return correct;
 }
@@ -167,10 +187,15 @@ const easyQuestion = (config, player) => {
 	console.log(`easy question. Question level === ${getLevel(player.points)}`);
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const easyQuestion = config.questions.filter(question => question.level === getLevel(player.points));
+	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && question.correct < 3);
 
-	if (easyQuestion.length > 0) {
-		question = easyQuestion[Math.floor(Math.random() * easyQuestion.length)];
+	// first determine if there are any previous level questions that have not been answered correctly at
+	// least 3 times. If so, ask one of those. Otherwise ask a sameLevelQuestion
+	if (previousLevelQuestions.length > 0) {
+		question = previousLevelQuestions[Math.floor(Math.random() * previousLevelQuestions.length)];
+	} else if (sameLevelQuestions.length > 0) {
+		question = sameLevelQuestions[Math.floor(Math.random() * sameLevelQuestions.length)];
 	} else {
 		return anyQuestion(config, player);
 	}
@@ -562,13 +587,27 @@ const initMobs = (mobs, player) => {
 	return mobs;
 }
 
-const hydratePlayer = () => {
+const hydratePlayer = (questions) => {
 	let player = JSON.parse( localStorage.getItem('player') ) || DEFAULT_PLAYER;
 
 	player.DOM = document.querySelector(player.DOMSelector || '#steve');
 	player.name = player.name || 'Steve';
 	player.HP = player.HP || 10;
 	player.type = player.type || 'pc';
+
+	player.questions = player.questions || [];
+
+	// load up previous scores into question bank
+	player.questions.forEach(pq => {
+		const qi = questions.findIndex(q => {
+			return q.question.includes(pq.question[0]);
+		});
+
+		questions[qi].asked = pq.asked;
+		questions[qi].correct = pq.correct || 0;
+	});
+
+	console.log(questions);
 
 	refreshHUD(player);
 
@@ -652,7 +691,7 @@ const collide = (collider, collidee, mobs) => {
 		const itemType = e.target.dataset.type;
 
 		player.items[itemType] = player.items[itemType] - 1;
-		savePlayer(player);
+		player = savePlayer(player);
 
 		const levelDifference = player.level - mob.level;
 		let modifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
@@ -722,7 +761,7 @@ const captureMob = (player, mob, mobs) => {
 	player.mobs = player.mobs || {};
 
 	player.mobs[mob.kind] = (player.mobs[mob.kind] || 0) + 1;
-	savePlayer(player);
+	player = savePlayer(player);
 
 	const mobI = mobs.findIndex(m => m.id === mob.id);
 	mobs.splice(mobI, 1);
@@ -740,7 +779,7 @@ const killMob = (player, mob, mobs) => {
 	console.dir(loot)
 	console.dir(player.items);
 	loot && loot.forEach(item => player.items[item.name] = (player.items[item.name] || 0) + item.quantity)
-	savePlayer(player);
+	player = savePlayer(player);
 
 	const mobI = mobs.findIndex(m => m.id === mob.id);
 	mobs.splice(mobI, 1);
@@ -837,7 +876,7 @@ document.addEventListener('keypress', (e) => {
 
 		mobs = moveMobs(mobs, player, moveHostileOnly);
 
-		savePlayer(player);
+		player = savePlayer(player);
 	} else if (doMovePlayer) {
 
 	}
@@ -873,7 +912,7 @@ setFog(config.fogofwar);
 
 document.querySelector('#fogofwar').addEventListener('change', (e) => setFog(e.target.checked));
 
-let player = hydratePlayer();
+let player = hydratePlayer(config.questions);
 mobs = initMobs(mobs, player);
 
 window.setTimeout(() => {
