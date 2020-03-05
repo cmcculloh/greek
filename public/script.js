@@ -51,7 +51,7 @@ const DEFAULT_PLAYER = {
 	points: 0,
 	items: {},
 	position: [100, 100],
-	gameVersion: 4.2
+	gameVersion: 4.3
 };
 
 const STARTING_LEVEL = 1;
@@ -76,6 +76,65 @@ const getLevel = (xp = 0, prevPrevThreshold = 0, prevThreshold = 1000, level = S
 	// return getLevel(xp, prevThreshold, threshold, level + 1);
 	return Math.ceil(xp/8000);
 };
+
+const showDungeon = () => {
+	hideOverworld();
+	const dungeon = document.querySelector('#dungeon');
+	dungeon.classList.add('visible');
+};
+
+const hideDungeon = () => {
+	showOverworld();
+	const dungeon = document.querySelector('#dungeon');
+	dungeon.classList.remove('visible');
+}
+
+const doDungeon = (config, question) => {
+	showDungeon();
+	const dungeon = document.querySelector('#dungeon');
+
+	const dungeonBoard = [
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+		[1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+	];
+
+	const selector = (ri, ci) => {
+		return `dungoenrow${ri}cell${ci}`;
+	}
+
+	const BLOCKS = [
+		{selector, block: {type: 'air'} },
+		{selector, block: {type: 'stone'} }
+	]
+
+	const BOARD = [];
+	dungeonBoard.forEach((row, ri) => {
+		BOARD[ri] = BOARD[ri] || [];
+		row.forEach((col, ci) => {
+			// NOTE: We aren't doing the stringify/parse trick here because I'm concerned
+			// that the selector function above wouldn't make it through in one piece.
+			// But this means we have a link-by-reference to the contents of BLOCKS specified
+			// numerically in dungeonBoard above instead of a disconnected clone of the BLOCKS
+			// object. It is not yet clear to me that this matters.
+			BOARD[ri][ci] = BLOCKS[dungeonBoard[ri][ci]];
+		});
+	});
+
+	const boardDOM = buildBoardDOM(BOARD);
+
+	const contents = `
+		<p>put some instructions or something here.</p>
+		<div id="dungeonBoard">${boardDOM}</div>
+	`;
+
+	dungeon.innerHTML = contents;
+}
 
 const askQuestion = (config, question) => {
 	const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
@@ -254,7 +313,7 @@ const generateBoard = (BOARD, width, height, idPrefix) => {
 
 			BOARD[ri][ci] = {
 				block: JSON.parse(JSON.stringify(sorted[0].block)),
-				selector: `${idPrefix}row${ri}cell${ci}`
+				selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
 			};
 		}
 	}
@@ -268,6 +327,7 @@ const hydrateBoard = () => {
 	const savedBoard = JSON.parse( localStorage.getItem('board') );
 
 	if (savedBoard) {
+		// Upgrade to < 4.2
 		if (!savedBoard[0][0].block) {
 			savedBoard.forEach((row, ri) => {
 				row.forEach((cell, ci) => {
@@ -275,8 +335,28 @@ const hydrateBoard = () => {
 
 					savedBoard[ri][ci] = {
 						block: oldCell,
-						selector: `overworldrow${ri}cell${ci}`
+						selector: (ri, ci) => `overworldrow${ri}cell${ci}`
 					};
+
+					oldCell.solved ? savedBoard[ri][ci].solved = true : '';
+				})
+			});
+
+			saveBoard(savedBoard);
+		}
+
+		// Upgrade to 4.3
+		if (typeof savedBoard[0][0].selector !== 'function') {
+			savedBoard.forEach((row, ri) => {
+				row.forEach((cell, ci) => {
+					const oldCell = JSON.parse(JSON.stringify(cell));
+
+					savedBoard[ri][ci] = {
+						block: oldCell.block || oldCell,
+						selector: (ri, ci) => `overworldrow${ri}cell${ci}`
+					};
+
+					oldCell.solved ? savedBoard[ri][ci].solved = true : '';
 				})
 			});
 
@@ -303,7 +383,7 @@ const blockTry = (blockTarget, entity, BLOCKS) => {
 }
 
 const blockReveal = (BOARD, row, col) => {
-	const target = document.querySelector(`#${BOARD[row][col].selector}`);
+	const target = document.querySelector(`#${BOARD[row][col].selector(row, col)}`);
 
 	BOARD[row][col].solved = true;
 
@@ -382,7 +462,7 @@ const buildBoardDOM = (BOARD) => {
 		row.forEach((cell, ci) => {
 			const cellDOM = document.createElement('div');
 
-			cellDOM.id = cell.selector;
+			cellDOM.id = cell.selector(ri, ci);
 			cellDOM.setAttribute('data-type', cell.block.type);
 			cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block.type);
 

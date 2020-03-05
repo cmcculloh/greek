@@ -82,7 +82,7 @@
 		text-transform: capitalize;
 	}
 
-	#battle.visible {
+	#battle.visible, #dungeon.visible {
 		position: fixed;
 		background-color: white;
 		right: 50px;
