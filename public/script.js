@@ -188,12 +188,12 @@ const easyQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
 	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
-	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && question.correct < 3);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 3);
 
 	// first determine if there are any previous level questions that have not been answered correctly at
-	// least 3 times. If so, ask one of those. Otherwise ask a sameLevelQuestion
+	// least 3 times. If so, ask any of the first six of those. Otherwise ask a random sameLevelQuestion
 	if (previousLevelQuestions.length > 0) {
-		question = previousLevelQuestions[Math.floor(Math.random() * previousLevelQuestions.length)];
+		question = previousLevelQuestions[Math.floor(Math.random() * 6)];
 	} else if (sameLevelQuestions.length > 0) {
 		question = sameLevelQuestions[Math.floor(Math.random() * sameLevelQuestions.length)];
 	} else {
@@ -207,10 +207,15 @@ const mediumQuestion = (config, player) => {
 	console.log(`medium question. Question level <= ${getLevel(player.points)}, but >= ${getLevel(player.points) - 5} `);
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const mediumQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 11);
+	const levelAppropriateQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
 
-	if (mediumQuestions.length > 0) {
-		question = mediumQuestions[Math.floor(Math.random() * mediumQuestions.length)];
+	// first determine if there are any previous level questions that have not been answered correctly at
+	// least 11 times. If so, ask any of the first six of those. Otherwise ask a level appropriate question
+	if (previousLevelQuestions.length > 0) {
+		question = previousLevelQuestions[Math.floor(Math.random() * 6)];
+	} else if (levelAppropriateQuestions.length > 0) {
+		question = levelAppropriateQuestions[Math.floor(Math.random() * levelAppropriateQuestions.length)];
 	} else {
 		return easyQuestion(config, player);
 	}
@@ -221,12 +226,18 @@ const mediumQuestion = (config, player) => {
 const hardQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const hardQuestions = config.questions.filter(question => question.correct < question.asked);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 11);
+	const levelAppropriateQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && !question.correct || question.correct < question.asked * .75);
 
-	console.log(`hard question. Any question asked more times than answered correctly (there are ${hardQuestions.length || 0} of these)`);
-
-	if (hardQuestions.length > 0) {
-		question = hardQuestions[Math.floor(Math.random() * hardQuestions.length)];
+	// first determine if there are any previous level questions that have not been answered correctly at
+	// least 11 times. If so, ask one of those. Otherwise ask a level appropriate question that has been answered
+	// incorrectly less than 75% of the time
+	if (previousLevelQuestions.length > 0) {
+		console.log(`hard question. Any question answered fewer than 11 times correctly (there are ${previousLevelQuestions.length || 0} of these)`);
+		question = previousLevelQuestions[Math.floor(Math.random() * previousLevelQuestions.length)];
+	} else if (levelAppropriateQuestions.length > 0) {
+		console.log(`hard question. Any question answered less than 75% of the time correctly (there are ${levelAppropriateQuestions.length || 0} of these)`);
+		question = levelAppropriateQuestions[Math.floor(Math.random() * levelAppropriateQuestions.length)];
 	} else {
 		return anyQuestion(config, player);
 	}
