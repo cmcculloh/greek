@@ -196,7 +196,7 @@ const easyQuestion = (config, player) => {
 	// first determine if there are any previous level questions that have not been answered correctly at
 	// least 3 times. If so, ask any of the first six of those. Otherwise ask a random sameLevelQuestion
 	if (previousLevelQuestions.length > 0) {
-		question = previousLevelQuestions[Math.floor(Math.random() * 6)];
+		question = previousLevelQuestions[Math.floor(Math.random() * Math.min(previousLevelQuestions.length, 6))];
 	} else if (sameLevelQuestions.length > 0) {
 		question = sameLevelQuestions[Math.floor(Math.random() * sameLevelQuestions.length)];
 	} else {
@@ -216,7 +216,7 @@ const mediumQuestion = (config, player) => {
 	// first determine if there are any previous level questions that have not been answered correctly at
 	// least 11 times. If so, ask any of the first six of those. Otherwise ask a level appropriate question
 	if (previousLevelQuestions.length > 0) {
-		question = previousLevelQuestions[Math.floor(Math.random() * 6)];
+		question = previousLevelQuestions[Math.floor(Math.random() * Math.min(previousLevelQuestions.length, 6))];
 	} else if (levelAppropriateQuestions.length > 0) {
 		question = levelAppropriateQuestions[Math.floor(Math.random() * levelAppropriateQuestions.length)];
 	} else {
