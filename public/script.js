@@ -454,6 +454,13 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 			entity.DOM.style.left = `${entity.position[0] * 30}px`;
 		} else {
 			entity.DOM.style.display = 'none';
+
+			// De-Spawn entity if they are too far from the player
+			if (Math.abs(player.position[0] - entity.position[0]) > 40 || Math.abs(player.position[1] - entity.position[1]) > 40) {
+				console.log('de-spawning');
+				entity.DOM.remove();
+				initMob(entity, player);
+			}
 		}
 	}
 
