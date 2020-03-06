@@ -554,15 +554,22 @@ const createMob = (type) => {
 	return mob;
 }
 
-for (let i = 0; i < 100; i++) {
+for (let i = 0; i < 10; i++) {
 	mobs.push(createMob('sheep'));
 }
 
 const initMob = (mob, player) => {
-	const randX = Math.floor(Math.random() * BOARD_WIDTH);
-	const randY = Math.floor(Math.random() * BOARD_HEIGHT);
+	let randX = Math.floor(Math.random() * 50) - 25;
+	let randY = Math.floor(Math.random() * 50) - 25;
 
-	mob.position = [ randX, randY ];
+	// make sure hostile mobs don't spawn too close
+	if (mob.hostile && (Math.abs(randX) < 10 || Math.abs(randY) < 10)) {
+		randX = randX < 0 ? randX - 10 : randX + 10;
+		randY = randY < 0 ? randY - 10 : randX + 10;
+	}
+
+	// place mob near the player
+	mob.position = [ player.position[0] + randX, player.position[1] + randY ];
 
 	const mobDOM = document.createElement('div');
 	mobDOM.classList.add(mob.classList);
