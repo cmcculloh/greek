@@ -1,39 +1,3 @@
-
-// const additionQuestion = (number) => {
-// 	let sub = Math.floor(Math.random() * number);
-// 	if (sub === 0) sub = 1;
-
-// 	const theirAnswer = prompt(`${sub} + ${number - sub} =`);
-
-// 	return theirAnswer * 1 === number * 1;
-// }
-
-// const BLOCKS = {
-// 	D: { type: 'dirt', test: () => additionQuestion(5) },
-// 	T: { type: 'tree', test: () => additionQuestion(6) },
-// 	W: { type: 'water', test: () => additionQuestion(7) },
-// 	S: { type: 'stone', test: () => additionQuestion(8) },
-// 	F: { type: 'farm', test: () => additionQuestion(9) },
-// 	G: { type: 'grass', test: () => additionQuestion(10) }
-// }
-
-// const multiplicationQuestion = (number) => {
-// 	let factor = Math.ceil(Math.random() * 12);
-
-// 	const theirAnswer = prompt(`${number} * ${factor} =`);
-
-// 	return theirAnswer * 1 === number * factor;
-// }
-
-// const BLOCKS = {
-// 	D: { type: 'dirt', test: () => multiplicationQuestion(5) },
-// 	T: { type: 'tree', test: () => multiplicationQuestion(6) },
-// 	W: { type: 'water', test: () => multiplicationQuestion(7) },
-// 	S: { type: 'stone', test: () => multiplicationQuestion(8) },
-// 	F: { type: 'farm', test: () => multiplicationQuestion(9) },
-// 	G: { type: 'grass', test: () => multiplicationQuestion(10) }
-// }
-
 const uuidv4 = () => {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
