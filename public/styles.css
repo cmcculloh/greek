@@ -52,6 +52,7 @@
 		background-size: 12px 26px;
 		background-repeat: no-repeat;
 		background-position: 8px;
+		transition: top .5s linear, left .5s linear;
 	}
 
 	#mobs {
@@ -71,6 +72,8 @@
 		background-size: 26px 26px;
 		background-repeat: no-repeat;
 		background-position: 2px;
+		transition: top 2s, left 2s;
+		display: block;
 	}
 
 	#scoreBoard {

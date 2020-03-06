@@ -429,14 +429,29 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 
 	if (collision) { collide(entity, player, mobs); }
 
-	entity.position[1] = entity.position[1] + movePositionBy[1];
-	entity.position[0] = entity.position[0] + movePositionBy[0];
+	const targetRow = entity.position[1] + movePositionBy[1];
+	const targetCell = entity.position[0] + movePositionBy[0];
 
-	entity.DOM.style.top = `${(entity.position[1] * 30)}px`;
-	entity.DOM.style.left = `${entity.position[0] * 30}px`;
+	// Make sure entity can move to target block
+	const targetBlock = document.querySelector(`#overworldrow${targetRow}cell${targetCell}`);
+	if (targetBlock) {
+		entity.position[1] = targetRow;
+		entity.position[0] = targetCell;
 
-	if (entity.revealsBlocks) {
-		blockReveal(BOARD, entity.position[1], entity.position[0])
+		if (entity.revealsBlocks) {
+			blockReveal(BOARD, entity.position[1], entity.position[0])
+		}
+
+
+		// Only show mobs that are within 20 blocks of the player, taking fog into account
+		const isHiddenByFog = targetBlock.classList.contains('unsolved') && config.fogofwar;
+		if (!isHiddenByFog && Math.abs(player.position[0] - entity.position[0]) <= 20 && Math.abs(player.position[1] - entity.position[1]) <= 20) {
+			entity.DOM.style.display = 'block';
+			entity.DOM.style.top = `${(entity.position[1] * 30)}px`;
+			entity.DOM.style.left = `${entity.position[0] * 30}px`;
+		} else {
+			entity.DOM.style.display = 'none';
+		}
 	}
 
 	if (isFocus(entity)) {
