@@ -652,7 +652,7 @@ const collide = (collider, collidee, mobs) => {
 	let player = collider.type === 'pc' ? collider : collidee;
 	let mob = collider.type === 'npc' ? collider : collidee;
 
-	const initiativeModifier = collider.type === 'pc' ? 2 : -2;
+	const initiativeModifier = collider.type === 'pc' ? 1 : -1;
 
 	hideOverworld();
 	const battleBoard = document.querySelector('#battle');
@@ -726,17 +726,18 @@ const collide = (collider, collidee, mobs) => {
 		buttons.forEach(elm => elm.setAttribute('disabled', true));
 
 		const itemType = e.target.dataset.type;
+		const item = player.items[itemType] || { bonus: 2 };
+		const itemBonus = item.bonus || 0;
 
-		const item = player.items[itemType];
-
+		// give level bonuses/penalties
 		const levelDifference = player.level - mob.level;
-		let modifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
+		const levelModifier = Math.abs(levelDifference) > 2 ? Math.round(levelDifference / 2) : 0;
 
-		const playerRoll = Math.ceil(Math.random() * 20) + initiativeModifier;
+		const playerRoll = Math.ceil(Math.random() * 20) + initiativeModifier + levelModifier + itemBonus;
 		showDamage(`${playerRoll}`);
 
 		window.setTimeout(() => {
-			if (playerRoll > mob.ac + modifier) {
+			if (playerRoll > mob.ac - 2) {
 				displayResult('slayed!');
 
 				;({ player, mobs } = killMob(player, mob, mobs));
