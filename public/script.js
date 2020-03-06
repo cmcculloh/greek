@@ -331,13 +331,16 @@ const hydrateBoard = () => {
 
 	if (savedBoard) {
 		// Upgrade to < 4.2
-		if (!savedBoard[0][0].block) {
+		if (!savedBoard[0][0].block.type) {
 			savedBoard.forEach((row, ri) => {
 				row.forEach((cell, ci) => {
 					const oldCell = JSON.parse(JSON.stringify(cell));
 
+					// get block type
+					const block = BLOCKS[Object.keys(BLOCKS).find(block => BLOCKS[block].type === oldCell.block)];
+
 					savedBoard[ri][ci] = {
-						block: oldCell,
+						block,
 						selector: (ri, ci) => `overworldrow${ri}cell${ci}`
 					};
 
