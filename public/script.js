@@ -5,6 +5,17 @@ const uuidv4 = () => {
   });
 }
 
+/**
+ * Shuffles array in place. ES6 version
+ * @param {Array} a items An array containing the items.
+ */
+const shuffle = (a) => {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
 
 const DEFAULT_PLAYER = {
 	type: 'pc',
@@ -115,42 +126,86 @@ const doDungeon = (config, question) => {
 	dungeon.appendChild(boardDOM);
 }
 
+const getRandomChoice = (currentChoices, rightAnswer, askAnswerInsteadOfQuestion, config, player) => {
+	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
+	const sameLevelWrongAnswers = sameLevelQuestions.filter(question => question.question[0] !== rightAnswer.question[0]);
 
-const launchQuizUI = (config, question, resolve) => {
+	// loop through sameLevelWrongAnswers and generate all of the possible options you can from them
+	// filter out the already chosen possibilities (the things in currentChoices)
+	// if there is nothing left, go through levelAppropriateQuestions and populate more possibilities
+	// filter out the already chosen possibilities (the things in currentChoices)
+	// choose a random options from what is left and return it
+
+	if (askAnswerInsteadOfQuestion) {
+		return sameLevelWrongAnswers[Math.floor(Math.random() * sameLevelWrongAnswers.length)].question[0];
+	}
+	return sameLevelWrongAnswers[Math.floor(Math.random() * sameLevelWrongAnswers.length)].answer[0];
+
+	// const levelAppropriateQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
+}
+
+const launchQuizUI = (config, question, player, resolve) => {
 	const quiz = document.querySelector('#quiz')
 	quiz.classList.add('visible');
 	hideOverworld();
 
+	const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
+	const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
+	const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
+
+	const variation = Math.floor(Math.random() * questions.length);
+
+	const choices = [];
+	for (let i = 0; i < 9; i++) {
+		if (answers[i] && i < 3) {
+			choices.push(answers[i]);
+		} else {
+			choices.push(getRandomChoice(choices, question, askAnswerInsteadOfQuestion, config, player));
+		}
+	}
+
+	shuffle(choices);
+
 	const gameBoard = `
 	<div class="question">
-		<div class="grass"><div>${question.question[0]}</div></div>
+		<div class="grass"><div>${questions[variation]}</div></div>
 	</div>
 	<div class="answers">
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
-		<div class="grass"></div>
+		${choices.reduce((choices, choice) => choices + `<div class="grass"><div>${choice}</div></div>`, '')}
 	</div>
 	`;
 
 	quiz.innerHTML = gameBoard;
 
-	quiz.querySelector('.answers').addEventListener('click', () => {
-		quiz.classList.remove('visible');
-		showOverworld();
-		resolve(true);
-	})
+	const gradeAnswer = (e) => {
+		// Check to see if the answer chosen is actually correct
+		quiz.querySelector('.answers').removeEventListener('click', gradeAnswer);
+		if (answers.includes(e.toElement.innerText)) {
+			quiz.classList.remove('visible');
+			showOverworld();
+			resolve(true);
+		} else {
+			quiz.querySelectorAll('.answers .grass').forEach(div => {
+				if (!answers.includes(div.querySelector('div').innerText)) {
+					div.remove();
+				}
+			});
+			window.setTimeout(() => {
+				console.log('resolve');
+				quiz.classList.remove('visible');
+				showOverworld();
+				resolve(false);
+			}, 4000);
+		}
+	}
+
+	quiz.querySelector('.answers').addEventListener('click', gradeAnswer)
 }
 
-const showQuestion = (config, question) => {
+const showQuestion = (config, question, player) => {
 	return new Promise(resolve => {
-		const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
 		if (config.written) {
+			const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
 			const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
 			const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
 
@@ -165,13 +220,13 @@ const showQuestion = (config, question) => {
 
 			resolve(correct);
 		} else {
-			launchQuizUI(config, question, resolve);
+			launchQuizUI(config, question, player, resolve);
 		}
 	});
 }
 
-const askQuestion = async (config, question) => {
-	const correct = await showQuestion(config, question);
+const askQuestion = async (config, question, player) => {
+	const correct = await showQuestion(config, question, player);
 
 	player = saveQuestionScore(player, question, correct);
 
@@ -196,7 +251,7 @@ const easyQuestion = (config, player) => {
 		return anyQuestion(config, player);
 	}
 
-	return askQuestion(config, question);
+	return askQuestion(config, question, player);
 }
 
 const mediumQuestion = (config, player) => {
@@ -216,7 +271,7 @@ const mediumQuestion = (config, player) => {
 		return easyQuestion(config, player);
 	}
 
-	return askQuestion(config, question);
+	return askQuestion(config, question, player);
 }
 
 const hardQuestion = (config, player) => {
@@ -238,7 +293,7 @@ const hardQuestion = (config, player) => {
 		return anyQuestion(config, player);
 	}
 
-	return askQuestion(config, question);
+	return askQuestion(config, question, player);
 }
 
 const anyQuestion = (config, player) => {
@@ -247,7 +302,7 @@ const anyQuestion = (config, player) => {
 
 	const question = questions[Math.floor(Math.random() * questions.length)];
 
-	return askQuestion(config, question);
+	return askQuestion(config, question, player);
 }
 
 const reward = (who, amount, item) => {
