@@ -136,7 +136,6 @@ const launchQuizUI = (config, question, resolve) => {
 		<div class="grass"></div>
 		<div class="grass"></div>
 	</div>
-
 	`;
 
 	quiz.innerHTML = gameBoard;
