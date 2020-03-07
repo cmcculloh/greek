@@ -171,35 +171,37 @@ const launchQuizUI = (config, question, player, resolve) => {
 		<div class="grass"><div>${questions[variation]}</div></div>
 	</div>
 	<div class="answers">
+		<div class="grass hidden"><div>The correct answer to "${questions[variation]}" is:</div></div>
 		${choices.reduce((choices, choice) => choices + `<div class="grass"><div>${choice}</div></div>`, '')}
 	</div>
 	`;
 
 	quiz.innerHTML = gameBoard;
 
+	const hideQuiz = (success) => {
+		quiz.classList.remove('visible');
+		showOverworld();
+		resolve(success);
+	}
+
 	const gradeAnswer = (e) => {
 		// Check to see if the answer chosen is actually correct
-		quiz.querySelector('.answers').removeEventListener('click', gradeAnswer);
 		if (answers.includes(e.toElement.innerText)) {
-			quiz.classList.remove('visible');
-			showOverworld();
-			resolve(true);
+			hideQuiz(true);
 		} else {
 			quiz.querySelectorAll('.answers .grass').forEach(div => {
-				if (!answers.includes(div.querySelector('div').innerText)) {
+				if (!answers.includes(div.querySelector('div').innerText) && !div.classList.contains('hidden')) {
 					div.remove();
 				}
 			});
-			window.setTimeout(() => {
-				console.log('resolve');
-				quiz.classList.remove('visible');
-				showOverworld();
-				resolve(false);
-			}, 4000);
+			quiz.querySelector('.grass.hidden').classList.remove('hidden');
+			quiz.querySelector('.answers').addEventListener('click', () => {
+				hideQuiz(false);
+			}, { once: true });
 		}
 	}
 
-	quiz.querySelector('.answers').addEventListener('click', gradeAnswer)
+	quiz.querySelector('.answers').addEventListener('click', gradeAnswer, { once: true })
 }
 
 const showQuestion = (config, question, player) => {
