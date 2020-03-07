@@ -172,9 +172,18 @@
 		opacity:0.5;
 	}
 
+	.block.unsolved.nearby {
+		opacity:0.75;
+	}
+
 	#overworld.fogofwar .block.unsolved {
 		opacity: 0.05;
 	}
+
+	#overworld.fogofwar .block.unsolved.nearby {
+		opacity: 0.5;
+	}
+
 
 	.grass {
 		background-image: url('grass.png');

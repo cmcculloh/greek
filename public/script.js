@@ -16,7 +16,7 @@ const DEFAULT_PLAYER = {
 	items: {},
 	position: [100, 100],
 	questions: [],
-	gameVersion: 4.3
+	gameVersion: 4.4
 };
 
 const STARTING_LEVEL = 1;
@@ -345,13 +345,14 @@ const hydrateBoard = () => {
 					};
 
 					oldCell.solved ? savedBoard[ri][ci].solved = true : '';
+					savedBoard[ri][ci].nearby = oldCell.nearby ? true : false;
 				})
 			});
 
 			saveBoard(savedBoard);
 		}
 
-		// Upgrade to 4.3
+		// Upgrade to 4.3 && add in selector function
 		if (typeof savedBoard[0][0].selector !== 'function') {
 			savedBoard.forEach((row, ri) => {
 				row.forEach((cell, ci) => {
@@ -362,7 +363,8 @@ const hydrateBoard = () => {
 						selector: (ri, ci) => `overworldrow${ri}cell${ci}`
 					};
 
-					oldCell.solved ? savedBoard[ri][ci].solved = true : '';
+					savedBoard[ri][ci].solved = oldCell.solved ? true : false;
+					savedBoard[ri][ci].nearby = oldCell.nearby ? true : false;
 				})
 			});
 
@@ -373,8 +375,15 @@ const hydrateBoard = () => {
 	return savedBoard || generateBoard([], BOARD_WIDTH, BOARD_HEIGHT, 'overworld');
 }
 
-const saveBoard = (BOARD) => {
-	localStorage.setItem( 'board', JSON.stringify(BOARD) );
+const saveBoard = (BOARD, force = false) => {
+	const now = new Date();
+	config.lastSave = config.lastSave || 0;
+
+	if (force || Math.round((now - config.lastSave)/1000) % 60 > 30) {
+		config.lastSave = now;
+		localStorage.setItem( 'board', JSON.stringify(BOARD) );
+		console.log('saved');
+	}
 }
 
 const blockTry = (blockTarget, entity, BLOCKS) => {
@@ -388,15 +397,40 @@ const blockTry = (blockTarget, entity, BLOCKS) => {
 	return success;
 }
 
-const blockReveal = (BOARD, row, col) => {
-	const target = document.querySelector(`#${BOARD[row][col].selector(row, col)}`);
+const blockReveal = (BOARD, row, cell) => {
+	if (config.fogofwar) {
+		// semi-reveal nearby blocks as well
+		for (let rowi = -2; rowi <= 2; rowi++) {
+			const nearbyRow = row+rowi;
+			for (let celli = -2; celli <= 2; celli++) {
+				const nearbyCell = cell+celli;
 
-	BOARD[row][col].solved = true;
+				if (BOARD[nearbyRow] && BOARD[nearbyRow][nearbyCell] && !BOARD[nearbyRow][nearbyCell].nearby) {
+					BOARD[nearbyRow][nearbyCell].nearby = true;
 
-	target.classList.remove('unsolved');
-	target.classList.add('solved');
+					document.querySelector(`#${BOARD[nearbyRow][nearbyCell].selector(nearbyRow, nearbyCell)}`).classList.add('nearby');
+				}
+			}
+		}
+	}
 
-	saveBoard(BOARD);
+	const target = document.querySelector(`#${BOARD[row][cell].selector(row, cell)}`);
+
+	if (!BOARD[row][cell].solved) {
+		BOARD[row][cell].solved = true;
+
+		target.classList.remove('unsolved');
+		target.classList.add('solved');
+
+		// force the save since a new block was revealed
+		const threadedSave = () => {
+			saveBoard(BOARD, true);
+		}
+		setTimeout(threadedSave, 0);
+	} else {
+		// just queue the save
+		saveBoard(BOARD);
+	}
 }
 
 const isFocus = (entity) => {
@@ -493,6 +527,7 @@ const buildBoardDOM = (BOARD) => {
 			cellDOM.id = cell.selector(ri, ci);
 			cellDOM.setAttribute('data-type', cell.block.type);
 			cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block.type);
+			cellDOM.classList.add(!cell.nearby ? 'notnearby' : 'nearby');
 
 			rowDOM.appendChild(cellDOM);
 		});
