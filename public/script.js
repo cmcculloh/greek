@@ -127,7 +127,7 @@ const doDungeon = (config, question) => {
 }
 
 const getRandomChoice = (currentChoices, rightAnswer, askAnswerInsteadOfQuestion, config, player) => {
-	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
+	const sameLevelQuestions = config.questions.filter(question => question.level === rightAnswer.level);
 	const sameLevelWrongAnswers = sameLevelQuestions.filter(question => question.question[0] !== rightAnswer.question[0]);
 
 	// loop through sameLevelWrongAnswers and generate all of the possible options you can from them
