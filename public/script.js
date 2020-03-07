@@ -417,7 +417,9 @@ const blockReveal = (BOARD, row, cell) => {
 			for (let celli = -2; celli <= 2; celli++) {
 				const nearbyCell = cell+celli;
 
-				if (BOARD[nearbyRow] && BOARD[nearbyRow][nearbyCell] && !BOARD[nearbyRow][nearbyCell].nearby) {
+				if ((rowi === -2 || rowi === 2) && (celli === -2 || celli === 2)) {
+					// It's a corner, skip it
+				} else if (BOARD[nearbyRow] && BOARD[nearbyRow][nearbyCell] && !BOARD[nearbyRow][nearbyCell].nearby) {
 					BOARD[nearbyRow][nearbyCell].nearby = true;
 
 					document.querySelector(`#${BOARD[nearbyRow][nearbyCell].selector(nearbyRow, nearbyCell)}`).classList.add('nearby');
