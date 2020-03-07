@@ -121,7 +121,6 @@ const launchQuizUI = (config, question, resolve) => {
 	quiz.classList.add('visible');
 	hideOverworld();
 
-	quiz.addEventListener('click', () => {
 	const gameBoard = `
 	<div class="question">
 		<div class="grass"><div>${question.question[0]}</div></div>
@@ -141,11 +140,12 @@ const launchQuizUI = (config, question, resolve) => {
 	`;
 
 	quiz.innerHTML = gameBoard;
+
+	quiz.querySelector('.answers').addEventListener('click', () => {
 		quiz.classList.remove('visible');
 		showOverworld();
 		resolve(true);
 	})
-
 }
 
 const showQuestion = (config, question) => {
