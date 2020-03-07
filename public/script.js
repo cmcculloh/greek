@@ -122,11 +122,29 @@ const launchQuizUI = (config, question, resolve) => {
 	hideOverworld();
 
 	quiz.addEventListener('click', () => {
+	const gameBoard = `
+	<div class="question">
+		<div class="grass"><div>${question.question[0]}</div></div>
+	</div>
+	<div class="answers">
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+	</div>
+
+	`;
+
+	quiz.innerHTML = gameBoard;
 		quiz.classList.remove('visible');
 		showOverworld();
 		resolve(true);
 	})
-
 
 }
 
