@@ -495,7 +495,7 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 
 
 		// Only show mobs that are within 20 blocks of the player, taking fog into account
-		const isHiddenByFog = targetBlock.classList.contains('unsolved') && config.fogofwar;
+		const isHiddenByFog = !targetBlock.classList.contains('nearby') && config.fogofwar;
 		if (!isHiddenByFog && Math.abs(player.position[0] - entity.position[0]) <= 20 && Math.abs(player.position[1] - entity.position[1]) <= 20) {
 			entity.DOM.style.display = 'block';
 			entity.DOM.style.top = `${(entity.position[1] * 30)}px`;
