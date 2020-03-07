@@ -18,6 +18,93 @@
 <div id="overlay"></div>
 <div id="battle"></div>
 <div id="dungeon"></div>
+<style>
+	#quiz {
+		position: fixed;
+		width: 900px;
+		height: 600px;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		border: 1px solid black;
+		border-radius: 4px;
+		background-color: white;
+		display: none;
+	}
+
+	#quiz .grass {
+		cursor: url(shovel-cursor.png) 28 4, auto;
+	}
+
+	#quiz .question {
+		flex-grow: 1;
+		flex-basis: 33%;
+		justify-content: center;
+		align-items: center;
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+	}
+
+	#quiz .answers {
+		flex-grow: 3;
+		flex-basis: 591px;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+	}
+
+	#quiz .grass:hover {
+		background-image: url(background-dirt.png);
+	}
+
+	#quiz .grass:active {
+		background-image: url(background-dirt-bright.png);
+	}
+
+	#quiz .grass div {
+		opacity: 0;
+		color: white;
+		font-size: 20px;
+		text-shadow: 1px 1px 4px black;
+	}
+
+	#quiz .grass:hover div {
+		opacity: 1;
+	}
+
+	#quiz .grass {
+		background-image: url(grass.png);
+		width: 200px;
+		height: 200px;
+		margin: auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+	}
+
+</style>
+<div id="quiz">
+	<div class="question">
+		<div class="grass"><div>πιστεύω</div></div>
+	</div>
+	<div class="answers">
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+		<div class="grass"></div>
+	</div>
+
+</div>
 <div id="damage"></div>
 <div id="result"></div>
 

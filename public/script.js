@@ -115,30 +115,42 @@ const doDungeon = (config, question) => {
 	dungeon.appendChild(boardDOM);
 }
 
+
+const launchQuizUI = (config, question, resolve) => {
+	const quiz = document.querySelector('#quiz')
+	quiz.style.display = 'flex';
+	hideOverworld();
+
+	quiz.addEventListener('click', () => {
+		quiz.style.display = 'none';
+		showOverworld();
+		resolve(true);
+	})
+
+
+}
+
 const showQuestion = (config, question) => {
 	return new Promise(resolve => {
 		const askAnswerInsteadOfQuestion = Math.ceil(Math.random() * 2) === 2;
-
-		const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
-		const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
-
-		const variation = Math.floor(Math.random() * questions.length);
-		let correct = false;
-
 		if (config.written) {
+			const questions = askAnswerInsteadOfQuestion ? question.answer : question.question;
+			const answers = askAnswerInsteadOfQuestion ? question.question : question.answer;
+
+			const variation = Math.floor(Math.random() * questions.length);
+
 			const theirAnswer = prompt(`what is "${questions[variation]}"`);
 
+			let correct = false;
 			correct = answers.includes(theirAnswer.toLowerCase());
 
 			alert(`${correct ? 'Correct!' : 'Incorrect.'} "${questions[variation]}" is "${answers.join(', or ')}".`);
+
+			resolve(correct);
 		} else {
-			alert(`what is "${questions[variation]}"?`)
-
-			correct = confirm(`"${questions[variation]}" is "${answers.join(', or ')}".`);
+			launchQuizUI(config, question, resolve);
 		}
-
-		resolve(correct);
-	})
+	});
 }
 
 const askQuestion = async (config, question) => {

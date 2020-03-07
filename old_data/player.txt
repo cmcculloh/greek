@@ -1,0 +1,1 @@
+{"DOMSelector":"#steve","revealsBlocks":true,"points":157615,"items":{"grass seed":1095,"dirt":27,"stone":32,"carrots":35,"wood":153,"water":352},"position":[50,57],"gameVersion":1.2,"DOM":{},"name":"Steve","HP":10,"type":"pc","mobs":{"sheep":4},"questions":[]}
