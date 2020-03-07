@@ -118,11 +118,11 @@ const doDungeon = (config, question) => {
 
 const launchQuizUI = (config, question, resolve) => {
 	const quiz = document.querySelector('#quiz')
-	quiz.style.display = 'flex';
+	quiz.classList.add('visible');
 	hideOverworld();
 
 	quiz.addEventListener('click', () => {
-		quiz.style.display = 'none';
+		quiz.classList.remove('visible');
 		showOverworld();
 		resolve(true);
 	})
