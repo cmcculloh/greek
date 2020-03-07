@@ -186,7 +186,7 @@ const launchQuizUI = (config, question, player, resolve) => {
 
 	const gradeAnswer = (e) => {
 		// Check to see if the answer chosen is actually correct
-		if (answers.includes(e.toElement.innerText)) {
+		if (answers.includes(e.target.innerText)) {
 			hideQuiz(true);
 		} else {
 			quiz.querySelectorAll('.answers .grass').forEach(div => {
