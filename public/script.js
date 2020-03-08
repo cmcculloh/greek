@@ -646,8 +646,8 @@ const buildBoardDOM = (BOARD) => {
 }
 
 let BOARD = hydrateBoard();
-const overworldBoard = buildBoardDOM(BOARD);
-const overworld = document.querySelector('#overworld');
+let overworldBoard = buildBoardDOM(BOARD);
+let overworld = document.querySelector('#overworld');
 overworld.appendChild(overworldBoard);
 showOverworld();
 
