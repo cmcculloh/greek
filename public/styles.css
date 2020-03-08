@@ -21,12 +21,17 @@
 		transition: opacity 2s ease-out;
 	}
 
-	#instructions {
+	#instructions, #showInstructions {
 		background-color: white;
 		position: fixed;
 		bottom: 0px;
 		left: 0px;
 		width: 800px;
+	}
+
+	#showInstructions {
+		width: 30px;
+		height: 25px;
 	}
 
 	.row {
