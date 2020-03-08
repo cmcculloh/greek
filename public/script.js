@@ -243,7 +243,7 @@ const easyQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
 	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
-	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 3);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 12);
 
 	// first determine if there are any previous level questions that have not been answered correctly at
 	// least 3 times. If so, ask any of the first six of those. Otherwise ask a random sameLevelQuestion
@@ -262,7 +262,7 @@ const mediumQuestion = (config, player) => {
 	console.log(`medium question. Question level <= ${getLevel(player.points)}, but >= ${getLevel(player.points) - 5} `);
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 11);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 4);
 	const levelAppropriateQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
 
 	// first determine if there are any previous level questions that have not been answered correctly at
@@ -281,7 +281,7 @@ const mediumQuestion = (config, player) => {
 const hardQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
-	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 11);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 2);
 	const levelAppropriateQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && !question.correct || question.correct < question.asked * .75);
 
 	// first determine if there are any previous level questions that have not been answered correctly at
