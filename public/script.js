@@ -454,6 +454,15 @@ const hydrateBoard = () => {
 
 					savedBoard[ri][ci].solved = oldCell.solved ? true : false;
 					savedBoard[ri][ci].nearby = oldCell.nearby ? true : false;
+
+					// remove chopped down trees
+					if (savedBoard[ri][ci].block.type === 'tree' && savedBoard[ri][ci].solved) {
+						savedBoard[ri][ci].block = JSON.parse(JSON.stringify(BLOCKS['G']));
+					} else if (savedBoard[ri][ci].block.type === 'water' || savedBoard[ri][ci].block.type === 'stone') {
+						// water can not be solved without a boat, and boats do not exist yet...
+						// stone can not be gotten without a pickaxe, and pickaxen do not exist yet...
+						savedBoard[ri][ci].solved = false;
+					}
 				})
 			});
 
@@ -510,6 +519,13 @@ const blockReveal = (BOARD, row, cell) => {
 	if (!BOARD[row][cell].solved) {
 		BOARD[row][cell].solved = true;
 
+
+		if (BOARD[row][cell].block.type === 'tree') {
+			BOARD[row][cell].block.type = 'grass';
+			target.classList.remove('tree');
+			target.classList.add('grass');
+		}
+
 		target.classList.remove('unsolved');
 		target.classList.add('solved');
 
@@ -560,14 +576,14 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 	const targetRow = entity.position[1] + movePositionBy[1];
 	const targetCell = entity.position[0] + movePositionBy[0];
 
-	// Make sure entity can move to target block
+	// Make sure target block exists
 	const targetBlock = document.querySelector(`#overworldrow${targetRow}cell${targetCell}`);
 	if (targetBlock) {
 		entity.position[1] = targetRow;
 		entity.position[0] = targetCell;
 
 		if (entity.revealsBlocks) {
-			blockReveal(BOARD, entity.position[1], entity.position[0])
+			blockReveal(BOARD, entity.position[1], entity.position[0]);
 		}
 
 
@@ -678,7 +694,8 @@ let mobKinds = {
 			"grass seed"
 		],
 		hostile: false,
-		canWalkOn: ['grass', 'dirt', 'farm']
+		canWalkOn: ['grass', 'dirt', 'farm'],
+		tools: {}
 	}
 }
 
@@ -956,7 +973,15 @@ const moveMobs = (mobs, player, moveHostileOnly) => {
 			newPosition[Math.floor(Math.random() * 2)] += -1 + Math.floor(Math.random() * 3)
 		}
 
-		placeEntity(mob, newPosition, mobs, player);
+		const targetRow = mob.position[1] + newPosition[1];
+		const targetCell = mob.position[0] + newPosition[0];
+
+		// Make sure target block exists
+		const targetBlock = document.querySelector(`#overworldrow${targetRow}cell${targetCell}`);
+
+		if (canMoveOntoBlock(targetBlock, mob, newPosition)) {
+			placeEntity(mob, newPosition, mobs, player);
+		}
 	});
 
 	return mobs;
@@ -971,6 +996,7 @@ const canNavigate = (entity, blockType) => {
 
 	navigable = entity.canWalkOn.includes(blockType);
 
+	entity.tools = entity.tools || {};
 	switch (blockType) {
 		case 'cobble':
 		case 'stone':
