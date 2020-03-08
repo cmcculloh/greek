@@ -358,7 +358,9 @@ const BLOCKS = {
 	S: { type: 'stone', groupingMultiplier: 3, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 110, 'stone') },
 	W: { type: 'water', groupingMultiplier: 10, test: (config, player) => mediumQuestion(config, player), reward: (player) => rewardPlayer(player, 105, 'water') },
 	F: { type: 'farm', groupingMultiplier: 5, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 110, 'carrots') },
-	G: { type: 'grass', groupingMultiplier: 11, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'grass seed') }
+	G: { type: 'grass', groupingMultiplier: 11, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'grass seed') },
+	P: { type: 'plank', groupingMultiplier: 1, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'plank') },
+	L: { type: 'log', groupingMultiplier: 1, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'localStorage') }
 }
 
 
