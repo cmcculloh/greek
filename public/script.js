@@ -363,6 +363,19 @@ const BLOCKS = {
 	L: { type: 'log', groupingMultiplier: 1, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'log') }
 }
 
+const STRUCTURES = {
+	SHOP: {
+		PATTERN: [
+			['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
+			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
+			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
+			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
+			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
+			['P', 'P', 'P', 'P', 'D', 'D', 'P', 'P', 'P', 'P']
+		]
+	}
+}
 
 DEFAULT = BLOCKS.G;
 
@@ -410,6 +423,45 @@ const generateBoard = (BOARD, width, height, idPrefix) => {
 			};
 		}
 	}
+
+	// add the structures
+	const shopStartRI = Math.floor(Math.random() * 10) + 80;
+	const shopStartCI = Math.floor(Math.random() * 10) + 80;
+	let shopDoorRI = shopStartRI + 5;
+	let shopDoorCI = shopStartCI + 4;
+
+	// first make a path from the shop to the player
+	while (shopDoorRI < 99) {
+		BOARD[shopDoorRI][shopDoorCI] = {
+			block: JSON.parse(JSON.stringify(BLOCKS['D'])),
+			selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
+		};
+		BOARD[shopDoorRI][shopDoorCI+1] = {
+			block: JSON.parse(JSON.stringify(BLOCKS['D'])),
+			selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
+		};
+		shopDoorRI += 1;
+	}
+	while (shopDoorCI < 102) {
+		BOARD[shopDoorRI][shopDoorCI] = {
+			block: JSON.parse(JSON.stringify(BLOCKS['D'])),
+			selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
+		};
+		BOARD[shopDoorRI+1][shopDoorCI] = {
+			block: JSON.parse(JSON.stringify(BLOCKS['D'])),
+			selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
+		};
+		shopDoorCI += 1;
+	}
+
+
+	// then make the shop
+	STRUCTURES.SHOP.PATTERN.forEach((row, ri) => row.forEach((cell, ci) => {
+		BOARD[shopStartRI + ri][shopStartCI + ci] = {
+			block: JSON.parse(JSON.stringify(BLOCKS[STRUCTURES.SHOP.PATTERN[ri][ci]])),
+			selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
+		};
+	}));
 
 	// console.log(BOARD);
 
