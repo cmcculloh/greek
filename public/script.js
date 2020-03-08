@@ -561,7 +561,9 @@ const blockReveal = (BOARD, row, cell) => {
 				} else if (BOARD[nearbyRow] && BOARD[nearbyRow][nearbyCell] && !BOARD[nearbyRow][nearbyCell].nearby) {
 					BOARD[nearbyRow][nearbyCell].nearby = true;
 
-					document.querySelector(`#${BOARD[nearbyRow][nearbyCell].selector(nearbyRow, nearbyCell)}`).classList.add('nearby');
+					const block = document.querySelector(`#${BOARD[nearbyRow][nearbyCell].selector(nearbyRow, nearbyCell)}`);
+					block.classList.add('nearby');
+					block.classList.remove('notnearby');
 				}
 			}
 		}
