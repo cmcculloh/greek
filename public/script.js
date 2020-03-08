@@ -25,9 +25,11 @@ const DEFAULT_PLAYER = {
 	HP: 10,
 	points: 0,
 	items: {},
+	tools: {},
 	position: [100, 100],
 	questions: [],
-	gameVersion: 4.4
+	gameVersion: 4.5,
+	canWalkOn: ['grass', 'dirt', 'farm', 'tree']
 };
 
 const STARTING_LEVEL = 1;
@@ -341,6 +343,7 @@ const refreshHUD = (player) => {
 			<li>Points: ${player.points}</li>`;
 
 	for (const item in player.items) { html += `<li>${item}: ${player.items[item]}</li>`; }
+	for (const tool in player.tools) { html += `<li>${tool}: ${player.tools[tool]}</li>`; }
 	for (const mob in player.mobs) { html += `<li>${mob}: ${player.mobs[mob]}</li>`; }
 
 	html += `</ul>`;
@@ -674,7 +677,8 @@ let mobKinds = {
 		captureWith: [
 			"grass seed"
 		],
-		hostile: false
+		hostile: false,
+		canWalkOn: ['grass', 'dirt', 'farm']
 	}
 }
 
@@ -727,6 +731,8 @@ const hydratePlayer = (questions) => {
 	player.name = player.name || 'Steve';
 	player.HP = player.HP || 10;
 	player.type = player.type || 'pc';
+	player.canWalkOn = player.canWalkOn || ['grass', 'dirt', 'farm', 'tree'];
+	player.tools = player.tools || {};
 
 	player.questions = player.questions || [];
 
@@ -960,6 +966,48 @@ const isOverworld = () => {
 	return document.querySelector('#overworld').classList.contains('visible');
 }
 
+const canNavigate = (entity, blockType) => {
+	let navigable = false;
+
+	navigable = entity.canWalkOn.includes(blockType);
+
+	switch (blockType) {
+		case 'cobble':
+		case 'stone':
+			navigable = entity.tools['pickaxe'] ? true : navigable;
+			break;
+		case 'water':
+			navigable = entity.tools['boat'] ? true : navigable;
+			break;
+		case 'log':
+		case 'plank':
+			navigable = entity.tools['axe'] ? true : navigable;
+			break;
+	}
+
+	return navigable;
+}
+
+const canMoveOntoBlock = (attemptBlock, entity, movePositionBy) => {
+	let canMove = false;
+
+	if (canNavigate(entity, attemptBlock.getAttribute('data-type'))) {
+		canMove = true;
+	}
+
+	if (!canMove) {
+		entity.DOM.style.left = `${(entity.position[0] * 30) + (movePositionBy[0] * 5)}px`;
+		entity.DOM.style.top = `${(entity.position[1] * 30) + (movePositionBy[1] * 2)}px`;
+
+		window.setTimeout(() => {
+			entity.DOM.style.left = `${(entity.position[0] * 30)}px`
+			entity.DOM.style.top = `${(entity.position[1] * 30)}px`
+		}, 20);
+	}
+
+	return canMove;
+}
+
 document.addEventListener('keypress', async (e) => {
 	let movePositionBy = [ 0, 0 ];
 	let doMovePlayer = false;
@@ -994,6 +1042,8 @@ document.addEventListener('keypress', async (e) => {
 
 	if ( isOverworld() && doMovePlayer ) {
 		const attemptBlock = document.querySelector(`#overworldrow${player.position[1] + movePositionBy[1]}cell${player.position[0] + movePositionBy[0]}`);
+
+		if (!canMoveOntoBlock(attemptBlock, player, movePositionBy)) { return; }
 
 		let moveHostileOnly = true;
 
