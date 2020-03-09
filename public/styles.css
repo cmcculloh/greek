@@ -69,7 +69,11 @@
 		background-image: url('sheep.jpeg');
 	}
 
-	#mobs .sheep {
+	.shopkeeper {
+		background-image: url('shopkeeper.png');
+	}
+
+	#mobs .sheep, #mobs .shopkeeper {
 		position: absolute;
 		height: 30px;
 		width: 30px;

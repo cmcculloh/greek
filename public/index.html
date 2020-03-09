@@ -7,23 +7,6 @@
 
 
 <script>
-	const confirmRegenerate = () => {
-		const doit = confirm('completely destroy and re-create your board? (THIS CAN NOT BE UNDONE)');
-
-		if (doit) {
-			localStorage.removeItem('board');
-			BOARD = hydrateBoard();
-			overworldBoard = buildBoardDOM(BOARD);
-			overworld = document.querySelector('#overworld');
-			overworld.innerHTML = '';
-			overworld.appendChild(overworldBoard);
-			showOverworld();
-
-			player.position = [100, 100];
-			placeEntity(player, [0,0], mobs, player);
-		}
-	}
-
 	const hide = () => {
 		document.querySelector('#instructions').style.display = 'none';
 		document.querySelector('#showInstructions').style.display = 'block';

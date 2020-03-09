@@ -17,6 +17,14 @@ const shuffle = (a) => {
     return a;
 }
 
+let mobs;
+let BOARD;
+let overworldBoard;
+let player;
+let overworld = document.querySelector('#overworld');
+let mobsWrapper = document.querySelector('#mobs');
+
+
 const DEFAULT_PLAYER = {
 	type: 'pc',
 	name: 'Steve',
@@ -35,6 +43,86 @@ const DEFAULT_PLAYER = {
 const STARTING_LEVEL = 1;
 const BOARD_WIDTH = 200;
 const BOARD_HEIGHT = 200;
+
+let mobKinds = {
+	'sheep': {
+		type: 'npc',
+		kind: 'sheep',
+		name: 'Sheep',
+		classList: ['sheep'],
+		revealsBlocks: false,
+		points: 10,
+		HP: 5,
+		baseLevel: 1,
+		ac: 14,
+		drops: {
+			"wool": { probability: 100, quantity: [{ probability: 100, amount: 1 }, { probability: 50, amount: 2 }, { probability: 25, amount: 3 }]},
+			"mutton": { probability: 10, quantity: [{ probability: 100, amount: 1 }, { probability: 10, amount: 2 }]}
+		},
+		vulnerableTo: [
+
+		],
+		captureWith: [
+			"grass seed"
+		],
+		hostile: false,
+		canWalkOn: ['grass', 'dirt', 'farm'],
+		tools: {},
+		isDespawnable: true
+	},
+	'shopkeeper': {
+		type: 'npc',
+		kind: 'shopkeeper',
+		name: 'Shopkeeper',
+		classList: ['shopkeeper'],
+		revealsBlocks: false,
+		points: 10,
+		HP: 5,
+		baseLevel: 1,
+		ac: 14,
+		drops: {
+		},
+		vulnerableTo: [
+
+		],
+		captureWith: [
+
+		],
+		hostile: false,
+		canWalkOn: ['grass', 'dirt', 'farm'],
+		tools: {},
+		isDespawnable: false
+	}
+}
+
+const createMob = (type) => {
+	const mob = JSON.parse(JSON.stringify(mobKinds[type]));
+
+	mob.level = mob.baseLevel + Math.floor(Math.random() * 4);
+	mob.id = uuidv4();
+
+	return mob;
+}
+
+const hydrateMobs = () => {
+	const savedMobs = JSON.parse( localStorage.getItem('mobs') ) || [];
+
+	if (savedMobs.length === 0) {
+		for (let i = 0; i < 10; i++) {
+			savedMobs.push(createMob('sheep'));
+		}
+	}
+
+	return savedMobs;
+}
+
+const saveMobs = (mobs) => {
+	console.log('saveMobs!');
+	localStorage.setItem( 'mobs', JSON.stringify(mobs) );
+
+	return mobs;
+}
+
 
 
 const saveQuestionScore = (player, question, correct) => {
@@ -373,6 +461,9 @@ const STRUCTURES = {
 			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
 			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
 			['P', 'P', 'P', 'P', 'D', 'D', 'P', 'P', 'P', 'P']
+		],
+		mobs: [
+			{ type: 'shopkeeper', location: [2, 5] }
 		]
 	}
 }
@@ -454,7 +545,6 @@ const generateBoard = (BOARD, width, height, idPrefix) => {
 		shopDoorCI += 1;
 	}
 
-
 	// then make the shop
 	STRUCTURES.SHOP.PATTERN.forEach((row, ri) => row.forEach((cell, ci) => {
 		BOARD[shopStartRI + ri][shopStartCI + ci] = {
@@ -462,6 +552,16 @@ const generateBoard = (BOARD, width, height, idPrefix) => {
 			selector: (ri, ci) => `${idPrefix}row${ri}cell${ci}`
 		};
 	}));
+
+
+	// now add the shopkeeper
+	STRUCTURES.SHOP.mobs.forEach((mob) => {
+		console.log('shopStartRI', shopStartRI, 'shopStartCI', shopStartCI, mob.location[0], mob.location[1]);
+		let structureMob = createMob(mob.type);
+		structureMob.position = [shopStartCI + mob.location[1], shopStartRI + mob.location[0]];
+		mobs.push(structureMob);
+		console.log('made shopkeeper');
+	});
 
 	// console.log(BOARD);
 
@@ -652,7 +752,7 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 			entity.DOM.style.display = 'none';
 
 			// De-Spawn entity if they are too far from the player
-			if (Math.abs(player.position[0] - entity.position[0]) > 40 || Math.abs(player.position[1] - entity.position[1]) > 40) {
+			if (entity.isDespawnable && (Math.abs(player.position[0] - entity.position[0]) > 40 || Math.abs(player.position[1] - entity.position[1]) > 40)) {
 				console.log('de-spawning');
 				entity.DOM.remove();
 				initMob(entity, player);
@@ -699,12 +799,6 @@ const buildBoardDOM = (BOARD) => {
 	return board;
 }
 
-let BOARD = hydrateBoard();
-let overworldBoard = buildBoardDOM(BOARD);
-let overworld = document.querySelector('#overworld');
-overworld.appendChild(overworldBoard);
-showOverworld();
-
 const getDrops = (mob) => {
 	const luck = Math.random() * 100;
 
@@ -726,59 +820,22 @@ const getDrops = (mob) => {
 	return loot;
 }
 
-let mobs = [];
-let mobKinds = {
-	'sheep': {
-		type: 'npc',
-		kind: 'sheep',
-		name: 'Sheep',
-		classList: ['sheep'],
-		revealsBlocks: false,
-		points: 10,
-		HP: 5,
-		baseLevel: 1,
-		ac: 14,
-		drops: {
-			"wool": { probability: 100, quantity: [{ probability: 100, amount: 1 }, { probability: 50, amount: 2 }, { probability: 25, amount: 3 }]},
-			"mutton": { probability: 10, quantity: [{ probability: 100, amount: 1 }, { probability: 10, amount: 2 }]}
-		},
-		vulnerableTo: [
-
-		],
-		captureWith: [
-			"grass seed"
-		],
-		hostile: false,
-		canWalkOn: ['grass', 'dirt', 'farm'],
-		tools: {}
-	}
-}
-
-const createMob = (type) => {
-	const mob = JSON.parse(JSON.stringify(mobKinds[type]));
-
-	mob.level = mob.baseLevel + Math.floor(Math.random() * 4);
-	mob.id = uuidv4();
-
-	return mob;
-}
-
-for (let i = 0; i < 10; i++) {
-	mobs.push(createMob('sheep'));
-}
-
 const initMob = (mob, player) => {
-	let randX = Math.floor(Math.random() * 50) - 25;
-	let randY = Math.floor(Math.random() * 50) - 25;
+	console.log('initMob', mob);
+	if (!mob.position) {
+		console.log('make random position up for mob: ', mob.kind)
+		let randX = Math.floor(Math.random() * 50) - 25;
+		let randY = Math.floor(Math.random() * 50) - 25;
 
-	// make sure hostile mobs don't spawn too close
-	if (mob.hostile && (Math.abs(randX) < 10 || Math.abs(randY) < 10)) {
-		randX = randX < 0 ? randX - 10 : randX + 10;
-		randY = randY < 0 ? randY - 10 : randX + 10;
+		// make sure hostile mobs don't spawn too close
+		if (mob.hostile && (Math.abs(randX) < 10 || Math.abs(randY) < 10)) {
+			randX = randX < 0 ? randX - 10 : randX + 10;
+			randY = randY < 0 ? randY - 10 : randX + 10;
+		}
+
+		// place mob near the player
+		mob.position = [ player.position[0] + randX, player.position[1] + randY ];
 	}
-
-	// place mob near the player
-	mob.position = [ player.position[0] + randX, player.position[1] + randY ];
 
 	const mobDOM = document.createElement('div');
 	mobDOM.classList.add(mob.classList);
@@ -1140,6 +1197,7 @@ document.addEventListener('keypress', async (e) => {
 		}
 
 		mobs = moveMobs(mobs, player, moveHostileOnly);
+		mobs = saveMobs(mobs);
 
 		player = savePlayer(player);
 	} else if (doMovePlayer) {
@@ -1177,11 +1235,43 @@ setFog(config.fogofwar);
 
 document.querySelector('#fogofwar').addEventListener('change', (e) => setFog(e.target.checked));
 
-let player = hydratePlayer(config.questions);
-mobs = initMobs(mobs, player);
+const reset = () => {
+	console.log('reset!!!');
+	overworld.innerHTML = '';
+	mobsWrapper.innerHTML = '';
+	localStorage.removeItem('board');
+	localStorage.removeItem('mobs');
+	player.position = [100, 100];
+}
 
-window.setTimeout(() => {
-	placeEntity(player, [0,0], mobs, player);
-}, 500)
+const confirmRegenerate = () => {
+	const doit = confirm('completely destroy and re-create your board? (THIS CAN NOT BE UNDONE)');
+
+	if (doit) {
+		init(true);
+	}
+}
+
+const init = (doReset = false) => {
+	player = hydratePlayer(config.questions);
+
+	if (doReset) reset();
+	mobs = hydrateMobs();
+	BOARD = hydrateBoard();
+	overworldBoard = buildBoardDOM(BOARD);
+
+	overworld.appendChild(overworldBoard);
+	showOverworld();
+
+	mobs = initMobs(mobs, player);
+	saveMobs(mobs);
+	saveBoard(BOARD);
+
+	window.setTimeout(() => {
+		placeEntity(player, [0,0], mobs, player);
+	}, 500)
+}
+
+init();
 
 console.log(`game version ${DEFAULT_PLAYER.gameVersion}, player version ${player.gameVersion}`);
