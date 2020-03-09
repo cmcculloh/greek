@@ -449,7 +449,16 @@ const refreshHUD = (player) => {
 
 	html += `</ul>`;
 
+	html += `<p>
+		<input type="checkbox" value="shovel" id="shovelToggle" ${player.usingTool === 'shovel' ? 'checked' : ''}/> Use Shovel
+	</p>`;
+
 	document.querySelector('#scoreBoard').innerHTML = html;
+
+	document.querySelector('#shovelToggle').addEventListener('click', (e) => {
+		player.usingTool = player.usingTool === 'shovel' ? '' : 'shovel';
+		savePlayer(player);
+	})
 }
 
 
@@ -684,15 +693,23 @@ const blockReveal = (BOARD, row, cell) => {
 
 	const target = document.querySelector(`#${BOARD[row][cell].selector(row, cell)}`);
 
-	if (!BOARD[row][cell].solved) {
-		BOARD[row][cell].solved = true;
-
-
-		if (BOARD[row][cell].block.type === 'tree') {
+	switch (BOARD[row][cell].block.type) {
+		case 'tree':
 			BOARD[row][cell].block.type = 'grass';
 			target.classList.remove('tree');
 			target.classList.add('grass');
-		}
+			break;
+		case 'grass':
+			if (player.usingTool === 'shovel') {
+				BOARD[row][cell].block.type = 'dirt';
+				target.classList.remove('grass');
+				target.classList.add('dirt');
+			}
+			break;
+	}
+
+	if (!BOARD[row][cell].solved) {
+		BOARD[row][cell].solved = true;
 
 		target.classList.remove('unsolved');
 		target.classList.add('solved');
