@@ -234,8 +234,6 @@ const getRandomChoice = (currentChoices, rightAnswer, getChoiceFromQuestions, co
 		const upperLimit = rightAnswer.level + 1;
 		sameLevelQuestions = config.questions.filter(question => question.level >= lowerLimit && question.level <= upperLimit);
 		sameLevelWrongAnswers = sameLevelQuestions.flatMap(question => {
-			console.log('question: ', question.question)
-			console.log(currentChoices.length);
 			if (getChoiceFromQuestions) {
 				return question.question.filter(q => !currentChoices.includes(q));
 			}
@@ -770,6 +768,7 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 			if (entity.isDespawnable && (Math.abs(player.position[0] - entity.position[0]) > 40 || Math.abs(player.position[1] - entity.position[1]) > 40)) {
 				console.log('de-spawning');
 				entity.DOM.remove();
+				entity.position = null;
 				initMob(entity, player);
 			}
 		}
