@@ -753,10 +753,15 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 	if (entity !== player && entity.position[0] + movePositionBy[0] === player.position[0] && entity.position[1] + movePositionBy[1] === player.position[1]) {
 		movePositionBy[0] = 0;
 		movePositionBy[1] = 0;
-		collision = true;
+		collide(entity, player, mobs);
+	} else if (entity === player) {
+		mobs.forEach((mob) => {
+			if (entity.position[0] + movePositionBy[0] === mob.position[0]
+				&& entity.position[1] + movePositionBy[1] === mob.position[1]) {
+				collide(player, mob, mobs);
+			}
+		});
 	}
-
-	if (collision) { collide(entity, player, mobs); }
 
 	const targetRow = entity.position[1] + movePositionBy[1];
 	const targetCell = entity.position[0] + movePositionBy[0];
