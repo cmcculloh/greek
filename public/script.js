@@ -98,14 +98,23 @@ let mobKinds = {
 const createMob = (type) => {
 	const mob = JSON.parse(JSON.stringify(mobKinds[type]));
 
-	mob.level = mob.baseLevel + Math.floor(Math.random() * 4);
-	mob.id = uuidv4();
+	mob.level = mob.level || mob.baseLevel + Math.floor(Math.random() * 4);
+	mob.id = mob.id || uuidv4();
+	mob.collide = mobKinds[type].collide;
 
 	return mob;
 }
 
 const hydrateMobs = () => {
-	const savedMobs = JSON.parse( localStorage.getItem('mobs') ) || [];
+	let savedMobs = JSON.parse( localStorage.getItem('mobs') ) || [];
+
+	// re-attach any methods
+	savedMobs = savedMobs.map((mob) => {
+		mob = createMob(mob.kind);
+
+		return mob;
+	});
+
 
 	if (savedMobs.length === 0) {
 		for (let i = 0; i < 10; i++) {
@@ -753,11 +762,13 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 	if (entity !== player && entity.position[0] + movePositionBy[0] === player.position[0] && entity.position[1] + movePositionBy[1] === player.position[1]) {
 		movePositionBy[0] = 0;
 		movePositionBy[1] = 0;
-		collide(entity, player, mobs);
+		console.log((typeof entity.collide === 'function'), entity);
+		(typeof entity.collide === 'function') ? entity.collide(entity, player, mobs) : collide(entity, player, mobs);
 	} else if (entity === player) {
 		mobs.forEach((mob) => {
 			if (entity.position[0] + movePositionBy[0] === mob.position[0]
 				&& entity.position[1] + movePositionBy[1] === mob.position[1]) {
+				console.log((typeof mob.collide === 'function'), mob);
 				(typeof mob.collide === 'function') ? mob.collide(player, mob, mobs) : collide(player, mob, mobs);
 			}
 		});
