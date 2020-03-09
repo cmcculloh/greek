@@ -216,22 +216,37 @@ const doDungeon = (config, question) => {
 	dungeon.appendChild(boardDOM);
 }
 
-const getRandomChoice = (currentChoices, rightAnswer, askAnswerInsteadOfQuestion, config, player) => {
-	const sameLevelQuestions = config.questions.filter(question => question.level === rightAnswer.level);
-	const sameLevelWrongAnswers = sameLevelQuestions.filter(question => question.question[0] !== rightAnswer.question[0]);
-
+const getRandomChoice = (currentChoices, rightAnswer, getChoiceFromQuestions, config, player) => {
 	// loop through sameLevelWrongAnswers and generate all of the possible options you can from them
 	// filter out the already chosen possibilities (the things in currentChoices)
+	let sameLevelQuestions = config.questions.filter(question => question.level === rightAnswer.level);
+	let sameLevelWrongAnswers = sameLevelQuestions.flatMap(question => {
+		if (getChoiceFromQuestions) {
+			return question.question.filter(q => !currentChoices.includes(q));
+		}
+		return question.answer.filter(q => !currentChoices.includes(q));
+	});
+
 	// if there is nothing left, go through levelAppropriateQuestions and populate more possibilities
 	// filter out the already chosen possibilities (the things in currentChoices)
-	// choose a random options from what is left and return it
-
-	if (askAnswerInsteadOfQuestion) {
-		return sameLevelWrongAnswers[Math.floor(Math.random() * sameLevelWrongAnswers.length)].question[0];
+	if (sameLevelWrongAnswers.length <= 0) {
+		const lowerLimit = rightAnswer.level - Math.floor(rightAnswer.level * .50);
+		const upperLimit = rightAnswer.level + 1;
+		sameLevelQuestions = config.questions.filter(question => question.level >= lowerLimit && question.level <= upperLimit);
+		sameLevelWrongAnswers = sameLevelQuestions.flatMap(question => {
+			console.log('question: ', question.question)
+			console.log(currentChoices.length);
+			if (getChoiceFromQuestions) {
+				return question.question.filter(q => !currentChoices.includes(q));
+			}
+			return question.answer.filter(q => !currentChoices.includes(q));
+		});
 	}
-	return sameLevelWrongAnswers[Math.floor(Math.random() * sameLevelWrongAnswers.length)].answer[0];
 
-	// const levelAppropriateQuestions = config.questions.filter(question => question.level <= getLevel(player.points) && question.level >= getLevel(player.points) - 5);
+
+	// choose a random options from what is left and return it
+	const newChoice = sameLevelWrongAnswers[Math.floor(Math.random() * sameLevelWrongAnswers.length)];
+	return newChoice;
 }
 
 const launchQuizUI = (config, question, player, resolve) => {
@@ -247,8 +262,8 @@ const launchQuizUI = (config, question, player, resolve) => {
 
 	const choices = [];
 	for (let i = 0; i < 9; i++) {
-		if (answers[i] && i < 3) {
-			choices.push(answers[i]);
+		if (i < 1) {
+			choices.push(answers[Math.floor(Math.random() * answers.length)]);
 		} else {
 			choices.push(getRandomChoice(choices, question, askAnswerInsteadOfQuestion, config, player));
 		}
