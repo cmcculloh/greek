@@ -758,7 +758,7 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 		mobs.forEach((mob) => {
 			if (entity.position[0] + movePositionBy[0] === mob.position[0]
 				&& entity.position[1] + movePositionBy[1] === mob.position[1]) {
-				collide(player, mob, mobs);
+				(typeof mob.collide === 'function') ? mob.collide(player, mob, mobs) : collide(player, mob, mobs);
 			}
 		});
 	}
