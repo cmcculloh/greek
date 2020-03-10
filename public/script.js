@@ -509,21 +509,26 @@ const rewardPlayer = (player, amount, item) => {
 }
 
 const refreshHUD = (player) => {
-	let html = `<ul>
+	document.querySelector('#scoreBoard').innerHTML = `
+		<ul>
 			<li>Level: ${getLevel(player.points)}</li>
-			<li>Points: ${player.points}</li>`;
+			<li>Points: ${player.points}</li>
+			${Object.keys(player.mobs).reduce((mobs, mob) => mobs + `<li>${mob}: ${player.mobs[mob]}</li>`, '')}
+		</ul>
+	`;
 
-	for (const item in player.items) { html += `<li>${item}: ${player.items[item]}</li>`; }
-	for (const tool in player.tools) { html += `<li>${tool}: ${player.tools[tool]}</li>`; }
-	for (const mob in player.mobs) { html += `<li>${mob}: ${player.mobs[mob]}</li>`; }
-
-	html += `</ul>`;
 
 	// html += `<p>
 	// 	<input type="checkbox" value="shovel" id="shovelToggle" ${player.usingTool === 'shovel' ? 'checked' : ''}/> Use Shovel
 	// </p>`;
 
-	document.querySelector('#scoreBoard').innerHTML = html;
+
+	document.querySelector('#tools').innerHTML = `
+		<ul>
+			${Object.keys(player.tools).reduce((tools, tool) => tools + `<li class="${tool.replace(/ /g, '-')}"><div>${player.tools[tool]}</div></li>`, '')}
+			${Object.keys(player.items).reduce((items, item) => items + `<li class="${item.replace(/ /g, '-')}"><div>${player.items[item]}</div></li>`, '')}
+		</ul>
+	`;
 
 	// document.querySelector('#shovelToggle').addEventListener('click', (e) => {
 	// 	player.usingTool = player.usingTool === 'shovel' ? '' : 'shovel';

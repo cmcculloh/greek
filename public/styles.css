@@ -105,6 +105,60 @@
 		margin: 0;
 	}
 
+	#tools {
+		position: fixed;
+		height: 66px;
+		top: 30px;
+		left: 0;
+		right: 0px;
+		display: flex;
+		justify-content: space-around;
+	}
+
+	#tools ul {
+		list-style-type: none;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-start;
+		align-content: flex-start;
+	}
+
+	#tools li {
+		background-image: url('blocks.png');
+		background-size: 2048px;
+		width: 60px;
+		height: 60px;
+		display: flex;
+		align-content: flex-end;
+		justify-content: flex-end;
+		align-items: flex-end;
+		background-color: rgba(0, 0, 0, 0.2);
+		margin-top: 2px;
+		cursor: pointer;
+		border: 4px ridge #888;
+		border-radius: 1px;
+	}
+
+	#tools li:hover {
+		margin-top: 0;
+		border: 6px ridge #aaa;
+	}
+
+	#tools li:active {
+		margin-top: 0;
+		border: 6px ridge #fff;
+	}
+
+	#tools li div {
+		font-size: 38px;
+		margin-bottom: -10px;
+		margin-right: -4px;
+		text-align: right;
+		color: white;
+		text-shadow: 2px 2px 0 black;
+	}
+
 	#battle.visible, #dungeon.visible {
 		position: fixed;
 		background-color: white;
@@ -370,7 +424,7 @@
 		margin-bottom: 30px;
 	}
 
-	#wares .ware {
+	#wares .item {
 		cursor: pointer;
 		border: 1px solid black;
 		border-radius: 4px;
@@ -384,47 +438,51 @@
 		border: 1px solid orange;
 	}
 
-	#wares .item.shovel {
+	#wares .item.grass-seed, #tools li.grass-seed {
+		background-position: -63px -1154px;
+	}
+
+	#wares .item.shovel, #tools li.shovel {
 		background-position: -1987px -708px;
 	}
 
-	#wares .item.sword {
+	#wares .item.sword, #tools li.sword {
 		background-position: -1987px -768px;
 	}
 
-	#wares .item.gold {
+	#wares .item.gold, #tools li.gold {
 		background-position: -1921px -649px;
 	}
 
-	#wares .item.carrot {
+	#wares .item.carrot, #tools li.carrot {
 		background-position: -1601px -389px;
 	}
 
-	#wares .item.axe {
+	#wares .item.axe, #tools li.axe {
 		background-position: -1987px -128px;
 	}
 
-	#wares .item.hoe {
+	#wares .item.hoe, #tools li.hoe {
 		background-position: -1987px -387px;
 	}
 
-	#wares .item.pickaxe {
+	#wares .item.pickaxe, #tools li.pickaxe {
 		background-position: -1987px -647px;
 	}
 
-	#wares .item.emerald {
+	#wares .item.emerald, #tools li.emerald {
 		background-position: -1796px -647px;
 	}
 
-	#wares .item.boat {
+	#wares .item.boat, #tools li.boat {
 		background-position: -1537px -193px;
 	}
 
-	#wares .item.potion {
+	#wares .item.potion, #tools li.potion {
 		background-position: -1857px -68px;
 	}
 
-	#wares .item.bed {
+	#wares .item.bed, #tools li.bed {
 		background-position: -1474px -898px;
 	}
 
