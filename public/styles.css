@@ -306,4 +306,28 @@
 	#quiz .grass.hidden {
 		display: none;
 	}
+
+	#battle #wares {
+		flex-grow: 3;
+		flex-basis: 591px;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+		display: flex;
+		flex-wrap: wrap;
+		flex-direction: row;
+	}
+
+	#battle #wares .ware {
+		font-size: 20px;
+		text-shadow: 1px 1px 4px black;
+		width: 200px;
+		height: 200px;
+		margin: auto;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		align-content: center;
+		flex-wrap: wrap;
+		flex-direction: column;
 	}

@@ -44,6 +44,50 @@ const STARTING_LEVEL = 1;
 const BOARD_WIDTH = 200;
 const BOARD_HEIGHT = 200;
 
+const goShopping = (collider, collidee, mobs) => {
+	let player = collider.type === 'pc' ? collider : collidee;
+	let shopkeeper = collider.type === 'npc' ? collider : collidee;
+
+	hideOverworld();
+	const battleBoard = document.querySelector('#battle');
+	battleBoard.classList.add('visible');
+
+	const wares = JSON.parse(JSON.stringify(shopkeeper.wares));
+	shuffle(wares);
+	const offerings = wares.slice(0, 9);
+
+	const contents = `
+		<div id="wares">
+			${offerings.reduce((choices, choice) => choices + `<div class="ware" data-item="${choice.type}" data-price="${choice.price}" data-cost="${choice.cost}"><div class="item">${choice.type}</div><div class="cost">${choice.price} ${choice.cost}</div></div>`, '')}
+		</div>
+	`;
+
+	battleBoard.innerHTML = contents;
+
+	let listener;
+	const hideShop = (success) => {
+		battleBoard.querySelector('#wares').removeEventListener('click', listener);
+		battleBoard.classList.remove('visible');
+		showOverworld();
+		resolve(success);
+	}
+
+	const makePurchase = (e) => {
+		const ware = e.target.closest('.ware');
+		const item = ware.dataset.item;
+		const price = ware.dataset.price;
+		const cost = ware.dataset.cost;
+
+		if (player.items[cost] >= price) {
+			player.items[item] = player.items[item] + 1 || 1;
+			player.items[cost] = player.items[cost] - price || 0;
+			player = savePlayer(player);
+		}
+	}
+
+	listener = battleBoard.querySelector('#wares').addEventListener('click', makePurchase);
+}
+
 let mobKinds = {
 	'sheep': {
 		type: 'npc',
@@ -91,7 +135,20 @@ let mobKinds = {
 		hostile: false,
 		canWalkOn: ['grass', 'dirt', 'farm'],
 		tools: {},
-		isDespawnable: false
+		isDespawnable: false,
+		collide: goShopping,
+		wares: [
+			{ type: 'shovel', price: 500, cost: 'gold' },
+			{ type: 'boat', price: 1000, cost: 'gold' },
+			{ type: 'bed', price: 30, cost: 'gold' },
+			{ type: 'potion', price: 100, cost: 'gold' },
+			{ type: 'gold', price: 20, cost: 'dirt' },
+			{ type: 'gold', price: 50, cost: 'grass seed' },
+			{ type: 'gold', price: 10, cost: 'wool' },
+			{ type: 'gold', price: 5, cost: 'mutton' },
+			{ type: 'gold', price: 20, cost: 'carrots' },
+			{ type: 'gold', price: 50, cost: 'water' }
+		]
 	}
 }
 
