@@ -522,18 +522,30 @@ const refreshHUD = (player) => {
 	// 	<input type="checkbox" value="shovel" id="shovelToggle" ${player.usingTool === 'shovel' ? 'checked' : ''}/> Use Shovel
 	// </p>`;
 
+	// remove event listeners
+	const oldDOM = document.querySelector('#tools');
+	const newDOM = oldDOM.cloneNode(true);
+	oldDOM.parentNode.replaceChild(newDOM, oldDOM);
 
 	document.querySelector('#tools').innerHTML = `
 		<ul>
-			${Object.keys(player.tools).reduce((tools, tool) => tools + `<li class="${tool.replace(/ /g, '-')}"><div>${player.tools[tool]}</div></li>`, '')}
-			${Object.keys(player.items).reduce((items, item) => items + `<li class="${item.replace(/ /g, '-')}"><div>${player.items[item]}</div></li>`, '')}
+			${Object.keys(player.tools).reduce((tools, tool) => tools + `<li class="${tool.replace(/ /g, '-')} tool ${player.usingTool === tool.replace(/ /g, '-') ? 'active' : ''}"><div>${player.tools[tool]}</div></li>`, '')}
+			${Object.keys(player.items).reduce((items, item) => items + `<li class="${item.replace(/ /g, '-')} tool ${player.usingTool === item.replace(/ /g, '-') ? 'active' : ''}"><div>${player.items[item]}</div></li>`, '')}
 		</ul>
 	`;
 
-	// document.querySelector('#shovelToggle').addEventListener('click', (e) => {
-	// 	player.usingTool = player.usingTool === 'shovel' ? '' : 'shovel';
-	// 	savePlayer(player);
-	// })
+	document.querySelector('#tools').addEventListener('click', (e) => {
+		document.querySelectorAll('#tools .tool').forEach((tool) => tool.classList.remove('active'));
+
+		const clicked = e.target.closest('.tool');
+		const whichTool = clicked.classList[0];
+
+		player.usingTool = player.usingTool === whichTool ? '' : whichTool;
+		if (player.usingTool === whichTool) {
+			clicked.classList.add('active');
+		}
+		savePlayer(player);
+	})
 }
 
 
@@ -768,17 +780,22 @@ const blockReveal = (BOARD, row, cell) => {
 
 	const target = document.querySelector(`#${BOARD[row][cell].selector(row, cell)}`);
 
+	let forceSave = false;
+
 	switch (BOARD[row][cell].block.type) {
 		case 'tree':
 			BOARD[row][cell].block.type = 'grass';
 			target.classList.remove('tree');
 			target.classList.add('grass');
+			forceSave = true;
 			break;
 		case 'grass':
 			if (player.usingTool === 'shovel') {
 				BOARD[row][cell].block.type = 'dirt';
 				target.classList.remove('grass');
 				target.classList.add('dirt');
+
+				forceSave = true;
 			}
 			break;
 	}
@@ -796,7 +813,7 @@ const blockReveal = (BOARD, row, cell) => {
 		setTimeout(threadedSave, 0);
 	} else {
 		// just queue the save
-		saveBoard(BOARD);
+		saveBoard(BOARD, forceSave);
 	}
 }
 
