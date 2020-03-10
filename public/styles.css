@@ -142,10 +142,10 @@
 
 	#tools li:hover {
 		margin-top: 0;
-		border: 6px ridge #aaa;
+		border: 4px ridge #aaa;
 	}
 
-	#tools li:active {
+	#tools li:active, #tools li.active {
 		margin-top: 0;
 		border: 6px ridge #fff;
 	}
@@ -458,6 +458,14 @@
 		background-position: -1601px -389px;
 	}
 
+	#wares .item.wool, #tools li.wool {
+		background-position: -1473px -512px;
+	}
+
+	#wares .item.dirt, #tools li.dirt {
+		background-position: -512px -389px;
+	}
+
 	#wares .item.axe, #tools li.axe {
 		background-position: -1987px -128px;
 	}
@@ -478,12 +486,20 @@
 		background-position: -1537px -193px;
 	}
 
+	#wares .item.wood, #tools li.wood {
+		background-position: -1027px -193px;
+	}
+
 	#wares .item.potion, #tools li.potion {
 		background-position: -1857px -68px;
 	}
 
 	#wares .item.bed, #tools li.bed {
 		background-position: -1474px -898px;
+	}
+
+	#wares .item.mutton, #tools li.mutton {
+		background-position: -1344px -1028px;
 	}
 
 	#battle.shop #wares .ware {
