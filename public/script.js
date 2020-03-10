@@ -50,16 +50,17 @@ const goShopping = (collider, collidee, mobs) => {
 
 	hideOverworld();
 	const battleBoard = document.querySelector('#battle');
-	battleBoard.classList.add('visible');
+	battleBoard.classList.add('visible', 'shop');
 
 	const wares = JSON.parse(JSON.stringify(shopkeeper.wares));
 	shuffle(wares);
-	const offerings = wares.slice(0, 9);
+	const offerings = wares.slice(0, 4);
 
 	const contents = `
 		<div id="controlBar"><div class="close">x</div></div>
+		<div id="shopkeeper"><div>BUY OR SELL SOMETHIN' WILL YA!</div><img src="shop_fire.png" /><img src="shopkeeper.png" /><img src="shop_fire.png" /></div>
 		<div id="wares">
-			${offerings.reduce((choices, choice) => choices + `<div class="ware" data-item="${choice.type}" data-price="${choice.price}" data-cost="${choice.cost}"><div class="item">${choice.type}</div><div class="cost">${choice.price} ${choice.cost}</div></div>`, '')}
+			${offerings.reduce((choices, choice) => choices + `<div class="ware" data-item="${choice.type}" data-price="${choice.price}" data-cost="${choice.cost}"><div class="item ${choice.type}"></div><div class="cost">${choice.price} ${choice.cost}</div></div>`, '')}
 		</div>
 	`;
 
@@ -68,9 +69,9 @@ const goShopping = (collider, collidee, mobs) => {
 	let listener;
 	const hideShop = () => {
 		battleBoard.querySelector('#wares').removeEventListener('click', listener);
-		battleBoard.classList.remove('visible');
+		battleBoard.classList.remove('visible', 'shop');
+		battleBoard.innerHTML = '';
 		showOverworld();
-		resolve(true);
 	}
 
 	const makePurchase = (e) => {
@@ -141,6 +142,10 @@ let mobKinds = {
 		collide: goShopping,
 		wares: [
 			{ type: 'shovel', price: 500, cost: 'gold' },
+			{ type: 'sword', price: 500, cost: 'gold' },
+			{ type: 'axe', price: 500, cost: 'gold' },
+			{ type: 'hoe', price: 100, cost: 'gold' },
+			{ type: 'pickaxe', price: 5000, cost: 'gold' },
 			{ type: 'boat', price: 1000, cost: 'gold' },
 			{ type: 'bed', price: 30, cost: 'gold' },
 			{ type: 'potion', price: 100, cost: 'gold' },
@@ -514,16 +519,16 @@ const refreshHUD = (player) => {
 
 	html += `</ul>`;
 
-	html += `<p>
-		<input type="checkbox" value="shovel" id="shovelToggle" ${player.usingTool === 'shovel' ? 'checked' : ''}/> Use Shovel
-	</p>`;
+	// html += `<p>
+	// 	<input type="checkbox" value="shovel" id="shovelToggle" ${player.usingTool === 'shovel' ? 'checked' : ''}/> Use Shovel
+	// </p>`;
 
 	document.querySelector('#scoreBoard').innerHTML = html;
 
-	document.querySelector('#shovelToggle').addEventListener('click', (e) => {
-		player.usingTool = player.usingTool === 'shovel' ? '' : 'shovel';
-		savePlayer(player);
-	})
+	// document.querySelector('#shovelToggle').addEventListener('click', (e) => {
+	// 	player.usingTool = player.usingTool === 'shovel' ? '' : 'shovel';
+	// 	savePlayer(player);
+	// })
 }
 
 
