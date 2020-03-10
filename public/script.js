@@ -36,7 +36,7 @@ const DEFAULT_PLAYER = {
 	tools: {},
 	position: [100, 100],
 	questions: [],
-	gameVersion: 4.5,
+	gameVersion: 5,
 	canWalkOn: ['grass', 'dirt', 'farm', 'tree']
 };
 
