@@ -57,6 +57,7 @@ const goShopping = (collider, collidee, mobs) => {
 	const offerings = wares.slice(0, 9);
 
 	const contents = `
+		<div id="controlBar"><div class="close">x</div></div>
 		<div id="wares">
 			${offerings.reduce((choices, choice) => choices + `<div class="ware" data-item="${choice.type}" data-price="${choice.price}" data-cost="${choice.cost}"><div class="item">${choice.type}</div><div class="cost">${choice.price} ${choice.cost}</div></div>`, '')}
 		</div>
@@ -65,11 +66,11 @@ const goShopping = (collider, collidee, mobs) => {
 	battleBoard.innerHTML = contents;
 
 	let listener;
-	const hideShop = (success) => {
+	const hideShop = () => {
 		battleBoard.querySelector('#wares').removeEventListener('click', listener);
 		battleBoard.classList.remove('visible');
 		showOverworld();
-		resolve(success);
+		resolve(true);
 	}
 
 	const makePurchase = (e) => {
@@ -86,6 +87,7 @@ const goShopping = (collider, collidee, mobs) => {
 	}
 
 	listener = battleBoard.querySelector('#wares').addEventListener('click', makePurchase);
+	battleBoard.querySelector('#controlBar .close').addEventListener('click', hideShop, { once: true });
 }
 
 let mobKinds = {

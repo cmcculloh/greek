@@ -105,7 +105,7 @@
 		border-radius: 4px;
 		display: flex;
 		flex-wrap: wrap;
-		padding: 15px 40px;
+		padding: 15px;
 	}
 
 	#result {
@@ -143,6 +143,15 @@
 		transition: opacity 2s ease-in;
 	}
 
+	#controlBar {
+		width: 100%;
+		display: flex;
+		flex-direction: row-reverse;
+	}
+
+	#controlBar .close {
+		cursor: pointer;
+	}
 
 	#battle h1 {
 		width: 100%;
