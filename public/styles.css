@@ -458,7 +458,7 @@
 		background-position: -1921px -649px;
 	}
 
-	#wares .item.carrot, #tools li.carrot {
+	#wares .item.carrots, #tools li.carrots {
 		background-position: -1601px -389px;
 	}
 
@@ -505,6 +505,15 @@
 	#wares .item.mutton, #tools li.mutton {
 		background-position: -1344px -1028px;
 	}
+
+	#wares .item.water, #tools li.water {
+		background-position: -130px -1px;
+	}
+
+	#wares .item.stone, #tools li.stone {
+		background-position: -197px -321px;
+	}
+
 
 	#battle.shop #wares .ware {
 		font-size: 20px;
