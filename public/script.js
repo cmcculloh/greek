@@ -816,15 +816,11 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 	let collision = false;
 
 	if (entity !== player && entity.position[0] + movePositionBy[0] === player.position[0] && entity.position[1] + movePositionBy[1] === player.position[1]) {
-		movePositionBy[0] = 0;
-		movePositionBy[1] = 0;
-		console.log((typeof entity.collide === 'function'), entity);
 		(typeof entity.collide === 'function') ? entity.collide(entity, player, mobs) : collide(entity, player, mobs);
 	} else if (entity === player) {
 		mobs.forEach((mob) => {
 			if (entity.position[0] + movePositionBy[0] === mob.position[0]
 				&& entity.position[1] + movePositionBy[1] === mob.position[1]) {
-				console.log((typeof mob.collide === 'function'), mob);
 				(typeof mob.collide === 'function') ? mob.collide(player, mob, mobs) : collide(player, mob, mobs);
 			}
 		});
@@ -1036,6 +1032,7 @@ const collide = (collider, collidee, mobs) => {
 	const captureButtons = captureWith.map(item => player.items[item] > 0 ? `<input type="button" class="captureButton" data-type="${item}" value="1 ${item} (of ${player.items[item]})"></input>` : '');
 
 	const contents = `
+		<div id="controlBar"><div class="close">x</div></div>
 		<h1>${player.name} vs ${mob.name}</h1>
 		<div id="actions">
 			<div>
@@ -1127,6 +1124,11 @@ const collide = (collider, collidee, mobs) => {
 			}
 		}, 500);
 	}));
+
+	battleBoard.querySelector('#controlBar .close').addEventListener('click', () => {
+		showOverworld();
+		battleBoard.classList.remove('visible');
+	}, { once: true });
 }
 
 const captureMob = (player, mob, mobs) => {
