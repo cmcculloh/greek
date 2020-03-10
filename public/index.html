@@ -5,18 +5,6 @@
 <div id="mobs"></div>
 <div id="steve"></div>
 
-
-<script>
-	const hide = () => {
-		document.querySelector('#instructions').style.display = 'none';
-		document.querySelector('#showInstructions').style.display = 'block';
-	}
-
-	const show = () => {
-		document.querySelector('#instructions').style.display = 'block';
-		document.querySelector('#showInstructions').style.display = 'none';
-	}
-</script>
 <input type="button" value="regenerate board" onclick="confirmRegenerate()" style="position: fixed; bottom: 15px; right: 15px;">
 <div id="instructions">
 	<input type="button" value="x" style="position: absolute; right: 0; top: 0;" onclick="hide()">
@@ -24,9 +12,28 @@
 	<div style="padding: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</div>
 	<div style="padding: 15px;"><input type="checkbox" id="fogofwar"/> Fog of War.</div>
 </div>
-<div id="showInstructions" style="display: none;">
+<div id="showInstructions" class="hide">
 	<input type="button" value=">" style="position: absolute; right: 0; top: 0;" onclick="show()">
 </div>
+<script>
+	const initInstructions = () => {
+		localStorage.getItem( 'hideInstructions' ) ? hide() : show();
+	}
+
+	const hide = () => {
+		document.querySelector('#instructions').classList.add('hide');
+		document.querySelector('#showInstructions').classList.remove('hide');
+		localStorage.setItem( 'hideInstructions', true );
+	}
+
+	const show = () => {
+		document.querySelector('#instructions').classList.remove('hide');
+		document.querySelector('#showInstructions').classList.add('hide');
+
+		localStorage.setItem( 'hideInstructions', false );
+	}
+	initInstructions();
+</script>
 <div id="tools"></div>
 
 <div id="overlay"></div>
