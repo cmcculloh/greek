@@ -95,25 +95,22 @@ let mobKinds = {
 	}
 }
 
-const createMob = (type) => {
-	const mob = JSON.parse(JSON.stringify(mobKinds[type]));
+const createMob = (type, mob = null) => Object.assign(
+	JSON.parse(JSON.stringify(mobKinds[type])),
+	{
+		level: mobKinds[type].baseLevel + Math.floor(Math.random() * 4),
+		id: uuidv4(),
+		collide: mobKinds[type].collide
+	},
+	mob
+);
 
-	mob.level = mob.level || mob.baseLevel + Math.floor(Math.random() * 4);
-	mob.id = mob.id || uuidv4();
-	mob.collide = mobKinds[type].collide;
-
-	return mob;
-}
 
 const hydrateMobs = () => {
 	let savedMobs = JSON.parse( localStorage.getItem('mobs') ) || [];
 
 	// re-attach any methods
-	savedMobs = savedMobs.map((mob) => {
-		mob = createMob(mob.kind);
-
-		return mob;
-	});
+	savedMobs = savedMobs.map((mob) => createMob(mob.kind, mob));
 
 
 	if (savedMobs.length === 0) {
@@ -313,7 +310,7 @@ const launchQuizUI = (config, question, player, resolve) => {
 		}
 	}
 
-	quiz.querySelector('.answers').addEventListener('click', gradeAnswer, { once: true })
+	quiz.querySelector('.answers').addEventListener('click', gradeAnswer, { once: true });
 }
 
 const showQuestion = (config, question, player) => {
