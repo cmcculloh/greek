@@ -86,12 +86,23 @@
 	}
 
 	#scoreBoard {
-		background-color: white;
+		background-color: black;
+		color: white;
 		position: fixed;
-		top: 50px;
-		right: 50px;
-		padding: 15px;
+		top: 0px;
+		right: 0px;
+		left: 0px;
+		padding: 5px;
 		text-transform: capitalize;
+		display: flex;
+	}
+
+	#scoreBoard ul {
+		display: flex;
+		justify-content: space-around;
+		align-content: space-around;
+		width: 100%;
+		margin: 0;
 	}
 
 	#battle.visible, #dungeon.visible {
@@ -316,7 +327,31 @@
 		display: none;
 	}
 
-	#battle #wares {
+	#battle.shop {
+		background-color: black;
+		color: white;
+	}
+
+	#battle.shop #shopkeeper {
+		justify-content: space-around;
+		display: flex;
+		flex-wrap: wrap;
+		width: 100%;
+	}
+
+	#battle.shop #shopkeeper div {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		font-size: 48px;
+	}
+
+	#battle.shop #shopkeeper img {
+		width: 60px;
+		height: 60px;
+	}
+
+	#battle.shop #wares {
 		flex-grow: 3;
 		flex-basis: 591px;
 		justify-content: center;
@@ -327,14 +362,80 @@
 		flex-direction: row;
 	}
 
-	#battle #wares .ware {
+	#wares .item {
+		background-image: url('blocks.png');
+		background-size: 2048px;
+		width: 60px;
+		height: 60px;
+		margin-bottom: 30px;
+	}
+
+	#wares .ware {
+		cursor: pointer;
+		border: 1px solid black;
+		border-radius: 4px;
+	}
+
+	#wares .ware:hover {
+		border: 1px solid white;
+	}
+
+	#wares .ware:active {
+		border: 1px solid orange;
+	}
+
+	#wares .item.shovel {
+		background-position: -1987px -708px;
+	}
+
+	#wares .item.sword {
+		background-position: -1987px -768px;
+	}
+
+	#wares .item.gold {
+		background-position: -1921px -649px;
+	}
+
+	#wares .item.carrot {
+		background-position: -1601px -389px;
+	}
+
+	#wares .item.axe {
+		background-position: -1987px -128px;
+	}
+
+	#wares .item.hoe {
+		background-position: -1987px -387px;
+	}
+
+	#wares .item.pickaxe {
+		background-position: -1987px -647px;
+	}
+
+	#wares .item.emerald {
+		background-position: -1796px -647px;
+	}
+
+	#wares .item.boat {
+		background-position: -1537px -193px;
+	}
+
+	#wares .item.potion {
+		background-position: -1857px -68px;
+	}
+
+	#wares .item.bed {
+		background-position: -1474px -898px;
+	}
+
+	#battle.shop #wares .ware {
 		font-size: 20px;
 		text-shadow: 1px 1px 4px black;
 		width: 200px;
 		height: 200px;
 		margin: auto;
 		display: flex;
-		justify-content: center;
+		justify-content: flex-end;
 		align-items: center;
 		align-content: center;
 		flex-wrap: wrap;
