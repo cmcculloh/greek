@@ -513,7 +513,7 @@ const refreshHUD = (player) => {
 		<ul>
 			<li>Level: ${getLevel(player.points)}</li>
 			<li>Points: ${player.points}</li>
-			${Object.keys(player.mobs).reduce((mobs, mob) => mobs + `<li>${mob}: ${player.mobs[mob]}</li>`, '')}
+			${player.mobs && Object.keys(player.mobs).reduce((mobs, mob) => mobs + `<li>${mob}: ${player.mobs[mob]}</li>`, '')}
 		</ul>
 	`;
 
