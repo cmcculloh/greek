@@ -141,14 +141,14 @@ let mobKinds = {
 		isDespawnable: false,
 		collide: goShopping,
 		wares: [
-			{ type: 'shovel', price: 500, cost: 'gold' },
-			{ type: 'sword', price: 500, cost: 'gold' },
+			{ type: 'shovel', price: 25, cost: 'gold' },
+			/*{ type: 'sword', price: 500, cost: 'gold' },
 			{ type: 'axe', price: 500, cost: 'gold' },
 			{ type: 'hoe', price: 100, cost: 'gold' },
 			{ type: 'pickaxe', price: 5000, cost: 'gold' },
 			{ type: 'boat', price: 1000, cost: 'gold' },
 			{ type: 'bed', price: 30, cost: 'gold' },
-			{ type: 'potion', price: 100, cost: 'gold' },
+			{ type: 'potion', price: 100, cost: 'gold' },*/
 			{ type: 'gold', price: 20, cost: 'dirt' },
 			{ type: 'gold', price: 50, cost: 'grass seed' },
 			{ type: 'gold', price: 10, cost: 'wool' },
