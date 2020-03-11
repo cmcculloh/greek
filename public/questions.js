@@ -176,6 +176,7 @@ const config = {
 		{ level: 26, question: ['ό ούπος'], answer: ['the heaven']},
 		{ level: 26, question: ['ό τόπος'], answer: ['the place']},
 		{ level: 26, question: ['ό διδάσκαλος'], answer: ['the teacher']},
+		{ level: 26, question: ['ό λίθος'], answer: ['the stone']},
 		{ level: 27, question: ['-ος (singular)'], answer: ['-ος', '-ου', '-ω', '-ον']},
 		{ level: 27, question: ['άνθρωπος (singular)'], answer: ['άνθρωπος', 'άνθρωπου', 'άνθρωπω', 'άνθρωπον']},
 		{ level: 27, question: ['-ος (plural)'], answer: ['-οι', '-ων', '-οις', '-ους']},

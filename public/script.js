@@ -1001,8 +1001,13 @@ const hydratePlayer = (questions) => {
 			return q.question.includes(pq.question[0]);
 		});
 
-		questions[qi].asked = pq.asked;
-		questions[qi].correct = pq.correct || 0;
+		if (qi >= 0) {
+			questions[qi].asked = pq.asked;
+			questions[qi].correct = pq.correct || 0;
+		} else {
+			console.log('non-existent', pq);
+		}
+
 	});
 
 	console.log(questions);
