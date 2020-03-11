@@ -27,8 +27,11 @@
 			{ value:"POL-stable-boy-short.m4a", name: 'Stable Boy' }
 		];
 
+		let play = localStorage.getItem( 'playSongs' ) !== undefined ? localStorage.getItem( 'playSongs' ) : true;
 		const playSong = (file, audio = new Audio(`/music/POL-foggy-forest-short.m4a`)) => {
+			if (!play) return;
 			console.log('play song', file);
+
 			audio.pause();
 			audio = new Audio(`/music/${file}`);
 			audio.play();
@@ -51,7 +54,18 @@
 
 		let audio = playSong('POL-foggy-forest-short.m4a');
 
+
+		const stopMusic = () => {
+			console.log('stahp');
+			audio.pause();
+			play = false;
+			localStorage.setItem( 'playSongs', false );
+		}
+		document.querySelector('#stopMusic').addEventListener('click', stopMusic);
+
 		document.querySelector('#songChoice').addEventListener('click', (e) => {
+			localStorage.setItem( 'playSongs', true );
+			play = true;
 			audio = playSong(e.target.value, audio);
 		});
 
