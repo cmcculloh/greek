@@ -187,7 +187,6 @@ const hydrateMobs = () => {
 }
 
 const saveMobs = (mobs) => {
-	console.log('saveMobs!');
 	localStorage.setItem( 'mobs', JSON.stringify(mobs) );
 
 	return mobs;
@@ -410,7 +409,7 @@ const askQuestion = async (config, question, player) => {
 
 
 const easyQuestion = (config, player) => {
-	console.log(`easy question. Question level === ${getLevel(player.points)}`);
+	// console.log(`easy question. Question level === ${getLevel(player.points)}`);
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
 	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
@@ -430,7 +429,7 @@ const easyQuestion = (config, player) => {
 }
 
 const mediumQuestion = (config, player) => {
-	console.log(`medium question. Question level <= ${getLevel(player.points)}, but >= ${getLevel(player.points) - 5} `);
+	// console.log(`medium question. Question level <= ${getLevel(player.points)}, but >= ${getLevel(player.points) - 5} `);
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
 	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 4);
@@ -459,10 +458,10 @@ const hardQuestion = (config, player) => {
 	// least 11 times. If so, ask one of those. Otherwise ask a level appropriate question that has been answered
 	// incorrectly less than 75% of the time
 	if (previousLevelQuestions.length > 0) {
-		console.log(`hard question. Any question answered fewer than 11 times correctly (there are ${previousLevelQuestions.length || 0} of these)`);
+		// console.log(`hard question. Any question answered fewer than 11 times correctly (there are ${previousLevelQuestions.length || 0} of these)`);
 		question = previousLevelQuestions[Math.floor(Math.random() * previousLevelQuestions.length)];
 	} else if (levelAppropriateQuestions.length > 0) {
-		console.log(`hard question. Any question answered less than 75% of the time correctly (there are ${levelAppropriateQuestions.length || 0} of these)`);
+		// console.log(`hard question. Any question answered less than 75% of the time correctly (there are ${levelAppropriateQuestions.length || 0} of these)`);
 		question = levelAppropriateQuestions[Math.floor(Math.random() * levelAppropriateQuestions.length)];
 	} else {
 		return anyQuestion(config, player);
@@ -742,7 +741,6 @@ const saveBoard = (BOARD, force = false) => {
 	if (force || Math.round((now - config.lastSave)/1000) % 60 > 30) {
 		config.lastSave = now;
 		localStorage.setItem( 'board', JSON.stringify(BOARD) );
-		console.log('saved');
 	}
 }
 
