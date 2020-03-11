@@ -327,13 +327,11 @@ const launchQuizUI = (config, question, player, resolve) => {
 
 	const variation = Math.floor(Math.random() * questions.length);
 
-	const choices = [];
-	for (let i = 0; i < 9; i++) {
-		if (i < 1) {
-			choices.push(answers[Math.floor(Math.random() * answers.length)]);
-		} else {
-			choices.push(getRandomChoice(choices, question, askAnswerInsteadOfQuestion, config, player));
-		}
+
+	const correctChoice = answers[Math.floor(Math.random() * answers.length)];
+	const choices = [correctChoice];
+	for (let i = 0; i < 8; i++) {
+		choices.push(getRandomChoice(choices, question, askAnswerInsteadOfQuestion, config, player));
 	}
 
 	shuffle(choices);
@@ -374,6 +372,14 @@ const launchQuizUI = (config, question, player, resolve) => {
 	}
 
 	quiz.querySelector('.answers').addEventListener('click', gradeAnswer, { once: true });
+	if (!question.asked || question.asked < 1) {
+		quiz.querySelectorAll('.answers .grass').forEach(div => {
+			if (!answers.includes(div.querySelector('div').innerText) && !div.classList.contains('hidden')) {
+				div.remove();
+			}
+		});
+		quiz.querySelector('.grass.hidden').classList.remove('hidden');
+	}
 }
 
 const showQuestion = (config, question, player) => {
