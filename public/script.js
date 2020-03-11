@@ -1066,6 +1066,7 @@ const collide = (collider, collidee, mobs) => {
 		<div id="controlBar"><div class="close">x</div></div>
 		<h1>${player.name} vs ${mob.name}</h1>
 		<div id="actions">
+			<h2 id="randomHint"></h2>
 			<div>
 				<h3>Try to capture with:</h3>
 				<ul id="captureButtons">${captureButtons.reduce((buttons, button) => buttons + `<li>${button}</li>`, '')}</ul>
@@ -1081,6 +1082,13 @@ const collide = (collider, collidee, mobs) => {
 	`;
 
 	battleBoard.innerHTML = contents;
+
+	displayRandomHint = () => {
+		const hintCandidates = player.questions.filter((q) => q.level >= getLevel(player.points) - 1);
+		const hint = hintCandidates[Math.floor(Math.random() * hintCandidates.length)];
+		battleBoard.querySelector('#randomHint').innerHTML = `${hint.question}: ${hint.answer}`;
+	}
+	displayRandomHint();
 
 	const captureButtonsDOM = battleBoard.querySelectorAll('#captureButtons input');
 	captureButtonsDOM.forEach(button => button.addEventListener('click', e => {
