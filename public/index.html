@@ -7,7 +7,7 @@
 
 <input type="button" value="regenerate board" onclick="confirmRegenerate()" style="position: fixed; bottom: 15px; right: 15px;">
 <div id="instructions">
-	<input type="button" value="x" style="position: absolute; right: 0; top: 0;" onclick="hide()">
+	<input type="button" value="x" style="position: absolute; right: 0; top: 0;" onclick="hideInstructions()">
 	<div style="padding: 15px;">Use W,A,S,D keys to move around the board.</div>
 
 	<div>
@@ -77,20 +77,24 @@
 	<div style="padding: 15px;"><input type="checkbox" id="fogofwar"/> Fog of War.</div>
 </div>
 <div id="showInstructions" class="hide">
-	<input type="button" value=">" style="position: absolute; right: 0; top: 0;" onclick="show()">
+	<input type="button" value=">" style="position: absolute; right: 0; top: 0;" onclick="showInstructions()">
 </div>
 <script>
 	const initInstructions = () => {
-		localStorage.getItem( 'hideInstructions' ) ? hide() : show();
+		if (localStorage.getItem( 'hideInstructions' ) === 'true') {
+			hideInstructions();
+		} else {
+			showInstructions();
+		}
 	}
 
-	const hide = () => {
+	const hideInstructions = () => {
 		document.querySelector('#instructions').classList.add('hide');
 		document.querySelector('#showInstructions').classList.remove('hide');
 		localStorage.setItem( 'hideInstructions', true );
 	}
 
-	const show = () => {
+	const showInstructions = () => {
 		document.querySelector('#instructions').classList.remove('hide');
 		document.querySelector('#showInstructions').classList.add('hide');
 
