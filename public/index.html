@@ -11,68 +11,68 @@
 	<div style="padding: 15px;">Use W,A,S,D keys to move around the board.</div>
 
 	<div>
-	<input type="button" id="stopMusic" value="Stop Music" />
+	<!-- <input type="button" id="stopMusic" value="Stop Music" />
 	<select id="songChoice">
 		<option value="POL-castle-rooms-short.m4a">Castle Rooms</option>
 		<option value="POL-foggy-forest-short.m4a">Foggy Forest</option>
 		<option value="POL-green-town-short.m4a">Green Town</option>
 		<option value="POL-lost-hero-short.m4a">Lost Hero</option>
 		<option value="POL-stable-boy-short.m4a">Stable Boy</option>
-	</select>
+	</select> -->
 	<script>
-		const audioOptions = [
-			{ value:"POL-castle-rooms-short.m4a", name: 'Castle Rooms' },
-			{ value:"POL-foggy-forest-short.m4a", name: 'Foggy Forest' },
-			{ value:"POL-green-town-short.m4a", name: 'Green Town' },
-			{ value:"POL-lost-hero-short.m4a", name: 'Lost Hero' },
-			{ value:"POL-stable-boy-short.m4a", name: 'Stable Boy' }
-		];
+		// const audioOptions = [
+		// 	{ value:"POL-castle-rooms-short.m4a", name: 'Castle Rooms' },
+		// 	{ value:"POL-foggy-forest-short.m4a", name: 'Foggy Forest' },
+		// 	{ value:"POL-green-town-short.m4a", name: 'Green Town' },
+		// 	{ value:"POL-lost-hero-short.m4a", name: 'Lost Hero' },
+		// 	{ value:"POL-stable-boy-short.m4a", name: 'Stable Boy' }
+		// ];
 
-		let play = localStorage.getItem( 'playSongs' ) !== undefined ? localStorage.getItem( 'playSongs' ) : true;
-		const playSong = (file, audio = new Audio(`/music/POL-foggy-forest-short.m4a`)) => {
-			if (!play) return;
-			console.log('play song', file);
+		// let play = localStorage.getItem( 'playSongs' ) !== undefined ? localStorage.getItem( 'playSongs' ) : true;
+		// const playSong = (file, audio = new Audio(`/music/POL-foggy-forest-short.m4a`)) => {
+		// 	if (!play) return;
+		// 	console.log('play song', file);
 
-			audio.pause();
-			audio = new Audio(`/music/${file}`);
-			audio.play();
+		// 	audio.pause();
+		// 	audio = new Audio(`/music/${file}`);
+		// 	audio.play();
 
-			let loops = 0;
-			let listener = audio.addEventListener('ended', function() {
-				console.log('looping');
-				loops++;
+		// 	let loops = 0;
+		// 	let listener = audio.addEventListener('ended', function() {
+		// 		console.log('looping');
+		// 		loops++;
 
-				if (loops > 4) {
-					audio.removeEventListener('ended', listener);
-					playSong(audioOptions[Math.floor(Math.random() * audioOptions.length)].value);
-				} else {
-					audio.play();
-				}
-			}, false);
+		// 		if (loops > 4) {
+		// 			audio.removeEventListener('ended', listener);
+		// 			playSong(audioOptions[Math.floor(Math.random() * audioOptions.length)].value);
+		// 		} else {
+		// 			audio.play();
+		// 		}
+		// 	}, false);
 
-			return audio;
-		}
+		// 	return audio;
+		// }
 
-		let audio = playSong('POL-foggy-forest-short.m4a');
+		// let audio = playSong('POL-foggy-forest-short.m4a');
 
 
-		const stopMusic = () => {
-			console.log('stahp');
-			audio.pause();
-			play = false;
-			localStorage.setItem( 'playSongs', false );
-		}
-		document.querySelector('#stopMusic').addEventListener('click', stopMusic);
+		// const stopMusic = () => {
+		// 	console.log('stahp');
+		// 	audio.pause();
+		// 	play = false;
+		// 	localStorage.setItem( 'playSongs', false );
+		// }
+		// document.querySelector('#stopMusic').addEventListener('click', stopMusic);
 
-		document.querySelector('#songChoice').addEventListener('click', (e) => {
-			localStorage.setItem( 'playSongs', true );
-			play = true;
-			audio = playSong(e.target.value, audio);
-		});
+		// document.querySelector('#songChoice').addEventListener('click', (e) => {
+		// 	localStorage.setItem( 'playSongs', true );
+		// 	play = true;
+		// 	audio = playSong(e.target.value, audio);
+		// });
 
 	</script>
 </div>
-	<div>Background music by PlayOnLoop.com Licensed under Creative Commons by Attribution 4.0</div>
+	<!-- <div>Background music by PlayOnLoop.com Licensed under Creative Commons by Attribution 4.0</div> -->
 	<div style="padding: 15px;"><input type="checkbox" id="hardmode"/> Check this box to have to type the name of the letter instead.</div>
 	<div style="padding: 15px;"><input type="checkbox" id="fogofwar"/> Fog of War.</div>
 </div>
