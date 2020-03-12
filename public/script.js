@@ -921,6 +921,18 @@ const buildBoardDOM = (BOARD) => {
 			cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block.type);
 			cellDOM.classList.add(!cell.nearby ? 'notnearby' : 'nearby');
 
+			let variantColumns = 1;
+			let variantRows = 1;
+			switch (cell.block.type) {
+				case 'grass':
+					variantColumns = 6;
+					variantRows = 5;
+					break;
+			}
+			const variantRow = Math.floor(variantRows * Math.random());
+			const variantColumn = Math.floor(variantColumns * Math.random());
+			cellDOM.classList.add(`variantRow${variantRow}`, `variantColumn${variantColumn}`)
+
 			rowDOM.appendChild(cellDOM);
 		});
 
