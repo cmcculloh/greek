@@ -36,8 +36,8 @@ const DEFAULT_PLAYER = {
 	tools: {},
 	position: [100, 100],
 	questions: [],
-	gameVersion: 5,
-	canWalkOn: ['grass', 'dirt', 'farm', 'tree']
+	gameVersion: 5.1,
+	canWalkOn: ['grass', 'dirt', 'farm', 'tree', 'door']
 };
 
 const STARTING_LEVEL = 1;
@@ -562,7 +562,8 @@ const BLOCKS = {
 	F: { type: 'farm', groupingMultiplier: 5, test: (config, player) => hardQuestion(config, player), reward: (player) => rewardPlayer(player, 110, 'carrots') },
 	G: { type: 'grass', groupingMultiplier: 11, test: (config, player) => easyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'grass seed') },
 	P: { type: 'plank', groupingMultiplier: 1, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'plank') },
-	L: { type: 'log', groupingMultiplier: 1, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'log') }
+	L: { type: 'log', groupingMultiplier: 1, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, 'log') },
+	DOOR: { type: 'door', groupingMultiplier: 0, test: (config, player) => anyQuestion(config, player), reward: (player) => rewardPlayer(player, 120, '') }
 }
 
 const STRUCTURES = {
@@ -574,7 +575,7 @@ const STRUCTURES = {
 			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
 			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
 			['P', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'P'],
-			['P', 'P', 'P', 'P', 'D', 'D', 'P', 'P', 'P', 'P']
+			['P', 'P', 'P', 'P', 'DOOR', 'DOOR', 'P', 'P', 'P', 'P']
 		],
 		mobs: [
 			{ type: 'shopkeeper', location: [2, 5] }
@@ -584,7 +585,7 @@ const STRUCTURES = {
 
 DEFAULT = BLOCKS.G;
 
-const POSSIBILITIES = Object.values(BLOCKS);
+const POSSIBILITIES = Object.values(BLOCKS).filter((block) => block.groupingMultiplier > 0);
 
 const generateBoard = (BOARD, width, height, idPrefix) => {
 	for (let ri = 0; ri < height; ri++) {
@@ -1002,7 +1003,8 @@ const hydratePlayer = (questions) => {
 	player.name = player.name || 'Steve';
 	player.HP = player.HP || 10;
 	player.type = player.type || 'pc';
-	player.canWalkOn = player.canWalkOn || ['grass', 'dirt', 'farm', 'tree'];
+	player.canWalkOn = player.canWalkOn || DEFAULT_PLAYER.canWalkOn;
+	player.canWalkOn = player.canWalkOn.concat(DEFAULT_PLAYER.canWalkOn);
 	player.tools = player.tools || {};
 
 	player.questions = player.questions || [];
