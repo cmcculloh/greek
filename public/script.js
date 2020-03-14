@@ -922,16 +922,66 @@ const buildBoardDOM = (BOARD) => {
 			cellDOM.classList.add('block', !cell.solved ? 'unsolved' : 'solved', cell.block.type);
 			cellDOM.classList.add(!cell.nearby ? 'notnearby' : 'nearby');
 
-			let variantColumns = 1;
-			let variantRows = 1;
+			let variantRow = 99;
+			let variantColumn = 99;
 			switch (cell.block.type) {
 				case 'grass':
-					variantColumns = 6;
-					variantRows = 5;
+					variantColumn = Math.floor(6 * Math.random());
+					variantRow = Math.floor(5 * Math.random());
+					break;
+				case 'dirt':
+					variantColumn = Math.floor(3 * Math.random());
+					variantRow = Math.floor(5 * Math.random());
+
+					const NW = BOARD[ri - 1] && BOARD[ri - 1][ci - 1] && BOARD[ri - 1][ci - 1].block.type === 'dirt';
+					const N = BOARD[ri - 1] && BOARD[ri - 1][ci] && BOARD[ri - 1][ci].block.type === 'dirt';
+					const NE = BOARD[ri - 1] && BOARD[ri - 1][ci + 1] && BOARD[ri - 1][ci + 1].block.type === 'dirt';
+					const E = BOARD[ri] && BOARD[ri][ci + 1] && BOARD[ri][ci + 1].block.type === 'dirt';
+					const SE = BOARD[ri + 1] && BOARD[ri + 1][ci + 1] && BOARD[ri + 1][ci + 1].block.type === 'dirt';
+					const S = BOARD[ri + 1] && BOARD[ri + 1][ci] && BOARD[ri + 1][ci].block.type === 'dirt';
+					const SW = BOARD[ri + 1] && BOARD[ri + 1][ci - 1] && BOARD[ri + 1][ci - 1].block.type === 'dirt';
+					const W = BOARD[ri] && BOARD[ri][ci - 1] && BOARD[ri][ci - 1].block.type === 'dirt';
+
+					if (N && E && S && W) {
+						// just use the random variant
+					} else if (N && E && S) {
+						variantColumn = 3;
+						variantRow = 3;
+					} else if (N && E && W) {
+						variantColumn = 4;
+						variantRow = 4;
+					} else if (N && S && W) {
+						variantColumn = 5;
+						variantRow = 3;
+					} else if (N && S && W) {
+						variantColumn = 5;
+						variantRow = 3;
+					} else if (E && S && W) {
+						variantColumn = 4;
+						variantRow = 2;
+					} else if (N && NE && E) {
+						variantColumn = 3;
+						variantRow = 4;
+					} else if (E && SE && S) {
+						variantColumn = 3;
+						variantRow = 2;
+					} else if (S && SW && W) {
+						variantColumn = 5;
+						variantRow = 2;
+					} else if (W & NW && N) {
+						variantColumn = 5;
+						variantRow = 4;
+					} else if (N && S) {
+						variantColumn = 3;
+						variantRow = 1;
+					} else if (!N && !E && !S && !W) {
+						variantColumn = 4;
+						variantRow = 1;
+					}
+
 					break;
 			}
-			const variantRow = Math.floor(variantRows * Math.random());
-			const variantColumn = Math.floor(variantColumns * Math.random());
+
 			cellDOM.classList.add(`variantRow${variantRow}`, `variantColumn${variantColumn}`)
 
 			rowDOM.appendChild(cellDOM);

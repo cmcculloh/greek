@@ -279,95 +279,101 @@
 		background-size: 167px auto;
 	}
 
-	.grass.variantRow0.variantColumn0 {
+	.dirt {
+		background-image: url('dirt-spritesheet.png');
+		background-color: #8A8;
+		background-size: 167px auto;
+	}
+
+	.variantRow0.variantColumn0 {
 		background-position: 0 0;
 	}
-	.grass.variantRow1.variantColumn0 {
+	.variantRow1.variantColumn0 {
 		background-position: 0 -27px;
 	}
-	.grass.variantRow2.variantColumn0 {
-		background-position: 0 -52px;
+	.variantRow2.variantColumn0 {
+		background-position: 0 -53px;
 	}
-	.grass.variantRow3.variantColumn0 {
-		background-position: 0 -82px;
+	.variantRow3.variantColumn0 {
+		background-position: 0 -84px;
 	}
-	.grass.variantRow4.variantColumn0 {
-		background-position: 0 -112px;
+	.variantRow4.variantColumn0 {
+		background-position: 0 -109px;
 	}
-	.grass.variantRow0.variantColumn1 {
+	.variantRow0.variantColumn1 {
 		background-position: -27px 0;
 	}
-	.grass.variantRow1.variantColumn1 {
+	.variantRow1.variantColumn1 {
 		background-position: -27px -27px;
 	}
-	.grass.variantRow2.variantColumn1 {
-		background-position: -27px -54px;
+	.variantRow2.variantColumn1 {
+		background-position: -27px -53px;
 	}
-	.grass.variantRow3.variantColumn1 {
-		background-position: -27px -82px;
+	.variantRow3.variantColumn1 {
+		background-position: -27px -84px;
 	}
-	.grass.variantRow4.variantColumn1 {
-		background-position: -27px -112px;
+	.variantRow4.variantColumn1 {
+		background-position: -27px -109px;
 	}
-	.grass.variantRow0.variantColumn2 {
-		background-position: -54px 0;
+	.variantRow0.variantColumn2 {
+		background-position: -53px 0;
 	}
-	.grass.variantRow1.variantColumn2 {
-		background-position: -54px -27px;
+	.variantRow1.variantColumn2 {
+		background-position: -53px -27px;
 	}
-	.grass.variantRow2.variantColumn2 {
-		background-position: -54px -54px;
+	.variantRow2.variantColumn2 {
+		background-position: -53px -53px;
 	}
-	.grass.variantRow3.variantColumn2 {
-		background-position: -54px -82px;
+	.variantRow3.variantColumn2 {
+		background-position: -53px -84px;
 	}
-	.grass.variantRow4.variantColumn2 {
-		background-position: -54px -112px;
+	.variantRow4.variantColumn2 {
+		background-position: -53px -109px;
 	}
-	.grass.variantRow0.variantColumn3 {
-		background-position: -82px 0;
+	.variantRow0.variantColumn3 {
+		background-position: -84px 0;
 	}
-	.grass.variantRow1.variantColumn3 {
-		background-position: -82px -27px;
+	.variantRow1.variantColumn3 {
+		background-position: -84px -27px;
 	}
-	.grass.variantRow2.variantColumn3 {
-		background-position: -82px 48px;
+	.variantRow2.variantColumn3 {
+		background-position: -84px -53px;
 	}
-	.grass.variantRow3.variantColumn3 {
-		background-position: -82px -82px;
+	.variantRow3.variantColumn3 {
+		background-position: -84px -84px;
 	}
-	.grass.variantRow4.variantColumn3 {
-		background-position: -82px 96px;
+	.variantRow4.variantColumn3 {
+		background-position: -84px -109px;
 	}
-	.grass.variantRow0.variantColumn4 {
-		background-position: -112px 0;
+	.variantRow0.variantColumn4 {
+		background-position: -109px 0;
 	}
-	.grass.variantRow1.variantColumn4 {
-		background-position: -112px -27px;
+	.variantRow1.variantColumn4 {
+		background-position: -109px -27px;
 	}
-	.grass.variantRow2.variantColumn4 {
-		background-position: -112px -54px;
+	.variantRow2.variantColumn4 {
+		background-position: -109px -53px;
 	}
-	.grass.variantRow3.variantColumn4 {
-		background-position: -112px -82px;
+	.variantRow3.variantColumn4 {
+		background-position: -109px -84px;
 	}
-	.grass.variantRow4.variantColumn4 {
-		background-position: -112px -112px;
+	.variantRow4.variantColumn4 {
+		background-position: -109px -109px;
 	}
-	.grass.variantRow0.variantColumn5 {
-		background-position: -134px 0px;
+	.variantRow0.variantColumn5 {
+		background-position: -137px 0px;
 	}
-	.grass.variantRow1.variantColumn5 {
-		background-position: -134px -27px;
+	.variantRow1.variantColumn5 {
+		background-position: -137px -27px;
 	}
-	.grass.variantRow2.variantColumn5 {
-		background-position: -134px -54px;
+	.variantRow2.variantColumn5 {
+		background-position: -137px -56px;
 	}
-	.grass.variantRow3.variantColumn5 {
-		background-position: -134px -82px;
+	.variantRow3.variantColumn5 {
+		background-position: -137px -84px;
 	}
-	.grass.variantRow4.variantColumn5 {
-		background-position: -134px -112px;
+	.variantRow4.variantColumn5 {
+		background-position: -137px -109px;
 	}
 
 	.stone {
