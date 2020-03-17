@@ -23,7 +23,7 @@ let overworldBoard;
 let player;
 let overworld = document.querySelector('#overworld');
 let mobsWrapper = document.querySelector('#mobs');
-
+const BLOCK_SIZE = 128;
 
 const DEFAULT_PLAYER = {
 	type: 'pc',
@@ -876,8 +876,8 @@ const placeEntity = (entity, movePositionBy, mobs, player) => {
 		const isHiddenByFog = !targetBlock.classList.contains('nearby') && config.fogofwar;
 		if (!isHiddenByFog && Math.abs(player.position[0] - entity.position[0]) <= 20 && Math.abs(player.position[1] - entity.position[1]) <= 20) {
 			entity.DOM.style.display = 'block';
-			entity.DOM.style.top = `${(entity.position[1] * 30)}px`;
-			entity.DOM.style.left = `${entity.position[0] * 30}px`;
+			entity.DOM.style.top = `${(entity.position[1] * BLOCK_SIZE)}px`;
+			entity.DOM.style.left = `${entity.position[0] * BLOCK_SIZE}px`;
 		} else {
 			entity.DOM.style.display = 'none';
 
@@ -1347,12 +1347,12 @@ const canMoveOntoBlock = (attemptBlock, entity, movePositionBy) => {
 	}
 
 	if (!canMove) {
-		entity.DOM.style.left = `${(entity.position[0] * 30) + (movePositionBy[0] * 5)}px`;
-		entity.DOM.style.top = `${(entity.position[1] * 30) + (movePositionBy[1] * 2)}px`;
+		entity.DOM.style.left = `${(entity.position[0] * BLOCK_SIZE) + (movePositionBy[0] * 5)}px`;
+		entity.DOM.style.top = `${(entity.position[1] * BLOCK_SIZE) + (movePositionBy[1] * 2)}px`;
 
 		window.setTimeout(() => {
-			entity.DOM.style.left = `${(entity.position[0] * 30)}px`
-			entity.DOM.style.top = `${(entity.position[1] * 30)}px`
+			entity.DOM.style.left = `${(entity.position[0] * BLOCK_SIZE)}px`
+			entity.DOM.style.top = `${(entity.position[1] * BLOCK_SIZE)}px`
 		}, 20);
 	}
 
