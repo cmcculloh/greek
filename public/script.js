@@ -942,41 +942,89 @@ const buildBoardDOM = (BOARD) => {
 					const SW = BOARD[ri + 1] && BOARD[ri + 1][ci - 1] && BOARD[ri + 1][ci - 1].block.type === 'dirt';
 					const W = BOARD[ri] && BOARD[ri][ci - 1] && BOARD[ri][ci - 1].block.type === 'dirt';
 
-					if (N && E && S && W) {
+					if (N && NE && E && SE && S && SW && W && NW) {
 						// just use the random variant
-					} else if (N && E && S) {
+					} else if (N && NE && E && SE && S && !W) {
 						variantColumn = 3;
 						variantRow = 3;
-					} else if (N && E && W) {
+					} else if (N && NE && E && !S && W && NW) {
 						variantColumn = 4;
 						variantRow = 4;
-					} else if (N && S && W) {
+					} else if (N && !E && S && SW && W && NW) {
 						variantColumn = 5;
 						variantRow = 3;
-					} else if (N && S && W) {
-						variantColumn = 5;
-						variantRow = 3;
-					} else if (E && S && W) {
+					} else if (!N && E && SE && S && SW && W) {
 						variantColumn = 4;
 						variantRow = 2;
-					} else if (N && NE && E) {
+					} else if (N && NE && E && !SE && !S && !SW && !W && !NW) {
 						variantColumn = 3;
 						variantRow = 4;
-					} else if (E && SE && S) {
+					} else if (!N && !NE && E && SE && S && !SW && !W && !NW) {
 						variantColumn = 3;
 						variantRow = 2;
-					} else if (S && SW && W) {
+					} else if (!N && !NE && !E && !SE && S && SW && W && !NW) {
 						variantColumn = 5;
 						variantRow = 2;
-					} else if (W & NW && N) {
+					} else if (N && !NE && !E && !SE && !S && !SW && W && NW) {
 						variantColumn = 5;
 						variantRow = 4;
-					} else if (N && S) {
+					} else if (N && !NE && E && !SE && S && !SW && W && !NW) {
 						variantColumn = 3;
 						variantRow = 1;
-					} else if (!N && !E && !S && !W) {
-						variantColumn = 4;
+					} else if (N && NE && E && SE && S && SW && W && !NW) {
+						variantColumn = 6;
 						variantRow = 1;
+					} else if (N && !NE && E && SE && S && SW && W && NW) {
+						variantColumn = 7;
+						variantRow = 1;
+					} else if (N && NE && E && SE && S && !SW && W && NW) {
+						variantColumn = 6;
+						variantRow = 2;
+					} else if (N && NE && E && !SE && S && SW && W && NW) {
+						variantColumn = 7;
+						variantRow = 2;
+					} else if (N && NE && E && !SE && S && !SW && W && NW) {
+						variantColumn = 6;
+						variantRow = 4;
+					} else if (N && !NE && E && !SE && S && SW && W && NW) {
+						variantColumn = 7;
+						variantRow = 3;
+					} else if (N && NE && E && SE && S && !SW && W && !NW) {
+						variantColumn = 6;
+						variantRow = 3;
+					} else if (N && !NE && E && SE && S && SW && W && !NW) {
+						variantColumn = 7;
+						variantRow = 4;
+					} else if (!N && !E && !S && W) {
+						variantColumn = 7;
+						variantRow = 0;
+					} else if (N && !E && !S && !W) {
+						variantColumn = 4;
+						variantRow = 0;
+					} else if (!N && E && !S && !W) {
+						variantColumn = 6;
+						variantRow = 0;
+					} else if (!N && !E && S && !W) {
+						variantColumn = 3;
+						variantRow = 0;
+					} else if (!N && E && !S && W) {
+						variantColumn = 5;
+						variantRow = 0;
+					} else if (N && !E && S && !W) {
+						variantColumn = 5;
+						variantRow = 1;
+					} else if (N && E && !S && !W) {
+						variantColumn = 3;
+						variantRow = 4;
+					} else if (!N && E && S && !W) {
+						variantColumn = 3;
+						variantRow = 2;
+					} else if (!N && !E && S && W) {
+						variantColumn = 5;
+						variantRow = 2;
+					} else if (N && !E && !S && W) {
+						variantColumn = 5;
+						variantRow = 4;
 					}
 
 					break;
