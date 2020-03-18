@@ -963,9 +963,18 @@ const getTile = (matchTypes, ri, ci) => {
 		case (SE + S + SW):
 		case (NE + S):
 		case (S + NW):
+		case (NE + S + NW):
 		case (E + S + SW):
 		case (SE + S + NW):
 		case (NE + SE + S):
+		case (NE + S + SW):
+		case (NE + SE + S + SW):
+		case (NE + SE + S + NW):
+		case (NE + SE + S + SW + NW):
+		case (S + SW + NW):
+		case (SE + S + NW):
+		case (NE + S + SW + NW):
+		case (SE + S + SW + NW):
 			variantColumn = 3;
 			variantRow = 0;
 			break;
@@ -980,6 +989,11 @@ const getTile = (matchTypes, ri, ci) => {
 		case (N + NE + NW):
 		case (N + SW + NW):
 		case (N + SE + NW):
+		case (N + NE + SW):
+		case (N + NE + SE + SW):
+		case (N + NE + SE + SW + NW):
+		case (N + SE + SW):
+		case (N + SE + SW + NW):
 			variantColumn = 4;
 			variantRow = 0;
 			break;
@@ -1014,6 +1028,10 @@ const getTile = (matchTypes, ri, ci) => {
 		case (E + SW + NW):
 		case (E + SE + SW):
 		case (E + SE + SW + NW):
+		case (NE + E + SW + NW):
+		case (NE + E + NW):
+		case (E + SE + NW):
+		case (NE + E + SW):
 			variantColumn = 6;
 			variantRow = 0;
 			break;
@@ -1027,10 +1045,17 @@ const getTile = (matchTypes, ri, ci) => {
 		case (NE + W + NW):
 		case (SE + SW + W + NW):
 		case (SE + SW + W):
+		case (NE + SW + W + NW):
+		case (NE + SW + W):
+		case (NE + SE + W):
+		case (NE + SE + W + NW):
+		case (NE + SE + SW + W):
+		case (NE + SE + SW + W + NW):
 			variantColumn = 7;
 			variantRow = 0;
 			break;
 		case (N + E + S + W):
+		case (N + E + S + SW):
 		case (NE + E + S + W):
 		case (SE + S + W + NW):
 		case (N + E + S):
@@ -1041,9 +1066,11 @@ const getTile = (matchTypes, ri, ci) => {
 		case (E + S + W + NW):
 		case (N + E + S + NW):
 		case (N + SE + S + W):
+		case (N + NE + S + W):
 		case (TOTAL - E - SW - NW):
 		case (TOTAL - NE - S - NW):
 		case (TOTAL - N - SE - SW):
+		case (TOTAL - NE - SE - W):
 			variantColumn = 3;
 			variantRow = 1;
 			break;
@@ -1052,6 +1079,17 @@ const getTile = (matchTypes, ri, ci) => {
 		case SE:
 		case SW:
 		case NW:
+		case (NE + NW):
+		case (NE + SW):
+		case (SE + NW):
+		case (NE + SE):
+		case (SE + SW):
+		case (SW + NW):
+		case (NE + SE + SW + NW):
+		case (NE + SE + SW):
+		case (NE + SE + NW):
+		case (NE + SW + NW):
+		case (SE + SW + NW):
 			variantColumn = 4;
 			variantRow = 1;
 			break;
@@ -1144,6 +1182,7 @@ const getTile = (matchTypes, ri, ci) => {
 		case (N + NE + E + SE):
 		case (N + NE + E + SE + NW):
 		case (N + NE + E + NW):
+		case (N + NE + E + SW):
 		case (TOTAL - S - W):
 		case (TOTAL - S - W - NW):
 		case (TOTAL - SE - S - W):
@@ -1243,24 +1282,38 @@ const getTile = (matchTypes, ri, ci) => {
 		case (N + E + SE + W):
 		case (N + E + SW + NW):
 		case (N + E + SE + SW):
+		case (TOTAL - NE - S - W):
 			variantColumn = 1;
 			variantRow = 6;
 			break;
 		case (E + S):
 		case (NE + E + S):
+		case (NE + E + S + SW):
+		case (E + S + NW):
+		case (TOTAL - N - SE - W):
+		case (NE + E + S + NW):
+		case (E + S + SW + NW):
 			variantColumn = 2;
 			variantRow = 6;
 			break;
 		case (S + W):
 		case (S + W + NW):
 		case (SE + S + W):
+		case (NE + S + W):
+		case (NE + S + W + NW):
+		case (NE + SE + S + W):
 		case (TOTAL - N - E - SW):
 			variantColumn = 3;
 			variantRow = 6;
 			break;
 		case (N + W):
+		case (N + SE + W):
 		case (N + SW + W):
 		case (N + NE + W):
+		case (N + SE + SW + W):
+		case (N + NE + SW + W):
+		case (N + NE + SE + W):
+		case (N + NE + SE + SW + W):
 			variantColumn = 4;
 			variantRow = 6;
 			break;
