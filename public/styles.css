@@ -281,6 +281,10 @@ body {
   background-color: #8A8;
 }
 
+.water {
+  background-image: url("water-spritesheet.png");
+}
+
 .variantRow0.variantColumn0 {
   background-position: -0px -0px;
 }

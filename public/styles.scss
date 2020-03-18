@@ -284,6 +284,10 @@ $cellSize: 128;
 		background-color: #8A8;
 	}
 
+	.water {
+		background-image: url('water-spritesheet.png');
+	}
+
 	@for $rowI from 0 through 10 {
 		@for $cellI from 0 through 10 {
 			.variantRow#{$rowI}.variantColumn#{$cellI} {

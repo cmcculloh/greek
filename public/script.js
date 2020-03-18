@@ -908,6 +908,362 @@ const showOverworld = () => {
 	document.querySelector('#overlay').classList.remove('visible');
 }
 
+const getTile = (matchTypes, ri, ci) => {
+	let variantColumn;
+	let variantRow;
+
+	const N_MATCHES  = BOARD[ri - 1] && BOARD[ri - 1][ci]     && matchTypes.includes(BOARD[ri - 1][ci].block.type);
+	const NE_MATCHES = BOARD[ri - 1] && BOARD[ri - 1][ci + 1] && matchTypes.includes(BOARD[ri - 1][ci + 1].block.type);
+	const E_MATCHES  = BOARD[ri]     && BOARD[ri][ci + 1]     && matchTypes.includes(BOARD[ri][ci + 1].block.type);
+	const SE_MATCHES = BOARD[ri + 1] && BOARD[ri + 1][ci + 1] && matchTypes.includes(BOARD[ri + 1][ci + 1].block.type);
+	const S_MATCHES  = BOARD[ri + 1] && BOARD[ri + 1][ci]     && matchTypes.includes(BOARD[ri + 1][ci].block.type);
+	const SW_MATCHES = BOARD[ri + 1] && BOARD[ri + 1][ci - 1] && matchTypes.includes(BOARD[ri + 1][ci - 1].block.type);
+	const W_MATCHES  = BOARD[ri]     && BOARD[ri][ci - 1]     && matchTypes.includes(BOARD[ri][ci - 1].block.type);
+	const NW_MATCHES = BOARD[ri - 1] && BOARD[ri - 1][ci - 1] && matchTypes.includes(BOARD[ri - 1][ci - 1].block.type);
+
+	let matchesString = '';
+	matchesString += N_MATCHES  ? 'N-'  : '';
+	matchesString += NE_MATCHES ? 'NE-' : '';
+	matchesString += E_MATCHES  ? 'E-'  : '';
+	matchesString += SE_MATCHES ? 'SE-' : '';
+	matchesString += S_MATCHES  ? 'S-'  : '';
+	matchesString += SW_MATCHES ? 'SW-' : '';
+	matchesString += W_MATCHES  ? 'W-'  : '';
+	matchesString += NW_MATCHES ? 'NW-' : '';
+
+
+	// The idea here is to assign each cardinal direction a number.
+	// Then find the total by adding all those numbers together.
+	// Based on that total, we will know the directions that are different.
+	const N  = 1;
+	const NE = 3;
+	const E  = 5;
+	const SE = 10;
+	const S  = 20;
+	const SW = 40;
+	const W  = 80;
+	const NW = 160;
+	const TOTAL = N + NE + E + SE + S + SW + W + NW;
+
+	let compassTotal = 0;
+	compassTotal += N_MATCHES  ? N  : 0;  // 1,
+	compassTotal += NE_MATCHES ? NE : 0;  // 3, 4,
+	compassTotal += E_MATCHES  ? E  : 0;  // 5, 6, 8, 9,
+	compassTotal += SE_MATCHES ? SE : 0; // 10, 11, 13, 14, 15, 16, 18, 19
+	compassTotal += S_MATCHES  ? S  : 0; // 20, 21, 23, 24, 25, 26, 29, 30, 31, 33, 34, 35, 36, 38, 39,
+	compassTotal += SW_MATCHES ? SW : 0; // 40, 41, 43, 44, 45, 46, 48, 49, 51, 53, 54, 55, 56, 58, 59, 61, 63, 64, 65, 66, 68, 69, 71, 73, 74, 75, 76, 78, 79
+	compassTotal += W_MATCHES  ? W  : 0; // 80, 81, 83, 84, 85, 86, 88, 89, 90, 91, 93, 94, 95, 96, 98, 99, 100, 101, 103, 104, 105, 106, 108, 109, 110, 111, 113, 114, 115, 116, 118, 119, 110, 111, 113, 114, 115, 116, 118, 119, 120, 121, 123, 124, 125, 126, 128, 129, 130, 131, 133, 134, 135, 136, 138, 139, 140, 141, 143, 144, 145, 146, 148, 149, 150, 151, 153, 154, 155, 156, 158, 159
+	compassTotal += NW_MATCHES ? NW : 0; // 160, 161, 163, 164, 165, 166, 168, 169, 170, 171, 173, 174, 175, 176, 178, 179, 180, 181, 183, 184, 185, 186, 188, 189, 190, 191, 193, 194, 195, 196, 198, 199, 200, 201, 203, 204, 205, 206, 208, 209, 210, 211, 213, 214, 215, 216, 218, 219, 220, 221, 223, 224, 225, 226, 228, 229, 230, 231, 233, 234, 235, 236, 238, 239, 240, 241, 243, 244, 245, 246, 248, 249, 250, 251, 253, 254, 255, 256, 258, 259, 260, 261, 263, 264, 265, 266, 268, 269, 270, 271, 273, 274, 275, 276, 278, 279, 280, 281, 283, 284, 285, 286, 288, 289, 290, 291, 293, 294, 295, 296, 298, 299, 300, 301, 303, 304, 305, 306, 308, 309
+
+
+	switch (compassTotal) {
+		case S:
+		case (SE + S):
+		case (S + SW):
+		case (SE + S + SW):
+		case (NE + S):
+		case (S + NW):
+		case (E + S + SW):
+		case (SE + S + NW):
+		case (NE + SE + S):
+			variantColumn = 3;
+			variantRow = 0;
+			break;
+		case N:
+		case (N + NE):
+		case (N + SE):
+		case (N + SW):
+		case (N + NW):
+		case (N + NE + SW + NW):
+		case (N + NE + SE + NW):
+		case (N + NE + SE):
+		case (N + NE + NW):
+		case (N + SW + NW):
+			variantColumn = 4;
+			variantRow = 0;
+			break;
+		case (TOTAL - N - NE - S):
+		case (TOTAL - N - S):
+		case (TOTAL - N - S - SW):
+		case (TOTAL - N - S - NW):
+		case (NE + E + SE + W):
+		case (NE + E + SW + W):
+		case (NE + E + W):
+		case (NE + E + W + NW):
+		case (E + SE + W):
+		case (E + SW + W + NW):
+		case (E + W):
+		case (E + W + NW):
+		case (E + SW + W):
+		case (E + SE + W + NW):
+		case (E + SE + SW + W):
+			variantColumn = 5;
+			variantRow = 0;
+			break;
+		case E:
+		case (NE + E):
+		case (NE + E + SE):
+		case (NE + E + SE + NW):
+		case (NE + E + SE + SW):
+		case (NE + E + SE + SW + NW):
+		case (E + SE):
+		case (E + NW):
+		case (E + SW):
+		case (E + SW + NW):
+			variantColumn = 6;
+			variantRow = 0;
+			break;
+		case W:
+		case (W + NW):
+		case (SE + W):
+		case (SW + W):
+		case (SW + W + NW):
+		case (W + NW + SE):
+		case (NE + W):
+		case (NE + W + NW):
+		case (SE + SW + W + NW):
+		case (SE + SW + W):
+			variantColumn = 7;
+			variantRow = 0;
+			break;
+		case (N + E + S + W):
+		case (SE + S + W + NW):
+		case (N + E + S):
+		case (E + S + W):
+		case (N + S + W):
+		case (N + E + W):
+		case (E + S + W + NW):
+		case (N + E + S + NW):
+		case (N + SE + S + W):
+		case (TOTAL - E - SW - NW):
+		case (TOTAL - NE - S - NW):
+			variantColumn = 3;
+			variantRow = 1;
+			break;
+		case 0: // None
+		case NE:
+		case SE:
+		case SW:
+		case NW:
+			variantColumn = 4;
+			variantRow = 1;
+			break;
+		case (N + SE + S + NW):
+		case (N + SE + S):
+		case (N + SE + S + SW):
+		case (N + S + SW):
+		case (N + S):
+		case (N + NE + SE + S):
+		case (N + S + NW):
+		case (N + NE + S + SW + NW):
+		case (N + NE + S):
+		case (N + NE + S + SW):
+		case (TOTAL - E - W):
+		case (TOTAL - E - SW - W):
+		case (TOTAL - E - W - NW):
+		case (TOTAL - NE - E - W):
+		case (N + S + SW + NW):
+		case (N + NE + S + NW):
+			variantColumn = 5;
+			variantRow = 1;
+			break;
+		case (TOTAL - NW):
+			variantColumn = 6;
+			variantRow = 1;
+			break;
+		case (TOTAL - NE):
+			variantColumn = 7;
+			variantRow = 1;
+			break;
+		case (NE + E + SE + S):
+		case (E + SE + S):
+		case (E + SE + S + SW):
+		case (E + SE + S + NW):
+		case (TOTAL - N - W):
+		case (TOTAL - N - W - NW):
+		case (TOTAL - N - NE - W):
+			variantColumn = 3;
+			variantRow = 2;
+			break;
+		case (TOTAL - N):
+		case (TOTAL - N - NE):
+		case (TOTAL - N - NW):
+		case (TOTAL - N - NE - NW):
+			variantColumn = 4;
+			variantRow = 2;
+			break;
+		case (S + SW + W):
+		case (S + SW + W + NW):
+		case (SE + S + SW + W):
+		case (SE + S + SW + W + NW):
+		case (TOTAL - N - E):
+		case (SE + S + SW + W):
+		case (NE + S + SW + W + NW):
+			variantColumn = 5;
+			variantRow = 2;
+			break;
+		case (TOTAL - SW):
+			variantColumn = 6;
+			variantRow = 2;
+			break;
+		case (TOTAL - SE):
+			variantColumn = 7;
+			variantRow = 2;
+			break;
+		case (TOTAL - W):
+		case (TOTAL - SW - W):
+		case (TOTAL - W - NW):
+		case (TOTAL - SW - W - NW):
+			variantColumn = 3;
+			variantRow = 3;
+			break;
+		case (TOTAL - E):
+		case (TOTAL - NE - E):
+		case (TOTAL - E - SE):
+		case (TOTAL - NE - E - SE):
+			variantColumn = 5;
+			variantRow = 3;
+			break;
+		case (TOTAL - NW - SW):
+			variantColumn = 6;
+			variantRow = 3;
+			break;
+		case (TOTAL - NE - SE):
+			variantColumn = 7;
+			variantRow = 3;
+			break;
+		case (N + NE + E):
+		case (N + NE + E + SE):
+		case (N + NE + E + SE + NW):
+		case (N + NE + E + NW):
+		case (TOTAL - S - W):
+		case (TOTAL - S - W - NW):
+		case (TOTAL - SE - S - W):
+			variantColumn = 3;
+			variantRow = 4;
+			break;
+		case (TOTAL - S):
+		case (TOTAL - S - SW):
+		case (TOTAL - SE - S):
+		case (TOTAL - SE - S - SW):
+			variantColumn = 4;
+			variantRow = 4;
+			break;
+		case (W + NW + N):
+		case (W + NW + N + NE):
+		case (SW + W + NW + N + NE):
+		case (N + SE + SW + W + NW):
+		case (TOTAL - E - S):
+		case (N + SW + W + NW):
+		case (N + SE + W + NW):
+		case (TOTAL - E - S - SW):
+			variantColumn = 5;
+			variantRow = 4;
+			break;
+		case (TOTAL - SE - SW):
+			variantColumn = 6;
+			variantRow = 4;
+			break;
+		case (TOTAL - NE - NW):
+			variantColumn = 7;
+			variantRow = 4;
+			break;
+		case (TOTAL - NE - S - SW):
+		case (TOTAL - NE - S):
+		case (N + S + W + NW):
+		case (N + E + W + NW):
+		case (N + E + S + W + NW):
+		case (N + NE + SE + S + W + NW):
+		case (N + E + SW + W + NW):
+		case (N + NE + S + W + NW):
+		case (TOTAL - NE - E - SW):
+			variantColumn = 1;
+			variantRow = 5;
+			break;
+		case (TOTAL - S - SW - NW):
+		case (N + NE + E + S):
+		case (TOTAL - SE - W):
+		case (N + NE + E + S + NW):
+		case (TOTAL - SE - W - NW):
+		case (TOTAL - SE - S - NW):
+		case (N + NE + E + W):
+		case (TOTAL - S - NW):
+			variantColumn = 2;
+			variantRow = 5;
+			break;
+		case (TOTAL - NE - SW):
+			variantColumn = 3;
+			variantRow = 5;
+			break;
+		case (TOTAL - SE - NW):
+			variantColumn = 4;
+			variantRow = 5;
+			break;
+		case (TOTAL - N - SW):
+		case (N + E + SE + S):
+		case (E + SE + S + W):
+		case (E + SE + S + W + NW):
+		case (N + E + SE + S + NW):
+		case (TOTAL - N - SW - NW):
+		case (TOTAL - N - SW - W):
+		case (TOTAL - NE - W):
+		case (TOTAL - NE - W - NW):
+			variantColumn = 5;
+			variantRow = 5;
+			break;
+		case (E + S + SW + W):
+		case (N + S + SW + W):
+		case (E + S + SW + W + NW):
+		case (N + SE + S + SW + W):
+		case (TOTAL - N - SE):
+		case (TOTAL - N - SE - NW):
+		case (TOTAL - E - SE - NW):
+		case (TOTAL - E - NW):
+		case (TOTAL - N - E - NW):
+			variantColumn = 6;
+			variantRow = 5;
+			break;
+		case (TOTAL - NW):
+		case (N + E):
+		case (N + E + NW):
+		case (N + E + SW):
+		case (N + E + SE + NW):
+		case (N + E + SE):
+		case (N + E + SE + W):
+		case (N + E + SW + NW):
+		case (N + E + SE + SW):
+			variantColumn = 1;
+			variantRow = 6;
+			break;
+		case (E + S):
+		case (NE + E + S):
+			variantColumn = 2;
+			variantRow = 6;
+			break;
+		case (S + W):
+		case (S + W + NW):
+		case (SE + S + W):
+		case (TOTAL - N - E - SW):
+			variantColumn = 3;
+			variantRow = 6;
+			break;
+		case (N + W):
+		case (N + SW + W):
+		case (N + NE + W):
+			variantColumn = 4;
+			variantRow = 6;
+			break;
+		case TOTAL:
+			// All directions
+			// just use the random variant
+			variantColumn =  Math.floor(3 * Math.random());
+			variantRow = Math.floor(5 * Math.random());
+			break;
+	}
+
+	return { variantRow, variantColumn, compassTotal, matchesString };
+}
+
 const buildBoardDOM = (BOARD) => {
 	const board = document.createElement('div');
 	BOARD.forEach((row, ri) => {
@@ -924,113 +1280,28 @@ const buildBoardDOM = (BOARD) => {
 
 			let variantRow = 99;
 			let variantColumn = 99;
+			let compassTotal = 0;
+			let matchesString = '';
 			switch (cell.block.type) {
 				case 'grass':
 					variantColumn = Math.floor(6 * Math.random());
 					variantRow = Math.floor(5 * Math.random());
 					break;
+				case 'water':
+					({ variantRow, variantColumn, compassTotal, matchesString } = getTile(['water', 'stone'], ri, ci));
+					break;
 				case 'dirt':
-					variantColumn = Math.floor(3 * Math.random());
-					variantRow = Math.floor(5 * Math.random());
-
-					const NW = BOARD[ri - 1] && BOARD[ri - 1][ci - 1] && BOARD[ri - 1][ci - 1].block.type === 'dirt';
-					const N = BOARD[ri - 1] && BOARD[ri - 1][ci] && BOARD[ri - 1][ci].block.type === 'dirt';
-					const NE = BOARD[ri - 1] && BOARD[ri - 1][ci + 1] && BOARD[ri - 1][ci + 1].block.type === 'dirt';
-					const E = BOARD[ri] && BOARD[ri][ci + 1] && BOARD[ri][ci + 1].block.type === 'dirt';
-					const SE = BOARD[ri + 1] && BOARD[ri + 1][ci + 1] && BOARD[ri + 1][ci + 1].block.type === 'dirt';
-					const S = BOARD[ri + 1] && BOARD[ri + 1][ci] && BOARD[ri + 1][ci].block.type === 'dirt';
-					const SW = BOARD[ri + 1] && BOARD[ri + 1][ci - 1] && BOARD[ri + 1][ci - 1].block.type === 'dirt';
-					const W = BOARD[ri] && BOARD[ri][ci - 1] && BOARD[ri][ci - 1].block.type === 'dirt';
-
-					if (N && NE && E && SE && S && SW && W && NW) {
-						// just use the random variant
-					} else if (N && NE && E && SE && S && !W) {
-						variantColumn = 3;
-						variantRow = 3;
-					} else if (N && NE && E && !S && W && NW) {
-						variantColumn = 4;
-						variantRow = 4;
-					} else if (N && !E && S && SW && W && NW) {
-						variantColumn = 5;
-						variantRow = 3;
-					} else if (!N && E && SE && S && SW && W) {
-						variantColumn = 4;
-						variantRow = 2;
-					} else if (N && NE && E && !SE && !S && !SW && !W && !NW) {
-						variantColumn = 3;
-						variantRow = 4;
-					} else if (!N && !NE && E && SE && S && !SW && !W && !NW) {
-						variantColumn = 3;
-						variantRow = 2;
-					} else if (!N && !NE && !E && !SE && S && SW && W && !NW) {
-						variantColumn = 5;
-						variantRow = 2;
-					} else if (N && !NE && !E && !SE && !S && !SW && W && NW) {
-						variantColumn = 5;
-						variantRow = 4;
-					} else if (N && !NE && E && !SE && S && !SW && W && !NW) {
-						variantColumn = 3;
-						variantRow = 1;
-					} else if (N && NE && E && SE && S && SW && W && !NW) {
-						variantColumn = 6;
-						variantRow = 1;
-					} else if (N && !NE && E && SE && S && SW && W && NW) {
-						variantColumn = 7;
-						variantRow = 1;
-					} else if (N && NE && E && SE && S && !SW && W && NW) {
-						variantColumn = 6;
-						variantRow = 2;
-					} else if (N && NE && E && !SE && S && SW && W && NW) {
-						variantColumn = 7;
-						variantRow = 2;
-					} else if (N && NE && E && !SE && S && !SW && W && NW) {
-						variantColumn = 6;
-						variantRow = 4;
-					} else if (N && !NE && E && !SE && S && SW && W && NW) {
-						variantColumn = 7;
-						variantRow = 3;
-					} else if (N && NE && E && SE && S && !SW && W && !NW) {
-						variantColumn = 6;
-						variantRow = 3;
-					} else if (N && !NE && E && SE && S && SW && W && !NW) {
-						variantColumn = 7;
-						variantRow = 4;
-					} else if (!N && !E && !S && W) {
-						variantColumn = 7;
-						variantRow = 0;
-					} else if (N && !E && !S && !W) {
-						variantColumn = 4;
-						variantRow = 0;
-					} else if (!N && E && !S && !W) {
-						variantColumn = 6;
-						variantRow = 0;
-					} else if (!N && !E && S && !W) {
-						variantColumn = 3;
-						variantRow = 0;
-					} else if (!N && E && !S && W) {
-						variantColumn = 5;
-						variantRow = 0;
-					} else if (N && !E && S && !W) {
-						variantColumn = 5;
-						variantRow = 1;
-					} else if (N && E && !S && !W) {
-						variantColumn = 3;
-						variantRow = 4;
-					} else if (!N && E && S && !W) {
-						variantColumn = 3;
-						variantRow = 2;
-					} else if (!N && !E && S && W) {
-						variantColumn = 5;
-						variantRow = 2;
-					} else if (N && !E && !S && W) {
-						variantColumn = 5;
-						variantRow = 4;
-					}
-
+					({ variantRow, variantColumn, compassTotal, matchesString } = getTile(['dirt', 'plank', 'door'], ri, ci));
 					break;
 			}
 
-			cellDOM.classList.add(`variantRow${variantRow}`, `variantColumn${variantColumn}`)
+			try {
+				cellDOM.classList.add(`variantRow${variantRow}`, `variantColumn${variantColumn}`, `compassTotal${compassTotal}`, `matchesString${matchesString}`)
+			} catch (e) {
+				console.error(e);
+				console.error ('err', matchesString);
+			}
+
 
 			rowDOM.appendChild(cellDOM);
 		});
