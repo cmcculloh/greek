@@ -979,11 +979,13 @@ const getTile = (matchTypes, ri, ci) => {
 		case (N + NE + SE):
 		case (N + NE + NW):
 		case (N + SW + NW):
+		case (N + SE + NW):
 			variantColumn = 4;
 			variantRow = 0;
 			break;
 		case (TOTAL - N - NE - S):
 		case (TOTAL - N - S):
+		case (TOTAL - N - SE - S):
 		case (TOTAL - N - S - SW):
 		case (TOTAL - N - S - NW):
 		case (NE + E + SE + W):
@@ -1010,6 +1012,8 @@ const getTile = (matchTypes, ri, ci) => {
 		case (E + NW):
 		case (E + SW):
 		case (E + SW + NW):
+		case (E + SE + SW):
+		case (E + SE + SW + NW):
 			variantColumn = 6;
 			variantRow = 0;
 			break;
@@ -1027,16 +1031,19 @@ const getTile = (matchTypes, ri, ci) => {
 			variantRow = 0;
 			break;
 		case (N + E + S + W):
+		case (NE + E + S + W):
 		case (SE + S + W + NW):
 		case (N + E + S):
 		case (E + S + W):
 		case (N + S + W):
 		case (N + E + W):
+		case (N + E + SW + W):
 		case (E + S + W + NW):
 		case (N + E + S + NW):
 		case (N + SE + S + W):
 		case (TOTAL - E - SW - NW):
 		case (TOTAL - NE - S - NW):
+		case (TOTAL - N - SE - SW):
 			variantColumn = 3;
 			variantRow = 1;
 			break;
@@ -1099,6 +1106,7 @@ const getTile = (matchTypes, ri, ci) => {
 		case (TOTAL - N - E):
 		case (SE + S + SW + W):
 		case (NE + S + SW + W + NW):
+		case (NE + S + SW + W):
 			variantColumn = 5;
 			variantRow = 2;
 			break;
@@ -1188,6 +1196,7 @@ const getTile = (matchTypes, ri, ci) => {
 		case (TOTAL - SE - S - NW):
 		case (N + NE + E + W):
 		case (TOTAL - S - NW):
+		case (TOTAL - SE - SW - NW):
 			variantColumn = 2;
 			variantRow = 5;
 			break;
@@ -1208,6 +1217,7 @@ const getTile = (matchTypes, ri, ci) => {
 		case (TOTAL - N - SW - W):
 		case (TOTAL - NE - W):
 		case (TOTAL - NE - W - NW):
+		case (TOTAL - NE - SW - NW):
 			variantColumn = 5;
 			variantRow = 5;
 			break;
@@ -1220,6 +1230,7 @@ const getTile = (matchTypes, ri, ci) => {
 		case (TOTAL - E - SE - NW):
 		case (TOTAL - E - NW):
 		case (TOTAL - N - E - NW):
+		case (TOTAL - NE - SE - NW):
 			variantColumn = 6;
 			variantRow = 5;
 			break;
