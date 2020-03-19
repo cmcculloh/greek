@@ -252,7 +252,7 @@ body {
   display: inline-block;
   height: 128px;
   width: 128px;
-  background-image: url("blocks.png");
+  background-image: url("spritesheet.png");
 }
 
 .block.unsolved {
@@ -769,33 +769,29 @@ body {
   background-position: -1280px -1280px;
 }
 
-.stone {
-  background-position: -641px -289px;
-}
-
 .tree {
   background-color: #63B03B;
-  background-position: -642px -2px;
+  background-position: -256px -0px;
+}
+
+.stone {
+  background-position: -512px -0px;
 }
 
 .door {
-  background-position: -320px -224px;
+  background-position: -640px -0px;
 }
 
 .plank {
-  background-position: -512px -128px;
+  background-position: -128px -0px;
 }
 
 .log {
-  background-position: -129px -449px;
-}
-
-.water {
-  background-position: -65px -1px;
+  background-position: -0px -0px;
 }
 
 .farm {
-  background-position: -450px -130px;
+  background-position: -384px -0px;
 }
 
 #quiz {

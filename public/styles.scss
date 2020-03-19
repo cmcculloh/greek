@@ -254,7 +254,7 @@ $cellSize: 128;
 		display: inline-block;
 		height: #{$cellSize}px;
 		width: #{$cellSize}px;
-		background-image: url('blocks.png');
+		background-image: url('spritesheet.png');
 	}
 
 	.block.unsolved {
@@ -296,33 +296,38 @@ $cellSize: 128;
 		}
 	}
 
-	.stone {
-		background-position: -641px -289px;
-	}
+	// .stone {
+	// 	background-image: url(stones.png);
+	// 	background-position: 0 0;
+	// 	padding-left: 24px;
+	// 	margin-left: -24px;
+	// 	padding-top: 22px;
+	// 	margin-top: -22px;
+	// }
 
 	.tree {
 		background-color: #63B03B;
-		background-position: -642px -2px;
+		background-position: -#{2 * $cellSize}px -#{0 * $cellSize}px;
+	}
+
+	.stone {
+		background-position: -#{4 * $cellSize}px -#{0 * $cellSize}px;
 	}
 
 	.door {
-		background-position: -320px -224px;
+		background-position: -#{5 * $cellSize}px -#{0 * $cellSize}px;
 	}
 
 	.plank {
-		background-position: -512px -128px;
+		background-position: -#{1 * $cellSize}px -#{0 * $cellSize}px;
 	}
 
 	.log {
-		background-position: -129px -449px;
-	}
-
-	.water {
-		background-position: -65px -1px;
+		background-position: -#{0 * $cellSize}px -#{0 * $cellSize}px;
 	}
 
 	.farm {
-		background-position: -450px -130px;
+		background-position: -#{3 * $cellSize}px -#{0 * $cellSize}px;
 	}
 
 	#quiz {
