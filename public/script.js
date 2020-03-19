@@ -419,7 +419,7 @@ const easyQuestion = (config, player) => {
 	let question = config.questions[Math.floor(Math.random() * config.questions.length)]
 
 	const sameLevelQuestions = config.questions.filter(question => question.level === getLevel(player.points));
-	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 12);
+	const previousLevelQuestions = config.questions.filter(question => question.level < getLevel(player.points) && !question.correct || question.correct < 8);
 
 	// first determine if there are any previous level questions that have not been answered correctly at
 	// least 3 times. If so, ask any of the first six of those. Otherwise ask a random sameLevelQuestion
