@@ -786,6 +786,7 @@ const blockReveal = (BOARD, row, cell) => {
 	const target = document.querySelector(`#${BOARD[row][cell].selector(row, cell)}`);
 
 	let forceSave = false;
+	let updateTiles = false;
 
 	switch (BOARD[row][cell].block.type) {
 		case 'tree':
@@ -797,12 +798,43 @@ const blockReveal = (BOARD, row, cell) => {
 		case 'grass':
 			if (player.usingTool === 'shovel') {
 				BOARD[row][cell].block.type = 'dirt';
-				target.classList.remove('grass');
-				target.classList.add('dirt');
+				let solved = target.classList.contains('solved');
+				target.className = '';
+				target.classList.add('dirt', 'block', 'nearby', solved ? 'solved' : 'unsolved');
+				updateTiles = true;
 
 				forceSave = true;
 			}
 			break;
+	}
+
+	// This only works for dirt for now...
+	if (updateTiles) {
+		for (let ri = row - 1; ri <= row + 1; ri++) {
+			for (let ci = cell - 1; ci <= cell + 1; ci++) {
+				const cell = document.querySelector(`#${BOARD[ri][ci].selector(ri, ci)}`);
+
+				if (!cell.classList.contains('dirt')) continue;
+
+				let variantRow = 99;
+				let variantColumn = 99;
+				let compassTotal = 0;
+				let matchesString = '';
+
+				({ variantRow, variantColumn, compassTotal, matchesString } = getTile(['dirt', 'plank', 'door'], ri, ci));
+
+				let solved = cell.classList.contains('solved');
+				cell.setAttribute('class', '');
+				cell.classList.add('dirt', 'block', 'nearby', solved ? 'solved' : 'unsolved');
+
+				cell.classList.add(
+					`variantRow${variantRow}`,
+					`variantColumn${variantColumn}`,
+					`compassTotal${compassTotal}`,
+					`matchesString${matchesString}`
+				);
+			}
+		}
 	}
 
 	if (!BOARD[row][cell].solved) {
