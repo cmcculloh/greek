@@ -1567,10 +1567,21 @@ const collide = (collider, collidee, mobs) => {
 
 	battleBoard.innerHTML = contents;
 
+	let recursionProtection = 0;
 	displayRandomHint = () => {
-		const hintCandidates = player.questions.filter((q) => q.level >= getLevel(player.points) - 1);
+		// If the player level far exceeds available levels, hints won't be shown. That's bad.
+		const hintCandidates = player.questions.filter((q) => q.level >= Math.min(getLevel(player.points) - 1, player.questions[player.questions.length - 1].level));
 		const hint = hintCandidates[Math.floor(Math.random() * hintCandidates.length)];
-		battleBoard.querySelector('#randomHint').innerHTML = `${hint.question}: ${hint.answer}`;
+
+		if (hint && hint.question && hint.answer) {
+			battleBoard.querySelector('#randomHint').innerHTML = `${hint.question}: ${hint.answer}`;
+		} else {
+			recursionProtection++;
+
+			if (recursionProtection < 20){
+				displayRandomHint();
+			}
+		}
 	}
 	displayRandomHint();
 
